@@ -1,0 +1,10 @@
+<script setup lang="ts">
+</script>
+
+<template>
+    <div class="flex min-h-screen items-center justify-center bg-white px-6 py-12">
+        <div class="w-full max-w-md">
+            <slot />
+        </div>
+    </div>
+</template>
