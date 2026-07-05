@@ -38,18 +38,22 @@ const submit = () => {
 
         <div class="w-full">
             <div class="mb-8 flex justify-center">
-                <div class="rounded-2xl border border-border bg-card px-5 py-4 shadow-sm">
+                <div
+                    class="rounded-[1.75rem] border border-white/70 bg-white/90 px-5 py-4 shadow-[0_18px_50px_-30px_rgba(15,23,42,0.35)] backdrop-blur dark:border-white/12 dark:bg-white/6 dark:shadow-[0_24px_70px_-34px_rgba(0,0,0,0.9)]"
+                >
                     <ApplicationLogo class="h-16 w-auto object-contain" />
                 </div>
             </div>
 
-            <Card class="border-border/80 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)]">
+            <Card
+                class="overflow-hidden rounded-[2rem] border-white/70 bg-white/88 shadow-[0_30px_90px_-50px_rgba(15,23,42,0.4)] backdrop-blur dark:border-white/10 dark:bg-slate-950/78 dark:shadow-[0_36px_120px_-56px_rgba(0,0,0,0.92)]"
+            >
                 <CardHeader class="space-y-3 text-center">
-                    <p class="eyebrow-label text-primary">{{ APP_SYSTEM_SUBTITLE }}</p>
-                    <CardTitle class="text-3xl font-bold tracking-[-0.04em]">
+                    <p class="eyebrow-label text-primary dark:text-sky-300">{{ APP_SYSTEM_SUBTITLE }}</p>
+                    <CardTitle class="text-3xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white">
                         Log in to {{ APP_BRAND_NAME }}
                     </CardTitle>
-                    <CardDescription class="text-[15px] leading-7">
+                    <CardDescription class="text-[15px] leading-7 text-slate-600 dark:text-slate-300">
                         Enter your email and password to access marks, rankings, and admin tools.
                     </CardDescription>
                 </CardHeader>
@@ -57,7 +61,7 @@ const submit = () => {
                 <CardContent>
                     <div
                         v-if="props.status"
-                        class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700"
+                        class="mb-6 rounded-2xl border border-emerald-200/80 bg-emerald-50/90 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/12 dark:text-emerald-200"
                     >
                         {{ props.status }}
                     </div>
@@ -83,7 +87,7 @@ const submit = () => {
                                 <Link
                                     v-if="props.canResetPassword"
                                     :href="password.request()"
-                                    class="text-sm font-semibold text-primary underline-offset-4 transition hover:underline"
+                                    class="text-sm font-semibold text-primary underline-offset-4 transition hover:underline dark:text-sky-300"
                                 >
                                     Forgot password?
                                 </Link>
@@ -104,7 +108,10 @@ const submit = () => {
                             <span>Remember me</span>
                         </label>
 
-                        <Button class="min-h-12 w-full rounded-2xl text-[15px]" :disabled="form.processing">
+                        <Button
+                            class="min-h-12 w-full rounded-2xl bg-slate-950 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 text-[15px]"
+                            :disabled="form.processing"
+                        >
                             Log in
                         </Button>
                     </form>

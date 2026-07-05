@@ -1,5 +1,7 @@
 <template>
-    <div class="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.16),transparent_34%),linear-gradient(135deg,#F8FAFC_0%,#EFF6FF_100%)] px-6 py-12">
+    <div
+        class="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.16),transparent_34%),linear-gradient(135deg,#F8FAFC_0%,#EFF6FF_100%)] px-6 py-12 dark:bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.2),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.14),transparent_26%),linear-gradient(135deg,#020617_0%,#0F172A_52%,#111827_100%)]"
+    >
         <div class="w-full max-w-md">
             <slot />
         </div>
