@@ -1,0 +1,23 @@
+---
+deployment:
+  tasks:
+    - export APPPATH=/home/supetzvd/sm-with-dds
+    - export PUBLICPATH=/home/supetzvd/public_html
+
+    # Copy public assets to public_html, but do not overwrite public_html/index.php
+    - /bin/cp -R $APPPATH/public/build $PUBLICPATH/
+    - /bin/cp -R $APPPATH/public/images $PUBLICPATH/ || true
+    - /bin/cp $APPPATH/public/.htaccess $PUBLICPATH/.htaccess
+    - /bin/cp $APPPATH/public/favicon.ico $PUBLICPATH/favicon.ico || true
+    - /bin/cp $APPPATH/public/robots.txt $PUBLICPATH/robots.txt || true
+
+    # Laravel production commands
+    - cd $APPPATH && php artisan config:clear
+    - cd $APPPATH && php artisan cache:clear
+    - cd $APPPATH && php artisan route:clear
+    - cd $APPPATH && php artisan view:clear
+    - cd $APPPATH && php artisan migrate --force
+    - cd $APPPATH && php artisan permissions:sync
+    - cd $APPPATH && php artisan config:cache
+    - cd $APPPATH && php artisan route:cache
+    - cd $APPPATH && php artisan view:cache
