@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Assessment\SaveAssessmentRequest;
 use App\Models\Assessment;
+use App\Services\AssessmentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,16 +13,12 @@ use Inertia\Response;
 
 class AssessmentController extends Controller
 {
+    public function __construct(private readonly AssessmentService $assessmentService) {}
+
     public function index(Request $request): Response
     {
-        $assessments = Assessment::query()
-            ->when($request->search, fn ($query, string $search) => $query->where('title', 'like', "%{$search}%"))
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
-
         return Inertia::render('admin/assessments/Index', [
-            'assessments' => $assessments,
+            'assessments' => $this->assessmentService->paginated($request->string('search')->toString()),
             'filters' => $request->only('search'),
         ]);
     }
@@ -33,7 +30,7 @@ class AssessmentController extends Controller
 
     public function store(SaveAssessmentRequest $request): RedirectResponse
     {
-        Assessment::create($request->validated());
+        $this->assessmentService->create($request->validated());
 
         return redirect()->route('admin.assessments.index')->with('success', 'Assessment created successfully.');
     }
@@ -45,14 +42,14 @@ class AssessmentController extends Controller
 
     public function update(SaveAssessmentRequest $request, Assessment $assessment): RedirectResponse
     {
-        $assessment->update($request->validated());
+        $this->assessmentService->update($assessment, $request->validated());
 
         return redirect()->route('admin.assessments.index')->with('success', 'Assessment updated successfully.');
     }
 
     public function destroy(Assessment $assessment): RedirectResponse
     {
-        $assessment->delete();
+        $this->assessmentService->delete($assessment);
 
         return redirect()->route('admin.assessments.index')->with('success', 'Assessment deleted successfully.');
     }

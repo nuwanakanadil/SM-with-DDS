@@ -86,10 +86,14 @@ class StudentService
             return null;
         }
 
+        $temporaryPassword = filled($data['password'] ?? null)
+            ? $data['password']
+            : $data['admission_no'];
+
         $user = User::create([
             'name' => $this->resolveUserName($data),
             'email' => $email,
-            'password' => $data['password'] ?: $data['admission_no'],
+            'password' => Hash::make($temporaryPassword),
         ]);
 
         if (Role::query()->where('name', UserTypes::Student->value)->exists()) {

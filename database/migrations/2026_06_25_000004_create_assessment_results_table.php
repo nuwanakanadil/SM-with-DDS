@@ -16,7 +16,10 @@ return new class extends Migration
             $table->text('remarks')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
             $table->unique(['assessment_id', 'student_id']);
+            $table->index(['assessment_id', 'marks']);
+            $table->index(['student_id', 'assessment_id']);
         });
     }
 

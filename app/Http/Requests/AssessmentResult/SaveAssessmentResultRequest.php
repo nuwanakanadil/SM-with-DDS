@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\AssessmentResult;
 
+use App\Enums\Permissions;
 use App\Models\Assessment;
 use App\Models\AssessmentResult;
 use App\Models\Student;
@@ -12,7 +13,7 @@ class SaveAssessmentResultRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('manage_results') ?? false;
+        return $this->user()?->can(Permissions::ManageResults->value) ?? false;
     }
 
     public function rules(): array
@@ -50,13 +51,14 @@ class SaveAssessmentResultRequest extends FormRequest
             /** @var AssessmentResult|null $result */
             $result = $this->route('result');
 
-            $duplicateExists = AssessmentResult::query()
+            /** @var AssessmentResult|null $duplicate */
+            $duplicate = AssessmentResult::withTrashed()
                 ->where('assessment_id', $assessment->id)
                 ->where('student_id', $student->id)
                 ->when($result, fn ($query) => $query->whereKeyNot($result->getKey()))
-                ->exists();
+                ->first();
 
-            if ($duplicateExists) {
+            if ($duplicate && ! $duplicate->trashed()) {
                 $validator->errors()->add('student_id', 'This student already has a result for the selected assessment.');
             }
         });

@@ -14,12 +14,15 @@ return new class extends Migration
             $table->string('admission_no')->unique();
             $table->string('first_name');
             $table->string('last_name')->nullable();
-            $table->string('email')->nullable();
+            $table->string('email')->nullable()->index();
             $table->string('phone')->nullable();
-            $table->string('class_name')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->string('class_name')->nullable()->index();
+            $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index(['class_name', 'is_active']);
+            $table->index(['first_name', 'last_name']);
         });
     }
 

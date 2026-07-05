@@ -62,7 +62,7 @@ const verificationLinkSent = computed(
                 <Link
                     :href="logout()"
                     as="button"
-                    class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-white px-5 py-2.5 text-sm font-semibold text-foreground shadow-sm transition hover:bg-accent focus:outline-none focus:ring-4 focus:ring-[#DBEAFE]"
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground shadow-sm transition hover:bg-accent focus:outline-none focus:ring-4 focus:ring-primary/20"
                 >
                     <LogOut class="size-4" />
                     <span>Log out</span>

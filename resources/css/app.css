@@ -104,30 +104,31 @@
     }
 }
 
+
 :root {
-    --background: hsl(0 0% 100%);
-    --foreground: hsl(0 0% 7%);
+    --background: hsl(210 40% 98%);
+    --foreground: hsl(222 47% 11%);
     --card: hsl(0 0% 100%);
-    --card-foreground: hsl(0 0% 7%);
+    --card-foreground: hsl(222 47% 11%);
     --popover: hsl(0 0% 100%);
-    --popover-foreground: hsl(0 0% 7%);
-    --primary: hsl(0 0% 10%);
-    --primary-foreground: hsl(0 0% 98%);
-    --secondary: hsl(0 0% 96%);
-    --secondary-foreground: hsl(0 0% 14%);
-    --muted: hsl(0 0% 97%);
-    --muted-foreground: hsl(0 0% 42%);
-    --accent: hsl(0 0% 96%);
-    --accent-foreground: hsl(0 0% 10%);
-    --destructive: hsl(0 84% 60%);
-    --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 91%);
-    --input: hsl(0 0% 89%);
-    --ring: hsl(0 0% 10%);
-    --chart-1: hsl(0 0% 10%);
-    --chart-2: hsl(220 14% 40%);
-    --chart-3: hsl(220 9% 56%);
-    --chart-4: hsl(43 88% 58%);
+    --popover-foreground: hsl(222 47% 11%);
+    --primary: hsl(221 83% 53%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(214 100% 97%);
+    --secondary-foreground: hsl(222 47% 11%);
+    --muted: hsl(210 40% 96%);
+    --muted-foreground: hsl(215 16% 47%);
+    --accent: hsl(214 100% 97%);
+    --accent-foreground: hsl(221 83% 53%);
+    --destructive: hsl(0 72% 51%);
+    --destructive-foreground: hsl(0 0% 100%);
+    --border: hsl(214 32% 91%);
+    --input: hsl(214 32% 91%);
+    --ring: hsl(221 83% 53%);
+    --chart-1: hsl(221 83% 53%);
+    --chart-2: hsl(217 91% 60%);
+    --chart-3: hsl(199 89% 48%);
+    --chart-4: hsl(38 92% 50%);
     --chart-5: hsl(142 71% 45%);
     --radius: 0.625rem;
     --sidebar-background: hsl(0 0% 98%);
@@ -140,6 +141,7 @@
     --sidebar-ring: hsl(0 0% 10%);
     --sidebar: hsl(0 0% 98%);
 }
+
 
 .dark {
     --background: hsl(0 0% 5%);
@@ -223,10 +225,37 @@
     }
 
     .app-select {
-        @apply h-10 w-full appearance-none rounded-md border border-input bg-white px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20;
+        @apply h-10 w-full appearance-none rounded-md border border-input bg-card px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20;
     }
 
     .eyebrow-label {
         @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground;
     }
+}
+
+.dark input:not([type='checkbox']):not([type='radio']),
+.dark textarea,
+.dark select {
+    background-color: hsl(var(--background)) !important;
+    color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--border)) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: hsl(var(--muted-foreground)) !important;
+}
+
+.dark input:disabled,
+.dark textarea:disabled,
+.dark select:disabled {
+    background-color: hsl(var(--muted)) !important;
+    color: hsl(var(--muted-foreground)) !important;
+    opacity: 0.7;
+}
+
+.dark .section-card {
+    background-color: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+    border-color: hsl(var(--border));
 }

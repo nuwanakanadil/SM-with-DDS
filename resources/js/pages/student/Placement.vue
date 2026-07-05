@@ -89,7 +89,7 @@ const applyFilter = () => {
                 <Card class="section-card bg-[linear-gradient(135deg,rgba(37,99,235,0.1),rgba(255,255,255,0.98))]">
                     <CardHeader>
                         <CardDescription class="flex items-center gap-2">
-                            <Trophy class="size-4 text-[#F59E0B]" />
+                            <Trophy class="size-4 text-amber-500" />
                             Your Placement
                         </CardDescription>
                         <CardTitle class="text-5xl font-extrabold text-foreground">
@@ -101,7 +101,7 @@ const applyFilter = () => {
                             {{ selectedAssessment ? selectedAssessment.title : 'No assessment selected' }}
                         </div>
                         <div v-if="placement" class="info-tile">
-                            <Medal class="mr-1 inline size-4 text-[#F59E0B]" />
+                            <Medal class="mr-1 inline size-4 text-amber-500" />
                             Marks scored: {{ placement.marks }}
                         </div>
                         <p v-else>

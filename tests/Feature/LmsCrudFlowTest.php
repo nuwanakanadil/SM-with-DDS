@@ -23,13 +23,19 @@ function createLmsUser(string $roleName = UserTypes::Admin->value): User
     if ($roleName === UserTypes::Student->value) {
         $role->syncPermissions([
             Permissions::ViewDashboard->value,
+            Permissions::ViewOwnResults->value,
+            Permissions::ViewOwnPlacement->value,
         ]);
     } else {
         $role->syncPermissions([
             Permissions::ViewDashboard->value,
+            Permissions::ViewStudents->value,
             Permissions::ManageStudents->value,
+            Permissions::ViewAssessments->value,
             Permissions::ManageAssessments->value,
+            Permissions::ViewResults->value,
             Permissions::ManageResults->value,
+            Permissions::ViewAnalysis->value,
         ]);
     }
 

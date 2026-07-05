@@ -28,9 +28,9 @@ const firstLetter = computed(() => displayName.value.trim().charAt(0).toUpperCas
 </script>
 
 <template>
-    <Avatar class="h-10 w-10 overflow-hidden rounded-xl border border-sidebar-border bg-[#F8FAFC]">
+    <Avatar class="h-10 w-10 overflow-hidden rounded-xl border border-sidebar-border bg-blue-50 dark:bg-muted">
         <AvatarImage v-if="showAvatar" :src="avatarSrc" :alt="displayName" />
-        <AvatarFallback class="rounded-xl bg-[#EFF6FF] text-sm font-semibold text-primary">
+        <AvatarFallback class="rounded-xl bg-blue-50 text-sm font-semibold text-blue-700 dark:bg-muted dark:text-foreground">
             {{ showAvatar ? getInitials(displayName) : firstLetter }}
         </AvatarFallback>
     </Avatar>

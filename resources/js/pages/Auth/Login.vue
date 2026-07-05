@@ -1,16 +1,18 @@
 <script setup lang="ts">
+import { store as loginStore } from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
 import ApplicationLogo from '@/components/ApplicationLogo.vue';
-import Checkbox from '@/components/Checkbox.vue';
+import InputError from '@/components/InputError.vue';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { APP_BRAND_NAME, APP_SYSTEM_SUBTITLE } from '@/constants/branding';
 import GuestLayout from '@/layouts/GuestLayout.vue';
-import InputError from '@/components/InputError.vue';
-import InputLabel from '@/components/InputLabel.vue';
-import TextInput from '@/components/TextInput.vue';
-import { store as loginStore } from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
 import password from '@/routes/password';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
-defineProps<{
+const props = defineProps<{
     canResetPassword?: boolean;
     status?: string;
 }>();
@@ -34,79 +36,80 @@ const submit = () => {
     <GuestLayout>
         <Head title="Log in" />
 
-        <div class="mx-auto w-full">
-            <div class="mb-10 flex justify-center">
-                <div class="flex h-14 w-14 items-center justify-center rounded-lg bg-white">
-                    <ApplicationLogo class="h-12 w-12 object-contain" />
+        <div class="w-full">
+            <div class="mb-8 flex justify-center">
+                <div class="rounded-2xl border border-border bg-card px-5 py-4 shadow-sm">
+                    <ApplicationLogo class="h-16 w-auto object-contain" />
                 </div>
             </div>
 
-            <div class="space-y-2 text-center">
-                <h1 class="text-[2rem] font-semibold tracking-[-0.03em] text-[#111827]">
-                    Log in to your {{ APP_BRAND_NAME }} account
-                </h1>
-                <p class="text-[15px] leading-7 text-[#64748B]">
-                    Enter your email and password below to log in to the {{ APP_SYSTEM_SUBTITLE.toLowerCase() }}.
-                </p>
-            </div>
+            <Card class="border-border/80 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)]">
+                <CardHeader class="space-y-3 text-center">
+                    <p class="eyebrow-label text-primary">{{ APP_SYSTEM_SUBTITLE }}</p>
+                    <CardTitle class="text-3xl font-bold tracking-[-0.04em]">
+                        Log in to {{ APP_BRAND_NAME }}
+                    </CardTitle>
+                    <CardDescription class="text-[15px] leading-7">
+                        Enter your email and password to access marks, rankings, and admin tools.
+                    </CardDescription>
+                </CardHeader>
 
-            <div
-                v-if="status"
-                class="mt-8 rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] px-4 py-3 text-sm font-medium text-[#16A34A]"
-            >
-                {{ status }}
-            </div>
-
-            <form class="mt-10 space-y-6" @submit.prevent="submit">
-                <div class="space-y-3">
-                    <InputLabel for="email" value="Email Address" />
-                    <TextInput
-                        id="email"
-                        v-model="form.email"
-                        type="email"
-                        required
-                        autofocus
-                        autocomplete="username"
-                        placeholder="Email@example.com"
-                    />
-                    <InputError :message="form.errors.email" />
-                </div>
-
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between gap-3">
-                        <InputLabel for="password" value="Password" />
-                        <Link
-                            v-if="canResetPassword"
-                            :href="password.request()"
-                            class="text-sm font-medium text-[#111827] underline underline-offset-2 transition hover:text-[#2563EB]"
-                        >
-                            Forgot password?
-                        </Link>
+                <CardContent>
+                    <div
+                        v-if="props.status"
+                        class="mb-6 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700"
+                    >
+                        {{ props.status }}
                     </div>
-                    <TextInput
-                        id="password"
-                        v-model="form.password"
-                        type="password"
-                        required
-                        autocomplete="current-password"
-                        placeholder="Password"
-                    />
-                    <InputError :message="form.errors.password" />
-                </div>
 
-                <label class="flex items-center gap-3 text-sm font-medium text-[#111827]">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span>Remember Me</span>
-                </label>
+                    <form class="space-y-6" @submit.prevent="submit">
+                        <div class="space-y-2.5">
+                            <Label for="email" required>Email address</Label>
+                            <Input
+                                id="email"
+                                v-model="form.email"
+                                type="email"
+                                required
+                                autofocus
+                                autocomplete="username"
+                                placeholder="email@example.com"
+                            />
+                            <InputError :message="form.errors.email" />
+                        </div>
 
-                <button
-                    type="submit"
-                    class="inline-flex min-h-12 w-full items-center justify-center rounded-lg border border-[#2563EB] bg-[#2563EB] px-6 py-3 text-[15px] font-semibold text-white shadow-[0_16px_32px_-18px_rgba(37,99,235,0.5)] transition hover:bg-[#1D4ED8] focus:outline-none focus:ring-4 focus:ring-[#DBEAFE] disabled:cursor-not-allowed disabled:opacity-60"
-                    :disabled="form.processing"
-                >
-                    Log In
-                </button>
-            </form>
+                        <div class="space-y-2.5">
+                            <div class="flex items-center justify-between gap-3">
+                                <Label for="password" required>Password</Label>
+                                <Link
+                                    v-if="props.canResetPassword"
+                                    :href="password.request()"
+                                    class="text-sm font-semibold text-primary underline-offset-4 transition hover:underline"
+                                >
+                                    Forgot password?
+                                </Link>
+                            </div>
+                            <Input
+                                id="password"
+                                v-model="form.password"
+                                type="password"
+                                required
+                                autocomplete="current-password"
+                                placeholder="password"
+                            />
+                            <InputError :message="form.errors.password" />
+                        </div>
+
+                        <label class="flex items-center gap-3 text-sm font-medium text-foreground">
+                            <Checkbox v-model="form.remember" />
+                            <span>Remember me</span>
+                        </label>
+
+                        <Button class="min-h-12 w-full rounded-2xl text-[15px]" :disabled="form.processing">
+                            Log in
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
         </div>
     </GuestLayout>
 </template>

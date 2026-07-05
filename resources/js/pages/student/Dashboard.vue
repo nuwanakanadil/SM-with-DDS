@@ -104,7 +104,7 @@ defineProps<{
                     <Card class="section-card bg-[linear-gradient(135deg,rgba(37,99,235,0.09),rgba(255,255,255,0.98))]">
                         <CardHeader>
                             <CardDescription class="flex items-center gap-2 text-muted-foreground">
-                                <Trophy class="size-4 text-[#F59E0B]" />
+                                <Trophy class="size-4 text-amber-500" />
                                 Current Placement
                             </CardDescription>
                             <CardTitle class="text-5xl font-extrabold text-foreground">
@@ -125,7 +125,7 @@ defineProps<{
                 <Card class="section-card">
                     <CardHeader>
                         <CardDescription class="flex items-center gap-2 text-muted-foreground">
-                            <Medal class="size-4 text-[#F59E0B]" />
+                            <Medal class="size-4 text-amber-500" />
                             Latest Result
                         </CardDescription>
                         <CardTitle>

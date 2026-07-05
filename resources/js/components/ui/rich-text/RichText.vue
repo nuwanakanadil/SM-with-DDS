@@ -40,11 +40,11 @@ watch(() => props.modelValue, (newValue) => {
    <div class="w-full max-w-4xl 
     dark:[&_.ql-toolbar]:!border-gray-700 [&_.ql-toolbar]:rounded-t-lg 
     
-    [&_.ql-container]:!border-gray-300 dark:[&_.ql-container]:!border-gray-700
+    [&_.ql-container]:!border-border dark:[&_.ql-container]:!border-gray-700
 
     dark:[&_.ql-editor.ql-blank::before]:!text-gray-100 dark:[&_.ql-editor.ql-blank::before]:!font-normal
     
-    [&_.ql-editor]:text-gray-900 dark:[&_.ql-editor]:text-gray-100
+    [&_.ql-editor]:text-foreground dark:[&_.ql-editor]:text-gray-100
     
     [&_.ql-editor]:min-h-[12rem] [&_.ql-editor]:max-h-[12rem] [&_.ql-editor]:overflow-y-auto  
    

@@ -2,15 +2,17 @@
 
 namespace App\Http\Requests\Student;
 
+use App\Enums\Permissions;
 use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UpdateStudentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('manage_students') ?? false;
+        return $this->user()?->can(Permissions::ManageStudents->value) ?? false;
     }
 
     public function rules(): array
@@ -25,6 +27,7 @@ class UpdateStudentRequest extends FormRequest
             'email' => ['nullable', 'email', 'max:190', Rule::unique('users', 'email')->ignore($student?->user_id)],
             'phone' => ['nullable', 'string', 'max:30'],
             'class_name' => ['nullable', 'string', 'max:120'],
+            'password' => ['nullable', Password::defaults()],
             'is_active' => ['boolean'],
         ];
     }

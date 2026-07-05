@@ -133,7 +133,7 @@ const submit = () =>
                             </section>
 
                             <div class="grid gap-4 md:grid-cols-3">
-                                <div class="rounded-[1.5rem] border border-border bg-white p-4">
+                                <div class="rounded-[1.5rem] border border-border bg-card p-4">
                                     <div class="flex items-center gap-2 text-sm font-semibold text-foreground">
                                         <GraduationCap class="size-4 text-primary" />
                                         Class visibility
@@ -142,7 +142,7 @@ const submit = () =>
                                         Students only see assessments that match their class assignment.
                                     </p>
                                 </div>
-                                <div class="rounded-[1.5rem] border border-border bg-white p-4">
+                                <div class="rounded-[1.5rem] border border-border bg-card p-4">
                                     <div class="flex items-center gap-2 text-sm font-semibold text-foreground">
                                         <CalendarDays class="size-4 text-primary" />
                                         Timeline clarity
@@ -151,7 +151,7 @@ const submit = () =>
                                         Dates help teams review what has already run and what still needs entry.
                                     </p>
                                 </div>
-                                <div class="rounded-[1.5rem] border border-border bg-white p-4">
+                                <div class="rounded-[1.5rem] border border-border bg-card p-4">
                                     <div class="flex items-center gap-2 text-sm font-semibold text-foreground">
                                         <ClipboardCheck class="size-4 text-primary" />
                                         Ranking readiness

@@ -270,7 +270,7 @@ const remove = (result: AssessmentResult) => {
                                     </CardDescription>
                                 </div>
                                 <Badge variant="outline" class="rounded-full px-4 py-1.5">
-                                    <Medal class="size-3.5 text-[#F59E0B]" />
+                                    <Medal class="size-3.5 text-amber-500" />
                                     Ranked order
                                 </Badge>
                             </div>
@@ -290,7 +290,7 @@ const remove = (result: AssessmentResult) => {
                                             v-for="rank in ranks"
                                             :key="rank.student_id"
                                         >
-                                            <TableCell class="font-semibold text-[#B45309]">
+                                            <TableCell class="font-semibold text-amber-700">
                                                 #{{ rank.rank }}
                                             </TableCell>
                                             <TableCell class="font-medium text-foreground">

@@ -58,11 +58,11 @@ import { ArrowRight, LayoutDashboard, ShieldCheck, Sparkles } from 'lucide-vue-n
                         <CardTitle>Next best actions</CardTitle>
                     </CardHeader>
                     <CardContent class="space-y-4 text-[15px] leading-7 text-muted-foreground">
-                        <div class="flex items-start gap-3 rounded-[1.35rem] border border-border/70 bg-white/80 px-4 py-4">
+                        <div class="flex items-start gap-3 rounded-[1.35rem] border border-border/70 bg-card/80 px-4 py-4">
                             <Sparkles class="mt-0.5 size-4 text-primary" />
                             Review the latest screens and confirm the calmer layout feels right for your workflow.
                         </div>
-                        <div class="flex items-start gap-3 rounded-[1.35rem] border border-border/70 bg-white/80 px-4 py-4">
+                        <div class="flex items-start gap-3 rounded-[1.35rem] border border-border/70 bg-card/80 px-4 py-4">
                             <ArrowRight class="mt-0.5 size-4 text-primary" />
                             Continue into the modules from the sidebar to manage live academic data.
                         </div>

@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests\Assessment;
 
+use App\Enums\Permissions;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SaveAssessmentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('manage_assessments') ?? false;
+        return $this->user()?->can(Permissions::ManageAssessments->value) ?? false;
     }
 
     public function rules(): array

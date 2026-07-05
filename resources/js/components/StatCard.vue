@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import {
-    Card,
-} from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { Component } from 'vue';
 
@@ -20,9 +18,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const toneClasses: Record<Tone, string> = {
-    default: 'bg-[#EFF6FF] text-primary',
-    warning: 'bg-[#FEF3C7] text-[#B45309]',
-    success: 'bg-[#DCFCE7] text-[#15803D]',
+    default: 'bg-blue-50 text-blue-600 dark:bg-blue-500/15 dark:text-blue-300',
+    warning: 'bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
+    success: 'bg-green-50 text-green-700 dark:bg-green-500/15 dark:text-green-300',
 };
 </script>
 

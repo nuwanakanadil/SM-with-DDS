@@ -129,7 +129,7 @@ const submit = () => {
 
             <p class="text-center text-sm text-muted-foreground">
                 Already have an account?
-                <Link :href="login()" class="font-semibold text-primary transition hover:text-[#1D4ED8]">
+                <Link :href="login()" class="font-semibold text-primary transition hover:text-primary/80">
                     Log in
                 </Link>
             </p>
