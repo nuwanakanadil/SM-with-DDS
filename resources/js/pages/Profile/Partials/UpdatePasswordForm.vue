@@ -38,17 +38,6 @@ const updatePassword = () => {
 
 <template>
     <section class="space-y-7">
-        <header>
-            <p class="eyebrow-label">Security</p>
-            <h2 class="mt-2 text-2xl font-bold tracking-[-0.03em] text-foreground">
-                Update Password
-            </h2>
-
-            <p class="mt-2 text-[15px] leading-7 text-muted-foreground">
-                Ensure your account is using a long, random password to stay
-                secure.
-            </p>
-        </header>
 
         <form @submit.prevent="updatePassword" class="space-y-6">
             <div class="space-y-2">
@@ -99,7 +88,7 @@ const updatePassword = () => {
             </div>
 
             <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Update password</PrimaryButton>
+                <PrimaryButton :disabled="form.processing">Save Password</PrimaryButton>
 
                 <Transition
                     enter-active-class="transition ease-in-out"

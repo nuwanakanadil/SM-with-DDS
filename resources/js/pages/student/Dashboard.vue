@@ -76,7 +76,9 @@ defineProps<{
                 </div>
 
                 <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-                    <Card class="section-card bg-[linear-gradient(135deg,rgba(255,255,255,0.98),rgba(239,246,255,0.88))]">
+                    <Card
+                        class="section-card border-white/60 bg-[linear-gradient(135deg,rgba(255,255,255,0.98),rgba(239,246,255,0.88))] dark:border-white/8 dark:bg-[linear-gradient(135deg,rgba(17,24,39,0.96),rgba(30,41,59,0.88))]"
+                    >
                         <CardHeader>
                             <CardDescription class="flex items-center gap-2 text-muted-foreground">
                                 <BookOpenCheck class="size-4 text-primary" />
@@ -101,7 +103,9 @@ defineProps<{
                         </CardContent>
                     </Card>
 
-                    <Card class="section-card bg-[linear-gradient(135deg,rgba(37,99,235,0.09),rgba(255,255,255,0.98))]">
+                    <Card
+                        class="section-card border-white/60 bg-[linear-gradient(135deg,rgba(37,99,235,0.09),rgba(255,255,255,0.98))] dark:border-white/8 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(51,65,85,0.88))]"
+                    >
                         <CardHeader>
                             <CardDescription class="flex items-center gap-2 text-muted-foreground">
                                 <Trophy class="size-4 text-amber-500" />

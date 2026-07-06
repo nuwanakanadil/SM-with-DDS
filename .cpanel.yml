@@ -17,6 +17,7 @@ deployment:
     - cd $APPPATH && php artisan route:clear
     - cd $APPPATH && php artisan view:clear
     - cd $APPPATH && php artisan migrate --force
+    - cd $APPPATH && php artisan storage:link
     - cd $APPPATH && php artisan permissions:sync
     - cd $APPPATH && php artisan config:cache
     - cd $APPPATH && php artisan route:cache

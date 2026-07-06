@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Grades;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Assessment\SaveAssessmentRequest;
 use App\Models\Assessment;
@@ -25,7 +26,9 @@ class AssessmentController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('admin/assessments/Manage');
+        return Inertia::render('admin/assessments/Manage', [
+            'gradeOptions' => Grades::values(),
+        ]);
     }
 
     public function store(SaveAssessmentRequest $request): RedirectResponse
@@ -37,7 +40,10 @@ class AssessmentController extends Controller
 
     public function edit(Assessment $assessment): Response
     {
-        return Inertia::render('admin/assessments/Manage', ['assessment' => $assessment]);
+        return Inertia::render('admin/assessments/Manage', [
+            'assessment' => $assessment,
+            'gradeOptions' => Grades::values(),
+        ]);
     }
 
     public function update(SaveAssessmentRequest $request, Assessment $assessment): RedirectResponse

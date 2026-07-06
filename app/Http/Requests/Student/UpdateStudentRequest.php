@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Student;
 
+use App\Enums\Grades;
 use App\Enums\Permissions;
 use App\Models\Student;
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,7 +27,7 @@ class UpdateStudentRequest extends FormRequest
             'last_name' => ['nullable', 'string', 'max:120'],
             'email' => ['nullable', 'email', 'max:190', Rule::unique('users', 'email')->ignore($student?->user_id)],
             'phone' => ['nullable', 'string', 'max:30'],
-            'class_name' => ['nullable', 'string', 'max:120'],
+            'class_name' => ['nullable', 'string', 'max:120', Rule::in(Grades::values())],
             'password' => ['nullable', Password::defaults()],
             'is_active' => ['boolean'],
         ];

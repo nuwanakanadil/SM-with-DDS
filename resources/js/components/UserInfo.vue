@@ -24,20 +24,19 @@ const displayName = computed(() => {
 
 const avatarSrc = computed(() => props.user?.avatar ?? '');
 const showAvatar = computed(() => Boolean(props.user?.avatar));
-const firstLetter = computed(() => displayName.value.trim().charAt(0).toUpperCase());
 </script>
 
 <template>
-    <Avatar class="h-10 w-10 overflow-hidden rounded-xl border border-sidebar-border bg-blue-50 dark:bg-muted">
+    <Avatar class="h-8 w-8 overflow-hidden rounded-lg">
         <AvatarImage v-if="showAvatar" :src="avatarSrc" :alt="displayName" />
-        <AvatarFallback class="rounded-xl bg-blue-50 text-sm font-semibold text-blue-700 dark:bg-muted dark:text-foreground">
-            {{ showAvatar ? getInitials(displayName) : firstLetter }}
+        <AvatarFallback class="rounded-lg text-black dark:text-white">
+            {{ getInitials(displayName) }}
         </AvatarFallback>
     </Avatar>
 
     <div class="grid min-w-0 flex-1 text-left text-sm leading-tight">
-        <span class="truncate font-semibold text-sidebar-foreground">{{ displayName }}</span>
-        <span v-if="showEmail" class="truncate text-xs text-sidebar-foreground/65">
+        <span class="truncate font-medium text-sidebar-foreground">{{ displayName }}</span>
+        <span v-if="showEmail" class="truncate text-xs text-muted-foreground">
             {{ user?.email }}
         </span>
     </div>

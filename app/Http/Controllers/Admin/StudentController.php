@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Grades;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\CreateStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
@@ -36,7 +37,9 @@ class StudentController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('admin/students/Manage');
+        return Inertia::render('admin/students/Manage', [
+            'gradeOptions' => Grades::values(),
+        ]);
     }
 
     public function store(CreateStudentRequest $request): RedirectResponse
@@ -48,7 +51,10 @@ class StudentController extends Controller
 
     public function edit(Student $student): Response
     {
-        return Inertia::render('admin/students/Manage', ['student' => $student]);
+        return Inertia::render('admin/students/Manage', [
+            'student' => $student,
+            'gradeOptions' => Grades::values(),
+        ]);
     }
 
     public function update(UpdateStudentRequest $request, Student $student): RedirectResponse

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Grades;
 use App\Enums\UserTypes;
 use App\Models\Assessment;
 use App\Models\AssessmentResult;
@@ -72,7 +73,7 @@ class DemoDataSeeder extends Seeder
                 'last_name' => 'Perera',
                 'email' => $studentAUser->email,
                 'phone' => '0711234567',
-                'class_name' => 'Grade 10',
+                'class_name' => Grades::Grade10->value,
                 'is_active' => true,
             ],
         );
@@ -85,7 +86,7 @@ class DemoDataSeeder extends Seeder
                 'last_name' => 'Silva',
                 'email' => $studentBUser->email,
                 'phone' => '0712345678',
-                'class_name' => 'Grade 10',
+                'class_name' => Grades::Grade10->value,
                 'is_active' => true,
             ],
         );
@@ -98,13 +99,13 @@ class DemoDataSeeder extends Seeder
                 'last_name' => 'Fernando',
                 'email' => $studentCUser->email,
                 'phone' => '0713456789',
-                'class_name' => 'Grade 11',
+                'class_name' => Grades::Grade11->value,
                 'is_active' => true,
             ],
         );
 
         $assessmentA = Assessment::query()->updateOrCreate(
-            ['title' => 'Grade 10 Mid Term', 'class_name' => 'Grade 10'],
+            ['title' => Grades::Grade10->value.' Mid Term', 'class_name' => Grades::Grade10->value],
             [
                 'assessment_date' => '2026-06-15',
                 'total_marks' => 100,
@@ -113,7 +114,7 @@ class DemoDataSeeder extends Seeder
         );
 
         $assessmentB = Assessment::query()->updateOrCreate(
-            ['title' => 'Grade 11 Science Quiz', 'class_name' => 'Grade 11'],
+            ['title' => Grades::Grade11->value.' Science Quiz', 'class_name' => Grades::Grade11->value],
             [
                 'assessment_date' => '2026-06-22',
                 'total_marks' => 50,

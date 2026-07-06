@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Grades;
 use App\Enums\Permissions;
 use App\Enums\UserTypes;
 use App\Models\Assessment;
@@ -56,7 +57,7 @@ test('admin can create update and delete students assessments and results', func
         'last_name' => 'Perera',
         'email' => 'alice@example.com',
         'phone' => '0711111111',
-        'class_name' => 'Grade 10',
+        'class_name' => Grades::Grade10->value,
         'password' => 'secret123',
         'is_active' => true,
     ])->assertRedirect('/admin/students');
@@ -69,19 +70,19 @@ test('admin can create update and delete students assessments and results', func
         'last_name' => 'Perera',
         'email' => 'alice@example.com',
         'phone' => '0722222222',
-        'class_name' => 'Grade 11',
+        'class_name' => Grades::Grade11->value,
         'is_active' => true,
     ])->assertRedirect('/admin/students');
 
     $this->assertDatabaseHas('students', [
         'id' => $student->id,
         'first_name' => 'Alicia',
-        'class_name' => 'Grade 11',
+        'class_name' => Grades::Grade11->value,
     ]);
 
     $this->post('/admin/assessments', [
         'title' => 'Mid Term',
-        'class_name' => 'Grade 11',
+        'class_name' => Grades::Grade11->value,
         'assessment_date' => '2026-06-20',
         'total_marks' => 100,
         'is_published' => true,
@@ -91,7 +92,7 @@ test('admin can create update and delete students assessments and results', func
 
     $this->put("/admin/assessments/{$assessment->id}", [
         'title' => 'Mid Term Updated',
-        'class_name' => 'Grade 11',
+        'class_name' => Grades::Grade11->value,
         'assessment_date' => '2026-06-21',
         'total_marks' => 120,
         'is_published' => true,
@@ -149,7 +150,7 @@ test('result entry prevents duplicate student assessment pairs', function () {
     ]);
     $assessment = Assessment::query()->create([
         'title' => 'Final Exam',
-        'class_name' => 'Grade 12',
+        'class_name' => Grades::Grade12->value,
         'assessment_date' => '2026-06-22',
         'total_marks' => 100,
         'is_published' => true,
@@ -181,12 +182,12 @@ test('student pages render live database records', function () {
         'first_name' => 'Saman',
         'last_name' => 'Fernando',
         'email' => $studentUser->email,
-        'class_name' => 'Grade 9',
+        'class_name' => Grades::Grade9->value,
         'is_active' => true,
     ]);
     $assessment = Assessment::query()->create([
         'title' => 'Science Quiz',
-        'class_name' => 'Grade 9',
+        'class_name' => Grades::Grade9->value,
         'assessment_date' => '2026-06-23',
         'total_marks' => 50,
         'is_published' => true,
@@ -204,7 +205,7 @@ test('student pages render live database records', function () {
         'first_name' => 'Kasun',
         'last_name' => 'Perera',
         'email' => $otherStudentUser->email,
-        'class_name' => 'Grade 9',
+        'class_name' => Grades::Grade9->value,
         'is_active' => true,
     ]);
     AssessmentResult::query()->create([
@@ -215,7 +216,7 @@ test('student pages render live database records', function () {
     ]);
     $otherClassAssessment = Assessment::query()->create([
         'title' => 'History Test',
-        'class_name' => 'Grade 10',
+        'class_name' => Grades::Grade10->value,
         'assessment_date' => '2026-06-24',
         'total_marks' => 50,
         'is_published' => true,

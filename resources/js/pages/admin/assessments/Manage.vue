@@ -12,6 +12,13 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import AppLayout from '@/layouts/AppLayout.vue';
 import AdminLayout from '@/layouts/admin/Layout.vue';
 import assessments from '@/routes/admin/assessments';
@@ -19,7 +26,10 @@ import type { Assessment } from '@/types/assessment';
 import { Head, useForm } from '@inertiajs/vue3';
 import { CalendarDays, ClipboardCheck, GraduationCap, NotebookPen, Save, X } from 'lucide-vue-next';
 
-const props = defineProps<{ assessment?: Assessment }>();
+const props = defineProps<{
+    assessment?: Assessment;
+    gradeOptions: string[];
+}>();
 
 const isEdit = Boolean(props.assessment);
 
@@ -35,6 +45,11 @@ const submit = () =>
     props.assessment
         ? form.submit(assessments.update(props.assessment))
         : form.submit(assessments.store());
+
+const updateClassName = (value: unknown) => {
+    const normalizedValue = value == null ? '' : String(value);
+    form.class_name = !normalizedValue || normalizedValue === '__none__' ? '' : normalizedValue;
+};
 </script>
 
 <template>
@@ -91,7 +106,20 @@ const submit = () =>
                                     </div>
                                     <div class="space-y-2">
                                         <Label for="class_name">Class</Label>
-                                        <Input id="class_name" v-model="form.class_name" placeholder="Enter class name" />
+                                        <Select
+                                            :model-value="form.class_name || '__none__'"
+                                            @update:model-value="updateClassName"
+                                        >
+                                            <SelectTrigger id="class_name" class="w-full">
+                                                <SelectValue placeholder="Select grade" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="__none__">All classes</SelectItem>
+                                                <SelectItem v-for="grade in props.gradeOptions" :key="grade" :value="grade">
+                                                    {{ grade }}
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                         <InputError :message="form.errors.class_name" />
                                     </div>
                                     <div class="space-y-2">

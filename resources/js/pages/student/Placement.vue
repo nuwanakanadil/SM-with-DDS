@@ -86,7 +86,9 @@ const applyFilter = () => {
                     </CardContent>
                 </Card>
 
-                <Card class="section-card bg-[linear-gradient(135deg,rgba(37,99,235,0.1),rgba(255,255,255,0.98))]">
+                <Card
+                    class="section-card border-white/60 bg-[linear-gradient(135deg,rgba(37,99,235,0.1),rgba(255,255,255,0.98))] dark:border-white/8 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(51,65,85,0.88))]"
+                >
                     <CardHeader>
                         <CardDescription class="flex items-center gap-2">
                             <Trophy class="size-4 text-amber-500" />

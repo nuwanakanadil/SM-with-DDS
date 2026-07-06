@@ -3,46 +3,68 @@ import InputError from '@/components/InputError.vue';
 import InputLabel from '@/components/InputLabel.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import TextInput from '@/components/TextInput.vue';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getInitials } from '@/composables/useInitials';
 import profile from '@/routes/profile';
 import verification from '@/routes/verification';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 defineProps<{
     mustVerifyEmail?: Boolean;
     status?: String;
 }>();
 
-const user = usePage().props.auth.user ?? {
+const page = usePage();
+const fallbackUser = {
     name: '',
     email: '',
     email_verified_at: null,
+    avatar: null,
 };
 
+const user = computed(() => page.props.auth.user ?? fallbackUser);
+
+const initials = computed(() => getInitials(user.value.name));
+
 const form = useForm({
-    name: user.name,
-    email: user.email,
+    name: user.value.name,
+    email: user.value.email,
 });
 </script>
 
 <template>
     <section class="space-y-7">
-        <header>
-            <p class="eyebrow-label">Profile information</p>
-            <h2 class="mt-2 text-2xl font-bold tracking-[-0.03em] text-foreground">
-                Profile Information
-            </h2>
+        <div class="flex items-center gap-5">
+            <div class="space-y-3">
+                <Avatar class="size-28 border border-border bg-secondary">
+                    <AvatarImage v-if="user.avatar" :src="user.avatar" :alt="user.name" />
+                    <AvatarFallback class="text-2xl font-semibold text-foreground">
+                        {{ initials || 'U' }}
+                    </AvatarFallback>
+                </Avatar>
 
-            <p class="mt-2 text-[15px] leading-7 text-muted-foreground">
-                Update your account's profile information and email address.
-            </p>
-        </header>
+                <p class="text-xs text-muted-foreground">
+                    Profile photo upload is temporarily disabled.
+                </p>
+            </div>
+
+            <div>
+                <p class="text-lg font-semibold text-foreground">
+                    {{ user.name || 'User Profile' }}
+                </p>
+                <p class="mt-1 text-sm text-muted-foreground">
+                    Manage your basic account details.
+                </p>
+            </div>
+        </div>
 
         <form
             @submit.prevent="form.submit(profile.update())"
             class="space-y-6"
         >
             <div class="space-y-2">
-                <InputLabel for="name" value="Name" />
+                <InputLabel for="name" value="Full Name" />
 
                 <TextInput
                     id="name"
@@ -58,7 +80,7 @@ const form = useForm({
             </div>
 
             <div class="space-y-2">
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" value="Email Address" />
 
                 <TextInput
                     id="email"
@@ -86,14 +108,14 @@ const form = useForm({
 
                 <div
                     v-show="status === 'verification-link-sent'"
-                    class="mt-3 rounded-2xl border border-[#bbf7d0] bg-[#f0fdf4] px-4 py-3 text-sm font-medium text-[#16A34A]"
+                    class="mt-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-600 dark:text-emerald-300"
                 >
                     A new verification link has been sent to your email address.
                 </div>
             </div>
 
             <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Save changes</PrimaryButton>
+                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
 
                 <Transition
                     enter-active-class="transition ease-in-out"
