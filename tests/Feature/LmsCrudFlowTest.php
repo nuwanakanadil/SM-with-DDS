@@ -3,10 +3,12 @@
 use App\Enums\Grades;
 use App\Enums\Permissions;
 use App\Enums\UserTypes;
+use App\Mail\AccountCreatedMail;
 use App\Models\Assessment;
 use App\Models\AssessmentResult;
 use App\Models\Student;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -27,6 +29,8 @@ function createLmsUser(string $roleName = UserTypes::Admin->value): User
             Permissions::ViewOwnResults->value,
             Permissions::ViewOwnPlacement->value,
         ]);
+    } elseif ($roleName === UserTypes::Admin->value) {
+        $role->syncPermissions(Permission::query()->pluck('name')->all());
     } else {
         $role->syncPermissions([
             Permissions::ViewDashboard->value,
@@ -299,4 +303,49 @@ test('admin can filter student and assessment listings', function () {
         ->assertOk()
         ->assertSee('Maths Drill')
         ->assertDontSee('Science Mock');
+});
+
+test('account creation emails are sent for new student and staff accounts', function () {
+    Mail::fake();
+
+    $admin = createLmsUser();
+
+    $this->actingAs($admin)
+        ->post('/admin/students', [
+            'admission_no' => 'ADM-900',
+            'first_name' => 'Maya',
+            'last_name' => 'Silva',
+            'email' => 'maya@example.com',
+            'phone' => '0710000000',
+            'class_name' => Grades::Grade10->value,
+            'password' => 'StudentPass123',
+            'is_active' => true,
+        ])
+        ->assertRedirect('/admin/students');
+
+    $studentUser = User::query()->where('email', 'maya@example.com')->firstOrFail();
+
+    expect($studentUser->hasRole(UserTypes::Student->value))->toBeTrue();
+    Mail::assertSent(AccountCreatedMail::class, function (AccountCreatedMail $mail) use ($studentUser) {
+        return $mail->user->is($studentUser)
+            && $mail->plainPassword === 'StudentPass123'
+            && $mail->role === UserTypes::Student;
+    });
+
+    $this->actingAs($admin)
+        ->post('/admin/staff', [
+            'name' => 'Teacher One',
+            'email' => 'teacher@example.com',
+            'password' => 'StaffPass123',
+        ])
+        ->assertRedirect('/admin/staff');
+
+    $staffUser = User::query()->where('email', 'teacher@example.com')->firstOrFail();
+
+    expect($staffUser->hasRole(UserTypes::Staff->value))->toBeTrue();
+    Mail::assertSent(AccountCreatedMail::class, function (AccountCreatedMail $mail) use ($staffUser) {
+        return $mail->user->is($staffUser)
+            && $mail->plainPassword === 'StaffPass123'
+            && $mail->role === UserTypes::Staff;
+    });
 });

@@ -2,6 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 import students from './students'
 import assessments from './assessments'
 import results from './results'
+import staff from './staff'
 /**
 * @see \Illuminate\Routing\RedirectController::__invoke
  * @see vendor/laravel/framework/src/Illuminate/Routing/RedirectController.php:19
@@ -274,6 +275,7 @@ analysis: Object.assign(analysis, analysis),
 students: Object.assign(students, students),
 assessments: Object.assign(assessments, assessments),
 results: Object.assign(results, results),
+staff: Object.assign(staff, staff),
 }
 
 export default admin

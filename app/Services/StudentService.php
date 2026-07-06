@@ -7,17 +7,21 @@ use App\Models\Student;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class StudentService
 {
+    public function __construct(
+        private readonly AccountProvisioningService $accountProvisioningService,
+    ) {}
+
     public function create(array $data): Student
     {
-        return DB::transaction(function () use ($data): Student {
+        $createdAccount = null;
+
+        $student = DB::transaction(function () use ($data, &$createdAccount): Student {
             $student = new Student(Arr::except($data, ['password']));
 
-            if ($user = $this->makeLinkedUser($data)) {
+            if ($user = $this->makeLinkedUser($data, $createdAccount)) {
                 $student->user()->associate($user);
             }
 
@@ -25,21 +29,43 @@ class StudentService
 
             return $student->fresh(['user']);
         });
+
+        if (is_array($createdAccount)) {
+            $this->accountProvisioningService->sendAccountCreatedMail(
+                $createdAccount['user'],
+                $createdAccount['plain_password'],
+                UserTypes::Student,
+            );
+        }
+
+        return $student;
     }
 
     public function update(Student $student, array $data): Student
     {
-        return DB::transaction(function () use ($student, $data): Student {
+        $createdAccount = null;
+
+        $updatedStudent = DB::transaction(function () use ($student, $data, &$createdAccount): Student {
             $student->fill(Arr::except($data, ['password']));
             $student->save();
 
-            $this->syncLinkedUser($student, $data);
+            $this->syncLinkedUser($student, $data, $createdAccount);
 
             return $student->fresh(['user']);
         });
+
+        if (is_array($createdAccount)) {
+            $this->accountProvisioningService->sendAccountCreatedMail(
+                $createdAccount['user'],
+                $createdAccount['plain_password'],
+                UserTypes::Student,
+            );
+        }
+
+        return $updatedStudent;
     }
 
-    private function syncLinkedUser(Student $student, array $data): void
+    private function syncLinkedUser(Student $student, array $data, ?array &$createdAccount = null): void
     {
         $email = $data['email'] ?? null;
         $password = $data['password'] ?? null;
@@ -54,7 +80,7 @@ class StudentService
             }
 
             if (filled($password)) {
-                $student->user->password = Hash::make($password);
+                $this->accountProvisioningService->syncPassword($student->user, $password);
             }
 
             if ($student->user->isDirty()) {
@@ -68,7 +94,7 @@ class StudentService
             return;
         }
 
-        $user = $this->makeLinkedUser($data);
+        $user = $this->makeLinkedUser($data, $createdAccount);
 
         if (! $user) {
             return;
@@ -78,7 +104,7 @@ class StudentService
         $student->save();
     }
 
-    private function makeLinkedUser(array $data): ?User
+    private function makeLinkedUser(array $data, ?array &$createdAccount = null): ?User
     {
         $email = $data['email'] ?? null;
 
@@ -88,19 +114,14 @@ class StudentService
 
         $temporaryPassword = filled($data['password'] ?? null)
             ? $data['password']
-            : $data['admission_no'];
+            : null;
 
-        $user = User::create([
+        $createdAccount = $this->accountProvisioningService->create([
             'name' => $this->resolveUserName($data),
             'email' => $email,
-            'password' => Hash::make($temporaryPassword),
-        ]);
+        ], UserTypes::Student, $temporaryPassword);
 
-        if (Role::query()->where('name', UserTypes::Student->value)->exists()) {
-            $user->assignRole(UserTypes::Student->value);
-        }
-
-        return $user;
+        return $createdAccount['user'];
     }
 
     private function resolveUserName(array $data): string

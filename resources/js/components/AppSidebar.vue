@@ -19,6 +19,7 @@ import type { NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 import {
     BarChart3,
+    BriefcaseBusiness,
     ClipboardList,
     GraduationCap,
     Medal,
@@ -29,6 +30,7 @@ import { computed } from 'vue';
 
 const page = usePage();
 const userRoles = computed(() => page.props.auth.roles ?? []);
+const userPermissions = computed(() => page.props.auth.permissions ?? []);
 
 const isAdminArea = computed(() => {
     if (page.url.startsWith('/admin')) {
@@ -38,28 +40,40 @@ const isAdminArea = computed(() => {
     return userRoles.value.some((role) => ['admin', 'staff'].includes(role));
 });
 
-const adminItems: NavItem[] = [
-    {
-        title: 'Analytics',
-        href: admin.analysis.url(),
-        icon: BarChart3,
-    },
-    {
-        title: 'Students',
-        href: admin.students.index.url(),
-        icon: Users,
-    },
-    {
-        title: 'Assessments',
-        href: admin.assessments.index.url(),
-        icon: ScrollText,
-    },
-    {
-        title: 'Results',
-        href: admin.results.index.url(),
-        icon: ClipboardList,
-    },
-];
+const adminItems = computed<NavItem[]>(() => {
+    const items: NavItem[] = [
+        {
+            title: 'Analytics',
+            href: admin.analysis.url(),
+            icon: BarChart3,
+        },
+        {
+            title: 'Students',
+            href: admin.students.index.url(),
+            icon: Users,
+        },
+        {
+            title: 'Assessments',
+            href: admin.assessments.index.url(),
+            icon: ScrollText,
+        },
+        {
+            title: 'Results',
+            href: admin.results.index.url(),
+            icon: ClipboardList,
+        },
+    ];
+
+    if (userPermissions.value.includes('manage_staff')) {
+        items.push({
+            title: 'Staff',
+            href: '/admin/staff',
+            icon: BriefcaseBusiness,
+        });
+    }
+
+    return items;
+});
 
 const studentItems: NavItem[] = [
     {
@@ -79,12 +93,12 @@ const studentItems: NavItem[] = [
     },
 ];
 
-const mainNavItems = computed(() => (isAdminArea.value ? adminItems : studentItems));
+const mainNavItems = computed(() => (isAdminArea.value ? adminItems.value : studentItems));
 const logoUrl = computed(() => (isAdminArea.value ? admin.analysis.url() : dashboard.url()));
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="inset">
+    <Sidebar collapsible="icon" variant="inset" class="app-sidebar-theme">
         <SidebarHeader class="border-b border-sidebar-border px-3.5 py-3">
             <SidebarMenu>
                 <SidebarMenuItem>

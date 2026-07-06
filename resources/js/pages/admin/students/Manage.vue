@@ -22,14 +22,15 @@ import {
 import AppLayout from '@/layouts/AppLayout.vue';
 import AdminLayout from '@/layouts/admin/Layout.vue';
 import type { Student } from '@/types/student';
+import { generatePassword } from '@/utils/password';
 import { Head, useForm } from '@inertiajs/vue3';
 import {
     BadgeCheck,
     BookUser,
-    CircleArrowLeft,
     IdCard,
     Mail,
     Phone,
+    RefreshCw,
     Save,
     UserRound,
     X,
@@ -62,6 +63,10 @@ const submit = () =>
 const updateClassName = (value: unknown) => {
     const normalizedValue = value == null ? '' : String(value);
     form.class_name = !normalizedValue || normalizedValue === '__none__' ? '' : normalizedValue;
+};
+
+const fillGeneratedPassword = () => {
+    form.password = generatePassword();
 };
 </script>
 
@@ -172,10 +177,16 @@ const updateClassName = (value: unknown) => {
                                     </h3>
                                 </div>
                                 <div class="space-y-2">
-                                    <Label for="password">Password</Label>
-                                    <Input id="password" v-model="form.password" type="password" placeholder="Set an optional password" />
+                                    <div class="flex items-center justify-between gap-3">
+                                        <Label for="password">Password</Label>
+                                        <Button type="button" variant="outline" size="sm" @click="fillGeneratedPassword">
+                                            <RefreshCw class="size-4" />
+                                            Generate Random
+                                        </Button>
+                                    </div>
+                                    <Input id="password" v-model="form.password" type="text" placeholder="Leave blank to auto-generate a password" />
                                     <p class="text-sm text-muted-foreground">
-                                        Leave blank if the password will be assigned later.
+                                        If an email is provided, login details are sent automatically when the account is created.
                                     </p>
                                     <InputError :message="form.errors.password" />
                                 </div>
