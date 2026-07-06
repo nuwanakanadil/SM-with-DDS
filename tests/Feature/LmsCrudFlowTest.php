@@ -150,7 +150,7 @@ test('result entry prevents duplicate student assessment pairs', function () {
     ]);
     $assessment = Assessment::query()->create([
         'title' => 'Final Exam',
-        'class_name' => Grades::Grade12->value,
+        'class_name' => Grades::Grade11->value,
         'assessment_date' => '2026-06-22',
         'total_marks' => 100,
         'is_published' => true,
@@ -251,4 +251,52 @@ test('student pages render live database records', function () {
         ->assertDontSee('History Test')
         ->assertDontSee('Kasun')
         ->assertDontSee('Other student result');
+});
+
+test('admin can filter student and assessment listings', function () {
+    $admin = createLmsUser();
+
+    Student::query()->create([
+        'admission_no' => 'ADM-301',
+        'first_name' => 'Anji',
+        'last_name' => 'Perera',
+        'class_name' => Grades::Grade8->value,
+        'is_active' => true,
+    ]);
+
+    Student::query()->create([
+        'admission_no' => 'ADM-302',
+        'first_name' => 'Bimal',
+        'last_name' => 'Silva',
+        'class_name' => Grades::Grade10->value,
+        'is_active' => false,
+    ]);
+
+    Assessment::query()->create([
+        'title' => 'Maths Drill',
+        'class_name' => Grades::Grade8->value,
+        'assessment_date' => '2026-07-01',
+        'total_marks' => 50,
+        'is_published' => true,
+    ]);
+
+    Assessment::query()->create([
+        'title' => 'Science Mock',
+        'class_name' => Grades::Grade10->value,
+        'assessment_date' => '2026-07-02',
+        'total_marks' => 75,
+        'is_published' => false,
+    ]);
+
+    $this->actingAs($admin)
+        ->get('/admin/students?class_name='.urlencode(Grades::Grade8->value).'&status=active&search=Anji')
+        ->assertOk()
+        ->assertSee('Anji')
+        ->assertDontSee('Bimal');
+
+    $this->actingAs($admin)
+        ->get('/admin/assessments?class_name='.urlencode(Grades::Grade8->value).'&status=published&search=Maths')
+        ->assertOk()
+        ->assertSee('Maths Drill')
+        ->assertDontSee('Science Mock');
 });

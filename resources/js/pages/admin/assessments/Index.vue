@@ -14,6 +14,14 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import {
     Table,
     TableBody,
@@ -28,19 +36,27 @@ import AdminLayout from '@/layouts/admin/Layout.vue';
 import assessmentsRoutes from '@/routes/admin/assessments';
 import type { PaginatedResponse } from '@/types';
 import type { Assessment } from '@/types/assessment';
+import { formatDateOnly } from '@/utils/dateTime';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { BookCheck, BookMarked, Pencil, ScrollText, ShieldCheck, Trash2 } from 'lucide-vue-next';
 import { computed, reactive, ref } from 'vue';
 
 const props = defineProps<{
     assessments: PaginatedResponse<Assessment>;
+    gradeOptions: string[];
     filters?: {
         search?: string;
+        class_name?: string;
+        status?: string;
+        sort?: string;
     };
 }>();
 
 const filters = reactive({
     search: props.filters?.search ?? '',
+    class_name: props.filters?.class_name ?? '',
+    status: props.filters?.status ?? '',
+    sort: props.filters?.sort ?? '',
 });
 const isSearching = ref(false);
 
@@ -52,6 +68,9 @@ const applyFilters = () => {
     router.get(assessmentsRoutes.index({
         query: {
             search: filters.search || undefined,
+            class_name: filters.class_name || undefined,
+            status: filters.status || undefined,
+            sort: filters.sort || undefined,
         },
     }), undefined, {
         preserveState: true,
@@ -64,11 +83,19 @@ const applyFilters = () => {
 
 const clearFilters = () => {
     filters.search = '';
+    filters.class_name = '';
+    filters.status = '';
+    filters.sort = '';
     applyFilters();
 };
 
 const processSearch = (value: string) => {
     filters.search = value;
+    applyFilters();
+};
+
+const updateFilter = (key: 'class_name' | 'status' | 'sort', value: unknown) => {
+    filters[key] = value == null || value === '__all__' ? '' : String(value);
     applyFilters();
 };
 
@@ -118,13 +145,13 @@ const remove = (assessment: Assessment) => {
 
                 <Card class="section-card">
                     <CardHeader>
-                        <CardTitle>Search Assessments</CardTitle>
+                        <CardTitle>Search and Filter</CardTitle>
                         <CardDescription>
-                            Look up an assessment by title.
+                            Refine the assessment list by title, grade, publishing status, or sort order.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent class="flex flex-col gap-3 lg:flex-row">
-                        <div class="flex-1">
+                    <CardContent class="grid gap-4 lg:grid-cols-4">
+                        <div class="lg:col-span-4">
                             <SearchBar
                                 v-model="isSearching"
                                 :search="filters.search"
@@ -132,7 +159,58 @@ const remove = (assessment: Assessment) => {
                                 @process-search="processSearch"
                             />
                         </div>
-                        <div class="flex gap-3">
+                        <div class="space-y-2">
+                            <Label for="assessment-grade-filter">Grade</Label>
+                            <Select
+                                :model-value="filters.class_name || '__all__'"
+                                @update:model-value="(value) => updateFilter('class_name', value)"
+                            >
+                                <SelectTrigger id="assessment-grade-filter" class="w-full">
+                                    <SelectValue placeholder="All grades" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">All grades</SelectItem>
+                                    <SelectItem v-for="grade in props.gradeOptions" :key="grade" :value="grade">
+                                        {{ grade }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="space-y-2">
+                            <Label for="assessment-status-filter">Status</Label>
+                            <Select
+                                :model-value="filters.status || '__all__'"
+                                @update:model-value="(value) => updateFilter('status', value)"
+                            >
+                                <SelectTrigger id="assessment-status-filter" class="w-full">
+                                    <SelectValue placeholder="All statuses" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">All statuses</SelectItem>
+                                    <SelectItem value="published">Published only</SelectItem>
+                                    <SelectItem value="draft">Draft only</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="space-y-2">
+                            <Label for="assessment-sort-filter">Sort</Label>
+                            <Select
+                                :model-value="filters.sort || '__all__'"
+                                @update:model-value="(value) => updateFilter('sort', value)"
+                            >
+                                <SelectTrigger id="assessment-sort-filter" class="w-full">
+                                    <SelectValue placeholder="Newest first" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">Newest first</SelectItem>
+                                    <SelectItem value="date_asc">Oldest date first</SelectItem>
+                                    <SelectItem value="date_desc">Newest date first</SelectItem>
+                                    <SelectItem value="title_asc">Title A-Z</SelectItem>
+                                    <SelectItem value="title_desc">Title Z-A</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="flex items-end gap-3">
                             <Button variant="ghost" @click="clearFilters">Reset</Button>
                         </div>
                     </CardContent>
@@ -172,7 +250,7 @@ const remove = (assessment: Assessment) => {
                                             {{ assessment.title }}
                                         </TableCell>
                                         <TableCell>{{ assessment.class_name ?? '-' }}</TableCell>
-                                        <TableCell>{{ assessment.assessment_date ?? '-' }}</TableCell>
+                                        <TableCell>{{ formatDateOnly(assessment.assessment_date) }}</TableCell>
                                         <TableCell>{{ assessment.total_marks }}</TableCell>
                                         <TableCell>
                                             <Badge :variant="assessment.is_published ? 'default' : 'secondary'">

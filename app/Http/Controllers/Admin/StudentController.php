@@ -19,19 +19,39 @@ class StudentController extends Controller
 
     public function index(Request $request): Response
     {
+        $filters = [
+            'search' => $request->string('search')->toString(),
+            'class_name' => $request->string('class_name')->toString(),
+            'status' => $request->string('status')->toString(),
+            'sort' => $request->string('sort')->toString(),
+        ];
+
         $students = Student::query()
-            ->when($request->search, function ($query, string $search) {
-                $query->where('first_name', 'like', "%{$search}%")
-                    ->orWhere('last_name', 'like', "%{$search}%")
-                    ->orWhere('admission_no', 'like', "%{$search}%");
+            ->when($filters['search'], function ($query, string $search) {
+                $query->where(function ($studentQuery) use ($search) {
+                    $studentQuery->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('admission_no', 'like', "%{$search}%");
+                });
             })
-            ->latest()
+            ->when($filters['class_name'], fn ($query, string $className) => $query->where('class_name', $className))
+            ->when($filters['status'] === 'active', fn ($query) => $query->where('is_active', true))
+            ->when($filters['status'] === 'inactive', fn ($query) => $query->where('is_active', false))
+            ->when($filters['sort'] === 'name_asc', fn ($query) => $query->orderBy('first_name')->orderBy('last_name'))
+            ->when($filters['sort'] === 'name_desc', fn ($query) => $query->orderByDesc('first_name')->orderByDesc('last_name'))
+            ->when($filters['sort'] === 'admission_asc', fn ($query) => $query->orderBy('admission_no'))
+            ->when($filters['sort'] === 'admission_desc', fn ($query) => $query->orderByDesc('admission_no'))
+            ->when(
+                ! in_array($filters['sort'], ['name_asc', 'name_desc', 'admission_asc', 'admission_desc'], true),
+                fn ($query) => $query->latest()
+            )
             ->paginate(10)
             ->withQueryString();
 
         return Inertia::render('admin/students/Index', [
             'students' => $students,
-            'filters' => $request->only('search'),
+            'filters' => $filters,
+            'gradeOptions' => Grades::values(),
         ]);
     }
 

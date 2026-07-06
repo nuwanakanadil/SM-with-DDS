@@ -9,14 +9,31 @@ use Illuminate\Support\Facades\DB;
 
 class AssessmentService
 {
-    public function paginated(?string $search = null, int $perPage = 10): LengthAwarePaginator
+    public function paginated(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
+        $search = $filters['search'] ?? null;
+        $className = $filters['class_name'] ?? null;
+        $status = $filters['status'] ?? null;
+        $sort = $filters['sort'] ?? null;
+
         return Assessment::query()
-            ->when($search, fn ($query, string $term) => $query
-                ->where('title', 'like', "%{$term}%")
-                ->orWhere('class_name', 'like', "%{$term}%"))
-            ->latest('assessment_date')
-            ->latest('id')
+            ->when($search, function ($query, string $term) {
+                $query->where(function ($assessmentQuery) use ($term) {
+                    $assessmentQuery->where('title', 'like', "%{$term}%")
+                        ->orWhere('class_name', 'like', "%{$term}%");
+                });
+            })
+            ->when($className, fn ($query, string $value) => $query->where('class_name', $value))
+            ->when($status === 'published', fn ($query) => $query->where('is_published', true))
+            ->when($status === 'draft', fn ($query) => $query->where('is_published', false))
+            ->when($sort === 'title_asc', fn ($query) => $query->orderBy('title'))
+            ->when($sort === 'title_desc', fn ($query) => $query->orderByDesc('title'))
+            ->when($sort === 'date_asc', fn ($query) => $query->orderBy('assessment_date')->orderBy('id'))
+            ->when($sort === 'date_desc', fn ($query) => $query->orderByDesc('assessment_date')->orderByDesc('id'))
+            ->when(
+                ! in_array($sort, ['title_asc', 'title_desc', 'date_asc', 'date_desc'], true),
+                fn ($query) => $query->latest('assessment_date')->latest('id')
+            )
             ->paginate($perPage)
             ->withQueryString();
     }

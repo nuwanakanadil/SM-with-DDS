@@ -1,0 +1,1 @@
+import{C as e,Ct as t,E as n,V as r,b as i,f as a,tt as o}from"./app-I_GmEFPs.js";var s={class:`text-sm font-medium text-red-600`},c=n({__name:`InputError`,props:{message:{}},setup(n){return(c,l)=>o((r(),e(`div`,null,[i(`p`,s,t(n.message),1)],512)),[[a,n.message]])}});export{c as t};

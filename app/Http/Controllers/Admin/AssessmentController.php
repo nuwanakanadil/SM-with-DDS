@@ -18,9 +18,17 @@ class AssessmentController extends Controller
 
     public function index(Request $request): Response
     {
+        $filters = [
+            'search' => $request->string('search')->toString(),
+            'class_name' => $request->string('class_name')->toString(),
+            'status' => $request->string('status')->toString(),
+            'sort' => $request->string('sort')->toString(),
+        ];
+
         return Inertia::render('admin/assessments/Index', [
-            'assessments' => $this->assessmentService->paginated($request->string('search')->toString()),
-            'filters' => $request->only('search'),
+            'assessments' => $this->assessmentService->paginated($filters),
+            'filters' => $filters,
+            'gradeOptions' => Grades::values(),
         ]);
     }
 

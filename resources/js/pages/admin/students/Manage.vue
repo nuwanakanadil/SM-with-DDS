@@ -26,6 +26,7 @@ import { Head, useForm } from '@inertiajs/vue3';
 import {
     BadgeCheck,
     BookUser,
+    CircleArrowLeft,
     IdCard,
     Mail,
     Phone,
@@ -85,11 +86,6 @@ const updateClassName = (value: unknown) => {
                             <BookUser class="size-3.5" />
                             {{ isEdit ? 'Update existing record' : 'New record' }}
                         </Badge>
-                    </template>
-                    <template #actions>
-                        <IconButton :icon="BookUser" :link="students.index()" variant="outline">
-                            Back to list
-                        </IconButton>
                     </template>
                 </PageHero>
 

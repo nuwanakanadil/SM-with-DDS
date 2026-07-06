@@ -14,6 +14,14 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import {
     Table,
     TableBody,
@@ -29,18 +37,25 @@ import studentsRoutes from '@/routes/admin/students';
 import type { PaginatedResponse } from '@/types';
 import type { Student } from '@/types/student';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Pencil, Plus, ShieldCheck, Trash2, Users } from 'lucide-vue-next';
+import { Pencil, Plus, ShieldCheck, Trash2, UserPlus, Users } from 'lucide-vue-next';
 import { computed, reactive, ref } from 'vue';
 
 const props = defineProps<{
     students: PaginatedResponse<Student>;
+    gradeOptions: string[];
     filters?: {
         search?: string;
+        class_name?: string;
+        status?: string;
+        sort?: string;
     };
 }>();
 
 const filters = reactive({
     search: props.filters?.search ?? '',
+    class_name: props.filters?.class_name ?? '',
+    status: props.filters?.status ?? '',
+    sort: props.filters?.sort ?? '',
 });
 const isSearching = ref(false);
 
@@ -52,6 +67,9 @@ const applyFilters = () => {
     router.get(studentsRoutes.index({
         query: {
             search: filters.search || undefined,
+            class_name: filters.class_name || undefined,
+            status: filters.status || undefined,
+            sort: filters.sort || undefined,
         },
     }), undefined, {
         preserveState: true,
@@ -64,11 +82,19 @@ const applyFilters = () => {
 
 const clearFilters = () => {
     filters.search = '';
+    filters.class_name = '';
+    filters.status = '';
+    filters.sort = '';
     applyFilters();
 };
 
 const processSearch = (value: string) => {
     filters.search = value;
+    applyFilters();
+};
+
+const updateFilter = (key: 'class_name' | 'status' | 'sort', value: unknown) => {
+    filters[key] = value == null || value === '__all__' ? '' : String(value);
     applyFilters();
 };
 
@@ -94,7 +120,7 @@ const remove = (student: Student) => {
                         </Badge>
                     </template>
                     <template #actions>
-                        <IconButton :icon="Plus" :link="studentsRoutes.create()" size="lg">
+                        <IconButton :icon="UserPlus" :link="studentsRoutes.create()" size="lg">
                             Add Student
                         </IconButton>
                     </template>
@@ -118,13 +144,13 @@ const remove = (student: Student) => {
 
                 <Card class="section-card">
                     <CardHeader>
-                        <CardTitle>Search Directory</CardTitle>
+                        <CardTitle>Search and Filter</CardTitle>
                         <CardDescription>
-                            Find a student by name or admission number.
+                            Narrow the student directory by name, grade, status, or sort order.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent class="flex flex-col gap-3 lg:flex-row">
-                        <div class="flex-1">
+                    <CardContent class="grid gap-4 lg:grid-cols-4">
+                        <div class="lg:col-span-4">
                             <SearchBar
                                 v-model="isSearching"
                                 :search="filters.search"
@@ -132,7 +158,58 @@ const remove = (student: Student) => {
                                 @process-search="processSearch"
                             />
                         </div>
-                        <div class="flex gap-3">
+                        <div class="space-y-2">
+                            <Label for="student-grade-filter">Grade</Label>
+                            <Select
+                                :model-value="filters.class_name || '__all__'"
+                                @update:model-value="(value) => updateFilter('class_name', value)"
+                            >
+                                <SelectTrigger id="student-grade-filter" class="w-full">
+                                    <SelectValue placeholder="All grades" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">All grades</SelectItem>
+                                    <SelectItem v-for="grade in props.gradeOptions" :key="grade" :value="grade">
+                                        {{ grade }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="space-y-2">
+                            <Label for="student-status-filter">Status</Label>
+                            <Select
+                                :model-value="filters.status || '__all__'"
+                                @update:model-value="(value) => updateFilter('status', value)"
+                            >
+                                <SelectTrigger id="student-status-filter" class="w-full">
+                                    <SelectValue placeholder="All statuses" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">All statuses</SelectItem>
+                                    <SelectItem value="active">Active only</SelectItem>
+                                    <SelectItem value="inactive">Inactive only</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="space-y-2">
+                            <Label for="student-sort-filter">Sort</Label>
+                            <Select
+                                :model-value="filters.sort || '__all__'"
+                                @update:model-value="(value) => updateFilter('sort', value)"
+                            >
+                                <SelectTrigger id="student-sort-filter" class="w-full">
+                                    <SelectValue placeholder="Newest first" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">Newest first</SelectItem>
+                                    <SelectItem value="name_asc">Name A-Z</SelectItem>
+                                    <SelectItem value="name_desc">Name Z-A</SelectItem>
+                                    <SelectItem value="admission_asc">Admission No A-Z</SelectItem>
+                                    <SelectItem value="admission_desc">Admission No Z-A</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="flex items-end gap-3">
                             <Button variant="ghost" @click="clearFilters">
                                 Reset
                             </Button>
