@@ -23,6 +23,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import AdminLayout from '@/layouts/admin/Layout.vue';
 import assessments from '@/routes/admin/assessments';
 import type { Assessment } from '@/types/assessment';
+import { toDateInputValue } from '@/utils/dateTime';
 import { Head, useForm } from '@inertiajs/vue3';
 import { CalendarDays, ClipboardCheck, GraduationCap, NotebookPen, Save, X } from 'lucide-vue-next';
 
@@ -36,7 +37,7 @@ const isEdit = Boolean(props.assessment);
 const form = useForm({
     title: props.assessment?.title ?? '',
     class_name: props.assessment?.class_name ?? '',
-    assessment_date: props.assessment?.assessment_date ?? '',
+    assessment_date: toDateInputValue(props.assessment?.assessment_date),
     total_marks: props.assessment?.total_marks ?? 100,
     is_published: props.assessment?.is_published ?? false,
 });

@@ -19,3 +19,9 @@ export const formatDateOnly = (date: string | null | undefined) => {
         year: 'numeric',
     });
 };
+
+export const toDateInputValue = (date: string | null | undefined) => {
+    if (!date) return '';
+
+    return new Date(date).toISOString().slice(0, 10);
+};

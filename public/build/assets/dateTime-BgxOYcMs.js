@@ -1,0 +1,1 @@
+var e=e=>e?new Date(e).toLocaleDateString(`en-GB`,{day:`2-digit`,month:`short`,year:`numeric`}):`-`,t=e=>e?new Date(e).toISOString().slice(0,10):``;export{t as n,e as t};
