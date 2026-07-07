@@ -54,25 +54,25 @@ const updateClassName = (value: unknown) => {
 </script>
 
 <template>
-    <Head :title="isEdit ? 'Edit Assessment' : 'Add Assessment'" />
+    <Head :title="isEdit ? 'Edit Exam' : 'Add Exam'" />
     <AppLayout
         :breadcrumbs="[
             { title: 'Admin' },
-            { title: 'Assessments', href: assessments.index.url() },
+            { title: 'Exams', href: assessments.index.url() },
             { title: isEdit ? 'Edit' : 'Create' },
         ]"
     >
         <AdminLayout>
             <div class="space-y-6">
                 <PageHero
-                    eyebrow="Assessment Setup"
-                    :title="isEdit ? 'Edit Assessment' : 'Create Assessment'"
-                    description="Define how an assessment appears, who it belongs to, when it happens, and whether students can already see it."
+                    eyebrow="Exam Setup"
+                    :title="isEdit ? 'Edit Exam' : 'Create Exam'"
+                    description="Define how an exam appears, who it belongs to, when it happens, and whether students can already see it."
                 >
                     <template #meta>
                         <Badge variant="outline" class="rounded-full px-4 py-1.5">
                             <NotebookPen class="size-3.5" />
-                            {{ isEdit ? 'Update assessment' : 'New assessment' }}
+                            {{ isEdit ? 'Update exam' : 'New exam' }}
                         </Badge>
                     </template>
                     <template #actions>
@@ -84,7 +84,7 @@ const updateClassName = (value: unknown) => {
 
                 <Card class="section-card max-w-6xl">
                     <CardHeader>
-                        <CardTitle>Assessment Details</CardTitle>
+                        <CardTitle>Exam Details</CardTitle>
                         <CardDescription>
                             Keep this information accurate so student dashboards and ranking views remain trustworthy.
                         </CardDescription>
@@ -102,7 +102,7 @@ const updateClassName = (value: unknown) => {
                                 <div class="grid gap-5 md:grid-cols-2">
                                     <div class="space-y-2 md:col-span-2">
                                         <Label for="title">Title</Label>
-                                        <Input id="title" v-model="form.title" placeholder="Enter assessment title" />
+                                        <Input id="title" v-model="form.title" placeholder="Enter exam title" />
                                         <InputError :message="form.errors.title" />
                                     </div>
                                     <div class="space-y-2">
@@ -124,7 +124,7 @@ const updateClassName = (value: unknown) => {
                                         <InputError :message="form.errors.class_name" />
                                     </div>
                                     <div class="space-y-2">
-                                        <Label for="assessment_date">Assessment Date</Label>
+                                        <Label for="assessment_date">Exam Date</Label>
                                         <Input id="assessment_date" v-model="form.assessment_date" type="date" />
                                         <InputError :message="form.errors.assessment_date" />
                                     </div>
@@ -153,7 +153,7 @@ const updateClassName = (value: unknown) => {
                                         <span>
                                             <span class="block font-semibold text-foreground">Published to students</span>
                                             <span class="mt-1 block text-sm text-muted-foreground">
-                                                Only published assessments should appear in student dashboards and placement views.
+                                                Only published exams should appear in student dashboards and placement views.
                                             </span>
                                         </span>
                                     </label>
@@ -168,7 +168,7 @@ const updateClassName = (value: unknown) => {
                                         Class visibility
                                     </div>
                                     <p class="mt-2 text-sm leading-6 text-muted-foreground">
-                                        Students only see assessments that match their class assignment.
+                                        Students only see exams that match their class assignment.
                                     </p>
                                 </div>
                                 <div class="rounded-[1.5rem] border border-border bg-card p-4">
@@ -186,7 +186,7 @@ const updateClassName = (value: unknown) => {
                                         Ranking readiness
                                     </div>
                                     <p class="mt-2 text-sm leading-6 text-muted-foreground">
-                                        Published assessments are ready to feed downstream ranking and result workflows.
+                                        Published exams are ready to feed downstream ranking and result workflows.
                                     </p>
                                 </div>
                             </div>
@@ -194,7 +194,7 @@ const updateClassName = (value: unknown) => {
                             <div class="flex flex-wrap items-center justify-end gap-3 border-t border-border/80 pt-6">
                                 <Button :disabled="form.processing" size="lg">
                                     <Save class="size-4" />
-                                    {{ form.processing ? 'Saving...' : 'Save Assessment' }}
+                                    {{ form.processing ? 'Saving...' : 'Save Exam' }}
                                 </Button>
                                 <IconButton :icon="X" :link="assessments.index()" variant="outline" size="lg">
                                     Cancel

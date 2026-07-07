@@ -27,7 +27,7 @@ import { ArrowRight, LayoutDashboard, ShieldCheck, Sparkles } from 'lucide-vue-n
             <PageHero
                 :eyebrow="APP_SYSTEM_SUBTITLE"
                 title="Dashboard overview"
-                description="Use the navigation to manage students, assessments, results, and rankings across Super Maths with Damith."
+                description="Use the navigation to manage students, exams, results, and rankings across Super Maths with Damith."
             />
 
             <div class="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
@@ -41,7 +41,7 @@ import { ArrowRight, LayoutDashboard, ShieldCheck, Sparkles } from 'lucide-vue-n
                     </CardHeader>
                     <CardContent class="grid gap-4 text-[15px] leading-7 text-muted-foreground md:grid-cols-2">
                         <div class="info-tile">
-                            Use the admin area to maintain records, publish assessments, and keep ranking data accurate across {{ APP_BRAND_NAME }}.
+                            Use the admin area to maintain records, publish exams, and keep ranking data accurate across {{ APP_BRAND_NAME }}.
                         </div>
                         <div class="info-tile">
                             Student pages provide a clearer view of marks, latest results, and placement updates inside the {{ APP_SYSTEM_SUBTITLE.toLowerCase() }}.

@@ -72,7 +72,7 @@ defineProps<{ results: AssessmentResult[] }>();
                         <Table>
                             <TableHeader>
                                 <TableRow class="bg-secondary/70">
-                                    <TableHead>Assessment</TableHead>
+                                    <TableHead>Exam</TableHead>
                                     <TableHead>Class</TableHead>
                                     <TableHead>Marks</TableHead>
                                     <TableHead>Total</TableHead>

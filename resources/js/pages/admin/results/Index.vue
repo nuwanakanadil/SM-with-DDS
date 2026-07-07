@@ -93,8 +93,8 @@ const remove = (result: AssessmentResult) => {
             <div class="space-y-6">
                 <PageHero
                     :eyebrow="APP_SYSTEM_SUBTITLE"
-                    title="Manage Assessment Results"
-                    :description="`Load an assessment, review live marks, validate ranking output, and keep the published academic picture accurate across ${APP_BRAND_NAME}.`"
+                    title="Manage Exam Results"
+                    :description="`Load an exam, review live marks, validate ranking output, and keep the published academic picture accurate across ${APP_BRAND_NAME}.`"
                 >
                     <template #meta>
                         <Badge variant="outline" class="rounded-full px-4 py-1.5">
@@ -111,9 +111,9 @@ const remove = (result: AssessmentResult) => {
 
                 <Card class="section-card">
                     <CardHeader>
-                        <CardTitle>Assessment Filter</CardTitle>
+                        <CardTitle>Exam Filter</CardTitle>
                         <CardDescription>
-                        Choose the assessment you want to inspect before editing marks or reviewing rank order.
+                        Choose the exam you want to inspect before editing marks or reviewing rank order.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -121,7 +121,7 @@ const remove = (result: AssessmentResult) => {
                             <SearchableSelect
                                 v-model="filters.assessment_id"
                                 :options="assessmentOptions"
-                                placeholder="Choose an assessment"
+                                placeholder="Choose an exam"
                                 class="justify-between"
                             />
                         </div>
@@ -132,7 +132,7 @@ const remove = (result: AssessmentResult) => {
                     <CardHeader>
                         <div class="flex flex-wrap items-start justify-between gap-3">
                             <div>
-                                <CardDescription>Selected Assessment</CardDescription>
+                                <CardDescription>Selected Exam</CardDescription>
                                 <CardTitle class="mt-1">
                                     {{ selectedAssessment.title }}
                                 </CardTitle>
@@ -150,6 +150,7 @@ const remove = (result: AssessmentResult) => {
                 <Card v-else class="empty-state-panel">
                     <CardContent class="py-0 text-[15px] leading-7 text-muted-foreground">
                         Select an assessment to review saved marks and generated rankings.
+                        
                     </CardContent>
                 </Card>
 
@@ -189,6 +190,7 @@ const remove = (result: AssessmentResult) => {
                                     <CardTitle>Recorded Results</CardTitle>
                                     <CardDescription>
                                         Saved marks and remarks for the selected assessment.
+                                        
                                     </CardDescription>
                                 </div>
                                 <Badge variant="outline" class="rounded-full px-4 py-1.5">
@@ -252,6 +254,7 @@ const remove = (result: AssessmentResult) => {
 
                                     <TableEmpty v-else :colspan="4" class="py-14">
                                         No results have been recorded for the selected assessment in {{ APP_BRAND_NAME }} yet.
+                                        
                                     </TableEmpty>
                                 </TableBody>
                             </Table>
@@ -302,6 +305,7 @@ const remove = (result: AssessmentResult) => {
 
                                     <TableEmpty v-else :colspan="3" class="py-14">
                                         No ranking data is available for this assessment yet.
+                                        
                                     </TableEmpty>
                                 </TableBody>
                             </Table>

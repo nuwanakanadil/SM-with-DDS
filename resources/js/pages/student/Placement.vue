@@ -52,16 +52,16 @@ const applyFilter = () => {
                     <template #meta>
                         <Badge variant="outline" class="rounded-full px-4 py-1.5">
                             <ListFilter class="size-3.5" />
-                            {{ assessments.length }} assessment option(s)
+                            {{ assessments.length }} exam option(s)
                         </Badge>
                     </template>
                 </PageHero>
 
                 <Card class="section-card">
                     <CardHeader>
-                        <CardTitle>Choose Assessment</CardTitle>
+                        <CardTitle>Choose Exam</CardTitle>
                         <CardDescription>
-                            Switch between published assessments available to your class.
+                            Switch between published exams available to your class.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -73,7 +73,7 @@ const applyFilter = () => {
                                 class="app-select pl-11 pr-10"
                                 @change="applyFilter"
                             >
-                                <option value="">Latest published assessment</option>
+                                <option value="">Latest published exam</option>
                                 <option
                                     v-for="assessment in assessments"
                                     :key="assessment.id"
@@ -100,14 +100,14 @@ const applyFilter = () => {
                     </CardHeader>
                     <CardContent class="space-y-4 text-[15px] leading-7 text-muted-foreground">
                         <div class="info-tile">
-                            {{ selectedAssessment ? selectedAssessment.title : 'No assessment selected' }}
+                            {{ selectedAssessment ? selectedAssessment.title : 'No exam selected' }}
                         </div>
                         <div v-if="placement" class="info-tile">
                             <Medal class="mr-1 inline size-4 text-amber-500" />
                             Marks scored: {{ placement.marks }}
                         </div>
                         <p v-else>
-                            Placement will appear when the selected assessment has a published result for you.
+                            Placement will appear when the selected exam has a published result for you.
                         </p>
                     </CardContent>
                 </Card>

@@ -53,7 +53,7 @@ const adminItems = computed<NavItem[]>(() => {
             icon: Users,
         },
         {
-            title: 'Assessments',
+            title: 'Exams',
             href: admin.assessments.index.url(),
             icon: ScrollText,
         },

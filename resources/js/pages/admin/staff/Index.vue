@@ -100,7 +100,7 @@ const remove = (staff: StaffAccount) => {
                 <PageHero
                     eyebrow="Staff Access"
                     title="Manage Staff Accounts"
-                    description="Create and maintain staff login accounts for the academic team that helps run student records, assessments, and results."
+                    description="Create and maintain staff login accounts for the academic team that helps run student records, exams, and results."
                 >
                     <template #meta>
                         <Badge variant="outline" class="rounded-full px-4 py-1.5">

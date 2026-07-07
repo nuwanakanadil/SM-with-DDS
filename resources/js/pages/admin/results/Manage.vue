@@ -21,8 +21,8 @@ import type { Assessment } from '@/types/assessment';
 import type { AssessmentResult } from '@/types/result';
 import type { Student } from '@/types/student';
 import { Head, useForm } from '@inertiajs/vue3';
-import { BookOpenCheck, ClipboardPen, Save, Users, X } from 'lucide-vue-next';
-import { computed } from 'vue';
+import { ArrowBigLeft, BookCheck, BookOpenCheck, CircleArrowLeft, ClipboardPen, Save, Users, X } from 'lucide-vue-next';
+import { computed, watch } from 'vue';
 
 const props = defineProps<{
     result?: AssessmentResult;
@@ -39,19 +39,69 @@ const form = useForm({
     remarks: props.result?.remarks ?? '',
 });
 
+const selectedStudent = computed(() =>
+    props.students.find((student) => String(student.id) === form.student_id),
+);
+
+const selectedAssessment = computed(() =>
+    props.assessments.find((assessment) => String(assessment.id) === form.assessment_id),
+);
+
+const filteredAssessments = computed(() => {
+    if (!selectedStudent.value?.class_name) {
+        return props.assessments;
+    }
+
+    return props.assessments.filter((assessment) =>
+        !assessment.class_name || assessment.class_name === selectedStudent.value?.class_name,
+    );
+});
+
+const filteredStudents = computed(() => {
+    if (!selectedAssessment.value?.class_name) {
+        return props.students;
+    }
+
+    return props.students.filter((student) => student.class_name === selectedAssessment.value?.class_name);
+});
+
 const assessmentOptions = computed(() =>
-    props.assessments.map((assessment) => ({
+    filteredAssessments.value.map((assessment) => ({
         key: String(assessment.id),
-        label: assessment.title,
+        label: assessment.class_name ? `${assessment.title} (${assessment.class_name})` : `${assessment.title} (All grades)`,
     })),
 );
 
 const studentOptions = computed(() =>
-    props.students.map((student) => ({
+    filteredStudents.value.map((student) => ({
         key: String(student.id),
-        label: `${student.admission_no} - ${student.first_name} ${student.last_name ?? ''}`.trim(),
+        label: `${student.admission_no} - ${student.first_name} ${student.last_name ?? ''}${student.class_name ? ` (${student.class_name})` : ''}`.trim(),
     })),
 );
+
+watch(selectedStudent, (student) => {
+    if (!student?.class_name || !form.assessment_id) {
+        return;
+    }
+
+    const stillValid = filteredAssessments.value.some((assessment) => String(assessment.id) === form.assessment_id);
+
+    if (!stillValid) {
+        form.assessment_id = '';
+    }
+});
+
+watch(selectedAssessment, (assessment) => {
+    if (!assessment?.class_name || !form.student_id) {
+        return;
+    }
+
+    const stillValid = filteredStudents.value.some((student) => String(student.id) === form.student_id);
+
+    if (!stillValid) {
+        form.student_id = '';
+    }
+});
 
 const submit = () =>
     props.result
@@ -73,7 +123,7 @@ const submit = () =>
                 <PageHero
                     eyebrow="Results Entry"
                     :title="isEdit ? 'Edit Result Record' : 'Create Result Record'"
-                    description="Map the right student to the right assessment, then record marks cleanly so rankings remain dependable."
+                    description="Map the right student to the right exam, then record marks cleanly so rankings remain dependable."
                 >
                     <template #meta>
                         <Badge variant="outline" class="rounded-full px-4 py-1.5">
@@ -82,7 +132,7 @@ const submit = () =>
                         </Badge>
                     </template>
                     <template #actions>
-                        <IconButton :icon="ClipboardPen" :link="resultsRoutes.index()" variant="outline">
+                        <IconButton :icon="CircleArrowLeft" :link="resultsRoutes.index()" variant="outline">
                             Back to list
                         </IconButton>
                     </template>
@@ -102,21 +152,10 @@ const submit = () =>
                                 <div class="flex items-center gap-2">
                                     <BookOpenCheck class="size-4 text-primary" />
                                     <h3 class="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                                        Assessment & Student
+                                        Student & Exam
                                     </h3>
                                 </div>
                                 <div class="grid gap-5 md:grid-cols-2">
-                                    <div class="space-y-2">
-                                        <Label for="assessment_id">Assessment</Label>
-                                        <SearchableSelect
-                                            id="assessment_id"
-                                            v-model="form.assessment_id"
-                                            :options="assessmentOptions"
-                                            placeholder="Select assessment"
-                                        />
-                                        <InputError :message="form.errors.assessment_id" />
-                                    </div>
-
                                     <div class="space-y-2">
                                         <Label for="student_id">Student</Label>
                                         <SearchableSelect
@@ -125,25 +164,42 @@ const submit = () =>
                                             :options="studentOptions"
                                             placeholder="Select student"
                                         />
+                                        <p class="text-sm text-muted-foreground">
+                                            Choosing a student filters the exam list to matching grades.
+                                        </p>
                                         <InputError :message="form.errors.student_id" />
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <Label for="assessment_id">Exam</Label>
+                                        <SearchableSelect
+                                            id="assessment_id"
+                                            v-model="form.assessment_id"
+                                            :options="assessmentOptions"
+                                            placeholder="Select exam"
+                                        />
+                                        <p class="text-sm text-muted-foreground">
+                                            Only exams valid for the selected student grade are shown here.
+                                        </p>
+                                        <InputError :message="form.errors.assessment_id" />
                                     </div>
                                 </div>
                             </section>
 
                             <section class="space-y-4">
                                 <div class="flex items-center gap-2">
-                                    <Users class="size-4 text-primary" />
+                                    <BookCheck class="size-4 text-primary" />
                                     <h3 class="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground">
                                         Mark Details
                                     </h3>
                                 </div>
-                                <div class="grid gap-5 md:grid-cols-2">
-                                    <div class="space-y-2">
+                                <div class="space-y-5">
+                                    <div class="space-y-2 max-w-xl">
                                         <Label for="marks">Marks</Label>
                                         <Input id="marks" v-model="form.marks" type="number" step="0.01" placeholder="Enter marks" />
                                         <InputError :message="form.errors.marks" />
                                     </div>
-                                    <div class="space-y-2 md:col-span-2">
+                                    <div class="space-y-2">
                                         <Label for="remarks">Remarks</Label>
                                         <Textarea id="remarks" v-model="form.remarks" placeholder="Add optional remarks or context" />
                                         <InputError :message="form.errors.remarks" />

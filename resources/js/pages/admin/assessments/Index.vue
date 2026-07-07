@@ -105,39 +105,39 @@ const remove = (assessment: Assessment) => {
 </script>
 
 <template>
-    <Head title="Assessments" />
-    <AppLayout :breadcrumbs="[{ title: 'Admin' }, { title: 'Assessments', href: assessmentsRoutes.index.url() }]">
+    <Head title="Exams" />
+    <AppLayout :breadcrumbs="[{ title: 'Admin' }, { title: 'Exams', href: assessmentsRoutes.index.url() }]">
         <AdminLayout>
             <div class="space-y-6">
                 <PageHero
-                    eyebrow="Assessment Library"
-                    title="Manage Assessments"
+                    eyebrow="Exam Library"
+                    title="Manage Exams"
                     description="Organise papers, class scope, dates, total marks, and publication status with a clear professional workflow."
                 >
                     <template #meta>
                         <Badge variant="outline" class="rounded-full px-4 py-1.5">
                             <ScrollText class="size-3.5" />
-                            {{ assessments.total }} assessment(s)
+                            {{ assessments.total }} exam(s)
                         </Badge>
                     </template>
                     <template #actions>
                         <IconButton :icon="BookCheck" :link="assessmentsRoutes.create()" size="lg">
-                            Add Assessment
+                            Add Exam
                         </IconButton>
                     </template>
                 </PageHero>
 
                 <div class="grid gap-5 md:grid-cols-2">
                     <StatCard
-                        label="Total Assessments"
+                        label="Total Exams"
                         :value="assessments.total"
-                        hint="All assessment records inside the academic workspace."
+                        hint="All exam records inside the academic workspace."
                         :icon="BookMarked"
                     />
                     <StatCard
-                        label="Published On Page"
+                        label="Published Exams On Page"
                         :value="publishedCount"
-                        hint="Assessments visible to students from the current result set."
+                        hint="Exams visible to students from the current result set."
                         :icon="ShieldCheck"
                         tone="success"
                     />
@@ -147,7 +147,7 @@ const remove = (assessment: Assessment) => {
                     <CardHeader>
                         <CardTitle>Search and Filter</CardTitle>
                         <CardDescription>
-                            Refine the assessment list by title, grade, publishing status, or sort order.
+                            Refine the exam list by title, grade, publishing status, or sort order.
                         </CardDescription>
                     </CardHeader>
                     <CardContent class="grid gap-4 lg:grid-cols-4">
@@ -155,7 +155,7 @@ const remove = (assessment: Assessment) => {
                             <SearchBar
                                 v-model="isSearching"
                                 :search="filters.search"
-                                placeholder="Search assessments"
+                                placeholder="Search exams"
                                 @process-search="processSearch"
                             />
                         </div>
@@ -220,9 +220,9 @@ const remove = (assessment: Assessment) => {
                     <CardHeader class="border-b border-border/80 py-5">
                         <div class="flex items-center justify-between gap-3">
                             <div>
-                                <CardTitle>Assessment Directory</CardTitle>
+                                <CardTitle>Exam Directory</CardTitle>
                                 <CardDescription>
-                                    A clean operational view of created and published assessments.
+                                    A clean operational view of created and published exams.
                                 </CardDescription>
                             </div>
                         </div>
@@ -262,24 +262,24 @@ const remove = (assessment: Assessment) => {
                                                 <Button as-child variant="outline" size="icon-sm">
                                                     <Link
                                                         :href="assessmentsRoutes.edit(assessment)"
-                                                        aria-label="Edit assessment"
-                                                        title="Edit assessment"
+                                                        aria-label="Edit exam"
+                                                        title="Edit exam"
                                                     >
                                                         <Pencil />
                                                     </Link>
                                                 </Button>
                                                 <ConfirmDialog
                                                     :title="`Delete ${assessment.title}?`"
-                                                    description="This removes the assessment and any dependent records."
-                                                    confirm-label="Delete Assessment"
+                                                    description="This removes the exam and any dependent records."
+                                                    confirm-label="Delete Exam"
                                                     @confirm="remove(assessment)"
                                                 >
                                                     <template #trigger>
                                                         <Button
                                                             variant="destructive"
                                                             size="icon-sm"
-                                                            aria-label="Delete assessment"
-                                                            title="Delete assessment"
+                                                            aria-label="Delete exam"
+                                                            title="Delete exam"
                                                         >
                                                             <Trash2 />
                                                         </Button>
@@ -291,7 +291,7 @@ const remove = (assessment: Assessment) => {
                                 </template>
 
                                 <TableEmpty v-else :colspan="6" class="py-14">
-                                    No assessments have been added to {{ APP_BRAND_NAME }} yet. Add one to start building the academic cycle.
+                                    No exams have been added to {{ APP_BRAND_NAME }} yet. Add one to start building the academic cycle.
                                 </TableEmpty>
                             </TableBody>
                         </Table>

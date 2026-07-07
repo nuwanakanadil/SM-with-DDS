@@ -44,7 +44,7 @@ defineProps<{
                 <PageHero
                     :eyebrow="APP_SYSTEM_SUBTITLE"
                     :title="student ? `Welcome, ${student.first_name}` : 'Student Dashboard'"
-                    :description="`Track your assessments, marks, and placement from one clear dashboard inside ${APP_BRAND_NAME}.`"
+                    :description="`Track your exams, marks, and placement from one clear dashboard inside ${APP_BRAND_NAME}.`"
                 >
                     <template #meta>
                         <Badge variant="outline" class="rounded-full px-4 py-1.5">
@@ -56,9 +56,9 @@ defineProps<{
 
                 <div class="grid gap-5 md:grid-cols-3">
                     <StatCard
-                        label="Published Assessments"
+                        label="Published Exams"
                         :value="publishedAssessmentsCount"
-                        hint="Assessments currently available to your class."
+                        hint="Exams currently available to your class."
                         :icon="BookOpenCheck"
                     />
                     <StatCard
@@ -82,10 +82,10 @@ defineProps<{
                         <CardHeader>
                             <CardDescription class="flex items-center gap-2 text-muted-foreground">
                                 <BookOpenCheck class="size-4 text-primary" />
-                                Latest Assessment
+                                Latest Exam
                             </CardDescription>
                             <CardTitle>
-                                {{ latestAssessment?.title ?? 'No published assessment yet' }}
+                                {{ latestAssessment?.title ?? 'No published exam yet' }}
                             </CardTitle>
                         </CardHeader>
                         <CardContent class="space-y-3 text-[15px] leading-7 text-muted-foreground">
@@ -98,7 +98,7 @@ defineProps<{
                                 </div>
                             </template>
                             <p v-else>
-                                Once a published assessment is available in {{ APP_BRAND_NAME }}, it will appear here.
+                                Once a published exam is available in {{ APP_BRAND_NAME }}, it will appear here.
                             </p>
                         </CardContent>
                     </Card>
@@ -117,10 +117,10 @@ defineProps<{
                         </CardHeader>
                         <CardContent class="space-y-3 text-[15px] leading-7 text-muted-foreground">
                             <p v-if="latestPlacement">
-                                You scored {{ latestPlacement.marks }} in your latest ranked assessment.
+                                You scored {{ latestPlacement.marks }} in your latest ranked exam.
                             </p>
                             <p v-else>
-                                Placement appears once published results are available for a ranked assessment.
+                                Placement appears once published results are available for a ranked exam.
                             </p>
                         </CardContent>
                     </Card>

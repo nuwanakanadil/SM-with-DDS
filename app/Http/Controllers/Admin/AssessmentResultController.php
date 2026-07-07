@@ -36,8 +36,8 @@ class AssessmentResultController extends Controller
     public function create(): Response
     {
         return Inertia::render('admin/results/Manage', [
-            'assessments' => Assessment::latest()->get(['id', 'title', 'total_marks']),
-            'students' => Student::where('is_active', true)->orderBy('first_name')->get(['id', 'admission_no', 'first_name', 'last_name']),
+            'assessments' => Assessment::latest()->get(['id', 'title', 'class_name', 'total_marks']),
+            'students' => Student::where('is_active', true)->orderBy('first_name')->get(['id', 'admission_no', 'first_name', 'last_name', 'class_name']),
         ]);
     }
 
@@ -52,8 +52,8 @@ class AssessmentResultController extends Controller
     {
         return Inertia::render('admin/results/Manage', [
             'result' => $result->load('student', 'assessment'),
-            'assessments' => Assessment::latest()->get(['id', 'title', 'total_marks']),
-            'students' => Student::where('is_active', true)->orderBy('first_name')->get(['id', 'admission_no', 'first_name', 'last_name']),
+            'assessments' => Assessment::latest()->get(['id', 'title', 'class_name', 'total_marks']),
+            'students' => Student::where('is_active', true)->orderBy('first_name')->get(['id', 'admission_no', 'first_name', 'last_name', 'class_name']),
         ]);
     }
 

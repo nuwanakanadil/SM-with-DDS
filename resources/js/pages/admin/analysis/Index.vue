@@ -72,9 +72,9 @@ defineProps<{
                         :icon="Users"
                     />
                     <StatCard
-                        label="Assessments"
+                        label="Exams"
                         :value="analysis.total_assessments"
-                        hint="Assessments configured inside the system."
+                        hint="Exams configured inside the system."
                         :icon="BookMarked"
                     />
                     <StatCard

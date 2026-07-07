@@ -44,6 +44,10 @@ class SaveAssessmentResultRequest extends FormRequest
                 $validator->errors()->add('student_id', 'Only active students can receive results.');
             }
 
+            if ($assessment->class_name && $student->class_name !== $assessment->class_name) {
+                $validator->errors()->add('assessment_id', 'The selected exam does not match the student grade.');
+            }
+
             if ((float) $this->input('marks') > $assessment->total_marks) {
                 $validator->errors()->add('marks', 'Marks cannot exceed the assessment total.');
             }
