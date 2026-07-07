@@ -36,7 +36,7 @@ import type { PaginatedResponse } from '@/types';
 import type { StaffAccount } from '@/types/staff';
 import { formatDateOnly } from '@/utils/dateTime';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { BriefcaseBusiness, Pencil, ShieldCheck, Trash2, UserRoundPlus, Users } from 'lucide-vue-next';
+import { BriefcaseBusiness, Pencil, ShieldCheck, ShieldPlus, Trash2, UserRoundPlus, Users } from 'lucide-vue-next';
 import { computed, reactive, ref } from 'vue';
 
 const props = defineProps<{
@@ -109,7 +109,7 @@ const remove = (staff: StaffAccount) => {
                         </Badge>
                     </template>
                     <template #actions>
-                        <IconButton :icon="UserRoundPlus" link="/admin/staff/create" size="lg">
+                        <IconButton :icon="ShieldPlus" link="/admin/staff/create" size="lg">
                             Add Staff
                         </IconButton>
                     </template>

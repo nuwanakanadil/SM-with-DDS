@@ -11,10 +11,13 @@ class AnalysisController extends Controller
 {
     public function __construct(private readonly AnalysisService $analysisService) {}
 
-    public function __invoke(): Response
+    public function __invoke(\Illuminate\Http\Request $request): Response
     {
         return Inertia::render('admin/analysis/Index', [
-            'analysis' => $this->analysisService->dashboardSummary(),
+            'analysis' => $this->analysisService->snapshot(
+                $request->string('grade')->toString(),
+                $request->integer('assessment_id') ?: null,
+            ),
         ]);
     }
 }

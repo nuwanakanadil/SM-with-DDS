@@ -2,6 +2,7 @@
 import { APP_BRAND_NAME, APP_SYSTEM_SUBTITLE } from '@/constants/branding';
 import PageHero from '@/components/PageHero.vue';
 import StatCard from '@/components/StatCard.vue';
+import SupportHotline from '@/components/SupportHotline.vue';
 import { Badge } from '@/components/ui/badge';
 import {
     Card,
@@ -151,6 +152,8 @@ defineProps<{
                         No published result has been recorded for your account in {{ APP_BRAND_NAME }} yet.
                     </CardContent>
                 </Card>
+
+                <SupportHotline />
             </div>
         </StudentLayout>
     </AppLayout>

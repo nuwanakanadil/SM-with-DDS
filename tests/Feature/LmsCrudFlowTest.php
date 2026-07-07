@@ -9,6 +9,7 @@ use App\Models\AssessmentResult;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
+use Inertia\Testing\AssertableInertia as Assert;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -348,4 +349,146 @@ test('account creation emails are sent for new student and staff accounts', func
             && $mail->plainPassword === 'StaffPass123'
             && $mail->role === UserTypes::Staff;
     });
+});
+
+test('admin dashboard shows grade aware management counts', function () {
+    $admin = createLmsUser();
+    createLmsUser(UserTypes::Staff->value);
+
+    Student::query()->create([
+        'admission_no' => 'ADM-401',
+        'first_name' => 'Ruwan',
+        'last_name' => 'Perera',
+        'class_name' => Grades::Grade10->value,
+        'is_active' => true,
+    ]);
+    Student::query()->create([
+        'admission_no' => 'ADM-402',
+        'first_name' => 'Nadee',
+        'last_name' => 'Silva',
+        'class_name' => Grades::Grade10->value,
+        'is_active' => true,
+    ]);
+    Student::query()->create([
+        'admission_no' => 'ADM-403',
+        'first_name' => 'Asha',
+        'last_name' => 'Fernando',
+        'class_name' => Grades::Grade11->value,
+        'is_active' => true,
+    ]);
+
+    $gradeTenExam = Assessment::query()->create([
+        'title' => 'Grade 10 Maths',
+        'class_name' => Grades::Grade10->value,
+        'assessment_date' => '2026-07-03',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+    $sharedExam = Assessment::query()->create([
+        'title' => 'General Aptitude',
+        'class_name' => null,
+        'assessment_date' => '2026-07-04',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+    $gradeElevenExam = Assessment::query()->create([
+        'title' => 'Grade 11 Science',
+        'class_name' => Grades::Grade11->value,
+        'assessment_date' => '2026-07-05',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+
+    $gradeTenStudents = Student::query()->where('class_name', Grades::Grade10->value)->get();
+    $gradeElevenStudent = Student::query()->where('class_name', Grades::Grade11->value)->firstOrFail();
+
+    AssessmentResult::query()->create([
+        'assessment_id' => $gradeTenExam->id,
+        'student_id' => $gradeTenStudents[0]->id,
+        'marks' => 80,
+    ]);
+    AssessmentResult::query()->create([
+        'assessment_id' => $sharedExam->id,
+        'student_id' => $gradeTenStudents[0]->id,
+        'marks' => 75,
+    ]);
+    AssessmentResult::query()->create([
+        'assessment_id' => $gradeElevenExam->id,
+        'student_id' => $gradeElevenStudent->id,
+        'marks' => 90,
+    ]);
+
+    $this->actingAs($admin)
+        ->get('/admin?grade='.urlencode(Grades::Grade10->value))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/dashboard/Index')
+            ->where('dashboard.viewer', UserTypes::Admin->value)
+            ->where('dashboard.selected_grade', Grades::Grade10->value)
+            ->where('dashboard.summary.total_students', 2)
+            ->where('dashboard.summary.total_staff', 1)
+            ->where('dashboard.summary.total_exams', 2)
+            ->where('dashboard.summary.pending_results', 2)
+            ->has('dashboard.overview', 2)
+        );
+});
+
+test('analysis filters scope performance data by grade and exam', function () {
+    $admin = createLmsUser();
+
+    $gradeTenStudent = Student::query()->create([
+        'admission_no' => 'ADM-501',
+        'first_name' => 'Milan',
+        'last_name' => 'Perera',
+        'class_name' => Grades::Grade10->value,
+        'is_active' => true,
+    ]);
+    $gradeElevenStudent = Student::query()->create([
+        'admission_no' => 'ADM-502',
+        'first_name' => 'Sachi',
+        'last_name' => 'Silva',
+        'class_name' => Grades::Grade11->value,
+        'is_active' => true,
+    ]);
+
+    $gradeTenExam = Assessment::query()->create([
+        'title' => 'Grade 10 Mock',
+        'class_name' => Grades::Grade10->value,
+        'assessment_date' => '2026-07-06',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+    $gradeElevenExam = Assessment::query()->create([
+        'title' => 'Grade 11 Mock',
+        'class_name' => Grades::Grade11->value,
+        'assessment_date' => '2026-07-07',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+
+    AssessmentResult::query()->create([
+        'assessment_id' => $gradeTenExam->id,
+        'student_id' => $gradeTenStudent->id,
+        'marks' => 84,
+    ]);
+    AssessmentResult::query()->create([
+        'assessment_id' => $gradeElevenExam->id,
+        'student_id' => $gradeElevenStudent->id,
+        'marks' => 63,
+    ]);
+
+    $this->actingAs($admin)
+        ->get('/admin/analysis?grade='.urlencode(Grades::Grade10->value)."&assessment_id={$gradeTenExam->id}")
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/analysis/Index')
+            ->where('analysis.selected_grade', Grades::Grade10->value)
+            ->where('analysis.selected_assessment_id', $gradeTenExam->id)
+            ->where('analysis.summary.highest_mark', 84)
+            ->where('analysis.summary.lowest_mark', 84)
+            ->where('analysis.summary.average_mark', 84)
+            ->where('analysis.summary.results_count', 1)
+            ->where('analysis.summary.students_ranked', 1)
+            ->has('analysis.ranking', 1)
+        );
 });

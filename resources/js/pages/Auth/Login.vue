@@ -2,6 +2,7 @@
 import { store as loginStore } from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
 import ApplicationLogo from '@/components/ApplicationLogo.vue';
 import InputError from '@/components/InputError.vue';
+import SupportHotline from '@/components/SupportHotline.vue';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -115,6 +116,14 @@ const submit = () => {
                             Log in
                         </Button>
                     </form>
+
+                    <div class="mt-6">
+                        <SupportHotline
+                            compact
+                            title="Need login help?"
+                            description="If you are having trouble signing in or accessing your student account, call the hotline for quick support."
+                        />
+                    </div>
                 </CardContent>
             </Card>
         </div>

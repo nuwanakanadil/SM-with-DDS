@@ -2,6 +2,7 @@
 import { APP_BRAND_NAME, APP_SYSTEM_SUBTITLE } from '@/constants/branding';
 import PageHero from '@/components/PageHero.vue';
 import StatCard from '@/components/StatCard.vue';
+import SupportHotline from '@/components/SupportHotline.vue';
 import { Badge } from '@/components/ui/badge';
 import {
     Card,
@@ -99,6 +100,11 @@ defineProps<{ results: AssessmentResult[] }>();
                         </Table>
                     </CardContent>
                 </Card>
+
+                <SupportHotline
+                    title="Questions about a published result?"
+                    description="Call the hotline if you need help understanding marks, remarks, or anything shown on your student results page."
+                />
             </div>
         </StudentLayout>
     </AppLayout>

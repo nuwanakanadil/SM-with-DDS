@@ -8,7 +8,6 @@ use App\Models\Assessment;
 use App\Models\AssessmentResult;
 use App\Models\Student;
 use App\Services\AssessmentResultService;
-use App\Services\RankingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,7 +15,7 @@ use Inertia\Response;
 
 class AssessmentResultController extends Controller
 {
-    public function __construct(private readonly AssessmentResultService $resultService, private readonly RankingService $rankingService) {}
+    public function __construct(private readonly AssessmentResultService $resultService) {}
 
     public function index(Request $request): Response
     {
@@ -28,8 +27,6 @@ class AssessmentResultController extends Controller
             'assessments' => Assessment::latest()->get(['id', 'title', 'class_name', 'assessment_date', 'total_marks']),
             'selectedAssessment' => $assessment,
             'results' => $assessment?->results()->with('student')->orderByDesc('marks')->paginate(20),
-            'summary' => $assessment ? $this->rankingService->summaryForAssessment($assessment) : null,
-            'ranks' => $assessment ? $this->rankingService->ranksForAssessment($assessment) : [],
         ]);
     }
 

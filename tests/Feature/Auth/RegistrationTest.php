@@ -11,7 +11,7 @@ it('public users cannot self register', function () {
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
-    ])->assertStatus(405);
+    ])->assertRedirect('/login');
 
     $this->assertGuest();
 });

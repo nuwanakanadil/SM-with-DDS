@@ -22,6 +22,7 @@ import {
     BriefcaseBusiness,
     ClipboardList,
     GraduationCap,
+    LayoutDashboard,
     Medal,
     ScrollText,
     Users,
@@ -42,6 +43,11 @@ const isAdminArea = computed(() => {
 
 const adminItems = computed<NavItem[]>(() => {
     const items: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: admin.dashboard.url(),
+            icon: LayoutDashboard,
+        },
         {
             title: 'Analytics',
             href: admin.analysis.url(),
@@ -94,7 +100,7 @@ const studentItems: NavItem[] = [
 ];
 
 const mainNavItems = computed(() => (isAdminArea.value ? adminItems.value : studentItems));
-const logoUrl = computed(() => (isAdminArea.value ? admin.analysis.url() : dashboard.url()));
+const logoUrl = computed(() => (isAdminArea.value ? admin.dashboard.url() : dashboard.url()));
 </script>
 
 <template>

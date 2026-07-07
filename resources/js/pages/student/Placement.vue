@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PageHero from '@/components/PageHero.vue';
+import SupportHotline from '@/components/SupportHotline.vue';
 import { Badge } from '@/components/ui/badge';
 import {
     Card,
@@ -111,6 +112,11 @@ const applyFilter = () => {
                         </p>
                     </CardContent>
                 </Card>
+
+                <SupportHotline
+                    title="Need help with placement details?"
+                    description="Call the hotline if you need support understanding ranking updates or published exam placement."
+                />
             </div>
         </StudentLayout>
     </AppLayout>
