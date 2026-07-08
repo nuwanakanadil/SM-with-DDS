@@ -8,6 +8,7 @@ use App\Models\Assessment;
 use App\Models\AssessmentResult;
 use App\Models\Student;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Testing\AssertableInertia as Assert;
 use Spatie\Permission\Models\Permission;
@@ -177,6 +178,35 @@ test('result entry prevents duplicate student assessment pairs', function () {
     $response->assertRedirect('/admin/results/create');
     $response->assertSessionHasErrors('student_id');
     expect(AssessmentResult::query()->where('assessment_id', $assessment->id)->where('student_id', $student->id)->count())->toBe(1);
+});
+
+test('result entry blocks students from a different grade than the assessment', function () {
+    $staff = createLmsUser(UserTypes::Staff->value);
+
+    $student = Student::query()->create([
+        'admission_no' => 'ADM-110',
+        'first_name' => 'Piumi',
+        'last_name' => 'Silva',
+        'class_name' => Grades::Grade10->value,
+        'is_active' => true,
+    ]);
+    $assessment = Assessment::query()->create([
+        'title' => 'Grade 11 Paper',
+        'class_name' => Grades::Grade11->value,
+        'assessment_date' => '2026-06-25',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+
+    $response = $this->actingAs($staff)->from('/admin/results/create')->post('/admin/results', [
+        'assessment_id' => $assessment->id,
+        'student_id' => $student->id,
+        'marks' => 90,
+    ]);
+
+    $response->assertRedirect('/admin/results/create');
+    $response->assertSessionHasErrors('assessment_id');
+    expect(AssessmentResult::query()->count())->toBe(0);
 });
 
 test('student pages render live database records', function () {
@@ -349,6 +379,109 @@ test('account creation emails are sent for new student and staff accounts', func
             && $mail->plainPassword === 'StaffPass123'
             && $mail->role === UserTypes::Staff;
     });
+});
+
+test('account creation continues with a warning if email sending fails', function () {
+    Mail::partialMock()
+        ->shouldReceive('to')
+        ->andReturnSelf();
+    Mail::shouldReceive('send')
+        ->andThrow(new RuntimeException('SMTP unavailable'));
+
+    $admin = createLmsUser();
+
+    $response = $this->actingAs($admin)->post('/admin/staff', [
+        'name' => 'Teacher Two',
+        'email' => 'teacher-two@example.com',
+        'password' => 'StaffPass123',
+    ]);
+
+    $response->assertRedirect('/admin/staff');
+    $response->assertSessionHas('warning', 'The account was created, but sending login details by email failed.');
+
+    $staffUser = User::query()->where('email', 'teacher-two@example.com')->firstOrFail();
+    expect($staffUser->hasRole(UserTypes::Staff->value))->toBeTrue();
+});
+
+test('admin can resend login details for staff and student accounts', function () {
+    Mail::fake();
+    $admin = createLmsUser();
+    createLmsUser(UserTypes::Student->value);
+    createLmsUser(UserTypes::Staff->value);
+
+    $studentUser = User::factory()->create([
+        'email' => 'student-login@example.com',
+        'must_change_password' => false,
+    ]);
+    $studentUser->assignRole(UserTypes::Student->value);
+    $student = Student::query()->create([
+        'user_id' => $studentUser->id,
+        'admission_no' => 'ADM-950',
+        'first_name' => 'Rashi',
+        'last_name' => 'Perera',
+        'email' => $studentUser->email,
+        'class_name' => Grades::Grade9->value,
+        'is_active' => true,
+    ]);
+
+    $staffUser = User::factory()->create([
+        'email' => 'staff-login@example.com',
+        'must_change_password' => false,
+    ]);
+    $staffUser->assignRole(UserTypes::Staff->value);
+
+    $oldStudentPassword = $studentUser->password;
+    $oldStaffPassword = $staffUser->password;
+
+    $this->actingAs($admin)
+        ->post("/admin/students/{$student->id}/resend-login")
+        ->assertRedirect('/admin/students');
+
+    $this->actingAs($admin)
+        ->post("/admin/staff/{$staffUser->id}/resend-login")
+        ->assertRedirect('/admin/staff');
+
+    $studentUser->refresh();
+    $staffUser->refresh();
+
+    expect($studentUser->password)->not->toBe($oldStudentPassword);
+    expect($staffUser->password)->not->toBe($oldStaffPassword);
+    expect($studentUser->must_change_password)->toBeTrue();
+    expect($staffUser->must_change_password)->toBeTrue();
+
+    Mail::assertSent(AccountCreatedMail::class, function (AccountCreatedMail $mail) use ($studentUser) {
+        return $mail->user->is($studentUser)
+            && Hash::check($mail->plainPassword, $studentUser->refresh()->password);
+    });
+
+    Mail::assertSent(AccountCreatedMail::class, function (AccountCreatedMail $mail) use ($staffUser) {
+        return $mail->user->is($staffUser)
+            && Hash::check($mail->plainPassword, $staffUser->refresh()->password);
+    });
+});
+
+test('admin can publish and unpublish assessments', function () {
+    $admin = createLmsUser();
+
+    $assessment = Assessment::query()->create([
+        'title' => 'Draft Paper',
+        'class_name' => Grades::Grade8->value,
+        'assessment_date' => '2026-07-03',
+        'total_marks' => 100,
+        'is_published' => false,
+    ]);
+
+    $this->actingAs($admin)
+        ->post("/admin/assessments/{$assessment->id}/publish")
+        ->assertRedirect('/admin/assessments');
+
+    expect($assessment->refresh()->is_published)->toBeTrue();
+
+    $this->actingAs($admin)
+        ->post("/admin/assessments/{$assessment->id}/unpublish")
+        ->assertRedirect('/admin/assessments');
+
+    expect($assessment->refresh()->is_published)->toBeFalse();
 });
 
 test('admin dashboard shows grade aware management counts', function () {

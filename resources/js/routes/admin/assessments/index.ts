@@ -513,6 +513,164 @@ destroy.delete = (args: { assessment: number | { id: number } } | [assessment: n
         })
     
     destroy.form = destroyForm
+/**
+* @see \App\Http\Controllers\Admin\AssessmentController::publish
+ * @see app/Http/Controllers/Admin/AssessmentController.php:71
+ * @route '/admin/assessments/{assessment}/publish'
+ */
+export const publish = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: publish.url(args, options),
+    method: 'post',
+})
+
+publish.definition = {
+    methods: ["post"],
+    url: '/admin/assessments/{assessment}/publish',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Admin\AssessmentController::publish
+ * @see app/Http/Controllers/Admin/AssessmentController.php:71
+ * @route '/admin/assessments/{assessment}/publish'
+ */
+publish.url = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { assessment: args }
+    }
+
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { assessment: args.id }
+        }
+    
+    if (Array.isArray(args)) {
+        args = {
+                    assessment: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        assessment: typeof args.assessment === 'object'
+                ? args.assessment.id
+                : args.assessment,
+                }
+
+    return publish.definition.url
+            .replace('{assessment}', parsedArgs.assessment.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\AssessmentController::publish
+ * @see app/Http/Controllers/Admin/AssessmentController.php:71
+ * @route '/admin/assessments/{assessment}/publish'
+ */
+publish.post = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: publish.url(args, options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\Admin\AssessmentController::publish
+ * @see app/Http/Controllers/Admin/AssessmentController.php:71
+ * @route '/admin/assessments/{assessment}/publish'
+ */
+    const publishForm = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: publish.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\AssessmentController::publish
+ * @see app/Http/Controllers/Admin/AssessmentController.php:71
+ * @route '/admin/assessments/{assessment}/publish'
+ */
+        publishForm.post = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: publish.url(args, options),
+            method: 'post',
+        })
+    
+    publish.form = publishForm
+/**
+* @see \App\Http\Controllers\Admin\AssessmentController::unpublish
+ * @see app/Http/Controllers/Admin/AssessmentController.php:78
+ * @route '/admin/assessments/{assessment}/unpublish'
+ */
+export const unpublish = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: unpublish.url(args, options),
+    method: 'post',
+})
+
+unpublish.definition = {
+    methods: ["post"],
+    url: '/admin/assessments/{assessment}/unpublish',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Admin\AssessmentController::unpublish
+ * @see app/Http/Controllers/Admin/AssessmentController.php:78
+ * @route '/admin/assessments/{assessment}/unpublish'
+ */
+unpublish.url = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { assessment: args }
+    }
+
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { assessment: args.id }
+        }
+    
+    if (Array.isArray(args)) {
+        args = {
+                    assessment: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        assessment: typeof args.assessment === 'object'
+                ? args.assessment.id
+                : args.assessment,
+                }
+
+    return unpublish.definition.url
+            .replace('{assessment}', parsedArgs.assessment.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\AssessmentController::unpublish
+ * @see app/Http/Controllers/Admin/AssessmentController.php:78
+ * @route '/admin/assessments/{assessment}/unpublish'
+ */
+unpublish.post = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: unpublish.url(args, options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\Admin\AssessmentController::unpublish
+ * @see app/Http/Controllers/Admin/AssessmentController.php:78
+ * @route '/admin/assessments/{assessment}/unpublish'
+ */
+    const unpublishForm = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: unpublish.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\AssessmentController::unpublish
+ * @see app/Http/Controllers/Admin/AssessmentController.php:78
+ * @route '/admin/assessments/{assessment}/unpublish'
+ */
+        unpublishForm.post = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: unpublish.url(args, options),
+            method: 'post',
+        })
+    
+    unpublish.form = unpublishForm
 const assessments = {
     index: Object.assign(index, index),
 create: Object.assign(create, create),
@@ -520,6 +678,8 @@ store: Object.assign(store, store),
 edit: Object.assign(edit, edit),
 update: Object.assign(update, update),
 destroy: Object.assign(destroy, destroy),
+publish: Object.assign(publish, publish),
+unpublish: Object.assign(unpublish, unpublish),
 }
 
 export default assessments

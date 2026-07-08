@@ -7,6 +7,10 @@ import password from '@/routes/password';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
+defineProps<{
+    mustChangePassword?: boolean;
+}>();
+
 const passwordInput = ref<HTMLInputElement | null>(null);
 const currentPasswordInput = ref<HTMLInputElement | null>(null);
 
@@ -38,9 +42,12 @@ const updatePassword = () => {
 
 <template>
     <section class="space-y-7">
-
         <form @submit.prevent="updatePassword" class="space-y-6">
-            <div class="space-y-2">
+            <p v-if="mustChangePassword" class="text-sm leading-6 text-muted-foreground">
+                Set a new password for this account to finish your first sign-in.
+            </p>
+
+            <div v-if="!mustChangePassword" class="space-y-2">
                 <InputLabel for="current_password" value="Current Password" />
 
                 <TextInput

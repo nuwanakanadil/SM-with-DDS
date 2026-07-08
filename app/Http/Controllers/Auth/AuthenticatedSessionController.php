@@ -33,6 +33,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if ($request->user()->must_change_password) {
+            return redirect()->intended(route('profile.edit').'#password');
+        }
+
         $dashboard = $request->user()->hasAnyRole(['admin', 'staff'])
             ? route('admin.dashboard', absolute: false)
             : route('dashboard', absolute: false);

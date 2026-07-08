@@ -36,7 +36,7 @@ import type { PaginatedResponse } from '@/types';
 import type { StaffAccount } from '@/types/staff';
 import { formatDateOnly } from '@/utils/dateTime';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { BriefcaseBusiness, Pencil, ShieldCheck, ShieldPlus, Trash2, UserRoundPlus, Users } from 'lucide-vue-next';
+import { BriefcaseBusiness, KeyRound, Pencil, ShieldCheck, ShieldPlus, Trash2, UserRoundPlus, Users } from 'lucide-vue-next';
 import { computed, reactive, ref } from 'vue';
 
 const props = defineProps<{
@@ -89,6 +89,10 @@ const clearFilters = () => {
 
 const remove = (staff: StaffAccount) => {
     router.delete(`/admin/staff/${staff.id}`);
+};
+
+const resendLogin = (staff: StaffAccount) => {
+    router.post(`/admin/staff/${staff.id}/resend-login`);
 };
 </script>
 
@@ -206,6 +210,10 @@ const remove = (staff: StaffAccount) => {
                                         </TableCell>
                                         <TableCell class="text-right">
                                             <div class="flex justify-end gap-2">
+                                                <Button variant="outline" size="sm" @click="resendLogin(staff)">
+                                                    <KeyRound class="size-4" />
+                                                    Resend Login
+                                                </Button>
                                                 <Button as-child variant="outline" size="icon-sm">
                                                     <Link :href="`/admin/staff/${staff.id}/edit`" aria-label="Edit staff" title="Edit staff">
                                                         <Pencil />

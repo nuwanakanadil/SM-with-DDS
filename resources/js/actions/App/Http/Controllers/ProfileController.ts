@@ -79,7 +79,7 @@ edit.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     edit.form = editForm
 /**
 * @see \App\Http\Controllers\ProfileController::update
- * @see app/Http/Controllers/ProfileController.php:32
+ * @see app/Http/Controllers/ProfileController.php:33
  * @route '/profile'
  */
 export const update = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -94,7 +94,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\ProfileController::update
- * @see app/Http/Controllers/ProfileController.php:32
+ * @see app/Http/Controllers/ProfileController.php:33
  * @route '/profile'
  */
 update.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ update.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ProfileController::update
- * @see app/Http/Controllers/ProfileController.php:32
+ * @see app/Http/Controllers/ProfileController.php:33
  * @route '/profile'
  */
 update.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -113,7 +113,7 @@ update.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
 
     /**
 * @see \App\Http\Controllers\ProfileController::update
- * @see app/Http/Controllers/ProfileController.php:32
+ * @see app/Http/Controllers/ProfileController.php:33
  * @route '/profile'
  */
     const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -128,7 +128,7 @@ update.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
 
             /**
 * @see \App\Http\Controllers\ProfileController::update
- * @see app/Http/Controllers/ProfileController.php:32
+ * @see app/Http/Controllers/ProfileController.php:33
  * @route '/profile'
  */
         updateForm.patch = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -144,7 +144,7 @@ update.patch = (options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\ProfileController::updateAvatar
- * @see app/Http/Controllers/ProfileController.php:46
+ * @see app/Http/Controllers/ProfileController.php:47
  * @route '/profile/avatar'
  */
 export const updateAvatar = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -159,7 +159,7 @@ updateAvatar.definition = {
 
 /**
 * @see \App\Http\Controllers\ProfileController::updateAvatar
- * @see app/Http/Controllers/ProfileController.php:46
+ * @see app/Http/Controllers/ProfileController.php:47
  * @route '/profile/avatar'
  */
 updateAvatar.url = (options?: RouteQueryOptions) => {
@@ -168,7 +168,7 @@ updateAvatar.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ProfileController::updateAvatar
- * @see app/Http/Controllers/ProfileController.php:46
+ * @see app/Http/Controllers/ProfileController.php:47
  * @route '/profile/avatar'
  */
 updateAvatar.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -178,7 +178,7 @@ updateAvatar.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\ProfileController::updateAvatar
- * @see app/Http/Controllers/ProfileController.php:46
+ * @see app/Http/Controllers/ProfileController.php:47
  * @route '/profile/avatar'
  */
     const updateAvatarForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -188,7 +188,7 @@ updateAvatar.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\ProfileController::updateAvatar
- * @see app/Http/Controllers/ProfileController.php:46
+ * @see app/Http/Controllers/ProfileController.php:47
  * @route '/profile/avatar'
  */
         updateAvatarForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

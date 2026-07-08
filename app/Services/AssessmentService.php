@@ -57,6 +57,24 @@ class AssessmentService
         DB::transaction(fn () => $assessment->delete());
     }
 
+    public function publish(Assessment $assessment): Assessment
+    {
+        return DB::transaction(function () use ($assessment): Assessment {
+            $assessment->forceFill(['is_published' => true])->save();
+
+            return $assessment->fresh();
+        });
+    }
+
+    public function unpublish(Assessment $assessment): Assessment
+    {
+        return DB::transaction(function () use ($assessment): Assessment {
+            $assessment->forceFill(['is_published' => false])->save();
+
+            return $assessment->fresh();
+        });
+    }
+
     public function options(): Collection
     {
         return Assessment::query()

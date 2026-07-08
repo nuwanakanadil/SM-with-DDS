@@ -3,6 +3,7 @@ import { APP_BRAND_NAME, APP_SYSTEM_SUBTITLE } from '@/constants/branding';
 import PageHero from '@/components/PageHero.vue';
 import StatCard from '@/components/StatCard.vue';
 import SupportHotline from '@/components/SupportHotline.vue';
+import MathMotionPanel from '@/components/student/MathMotionPanel.vue';
 import { Badge } from '@/components/ui/badge';
 import {
     Card,
@@ -42,44 +43,65 @@ defineProps<{
     <AppLayout :breadcrumbs="[{ title: 'Student' }, { title: 'Dashboard' }]">
         <StudentLayout>
             <div class="space-y-6">
-                <PageHero
-                    :eyebrow="APP_SYSTEM_SUBTITLE"
-                    :title="student ? `Welcome, ${student.first_name}` : 'Student Dashboard'"
-                    :description="`Track your exams, marks, and placement from one clear dashboard inside ${APP_BRAND_NAME}.`"
+                <div
+                    class="student-dashboard-hero student-dashboard-surface relaxed-panel relative overflow-hidden border-primary/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.98),rgba(219,234,254,0.9))] dark:border-white/8 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(30,41,59,0.9))]"
                 >
-                    <template #meta>
-                        <Badge variant="outline" class="rounded-full px-4 py-1.5">
-                            <GraduationCap class="size-3.5" />
-                            {{ student?.class_name ?? 'Class not assigned' }}
-                        </Badge>
-                    </template>
-                </PageHero>
+                    <MathMotionPanel
+                        variant="hero"
+                        :equations="['x^2 + y^2 = r^2', 'y = mx + c', 'sin a', 'pi = 3.14']"
+                    />
+                    <PageHero
+                        :eyebrow="APP_SYSTEM_SUBTITLE"
+                        :title="student ? `Welcome, ${student.first_name}` : 'Student Dashboard'"
+                        :description="`Track your exams, marks, and placement from one clear dashboard inside ${APP_BRAND_NAME}.`"
+                    >
+                        <template #meta>
+                            <Badge variant="outline" class="rounded-full px-4 py-1.5">
+                                <GraduationCap class="size-3.5" />
+                                {{ student?.class_name ?? 'Class not assigned' }}
+                            </Badge>
+                        </template>
+                    </PageHero>
+                </div>
 
                 <div class="grid gap-5 md:grid-cols-3">
-                    <StatCard
-                        label="Published Exams"
-                        :value="publishedAssessmentsCount"
-                        hint="Exams currently available to your class."
-                        :icon="BookOpenCheck"
-                    />
-                    <StatCard
-                        label="My Results"
-                        :value="resultsCount"
-                        hint="Results already published to your account."
-                        :icon="Sparkles"
-                    />
-                    <StatCard
-                        label="Average Marks"
-                        :value="averageMarks ?? '-'"
-                        hint="Your average score across published results."
-                        :icon="CircleGauge"
-                    />
+                    <div class="student-dashboard-stat-card student-dashboard-surface">
+                        <MathMotionPanel variant="compact" :equations="['sum n', '1/3', 'n + 1']" />
+                        <StatCard
+                            label="Published Exams"
+                            :value="publishedAssessmentsCount"
+                            hint="Exams currently available to your class."
+                            :icon="BookOpenCheck"
+                        />
+                    </div>
+                    <div class="student-dashboard-stat-card student-dashboard-surface">
+                        <MathMotionPanel variant="compact" :equations="['x + 7', 'sqrt 81', 'P(A|B)']" />
+                        <StatCard
+                            label="My Results"
+                            :value="resultsCount"
+                            hint="Results already published to your account."
+                            :icon="Sparkles"
+                        />
+                    </div>
+                    <div class="student-dashboard-stat-card student-dashboard-surface">
+                        <MathMotionPanel variant="compact" :equations="['avg', '90%', 'x bar']" />
+                        <StatCard
+                            label="Average Marks"
+                            :value="averageMarks ?? '-'"
+                            hint="Your average score across published results."
+                            :icon="CircleGauge"
+                        />
+                    </div>
                 </div>
 
                 <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
                     <Card
-                        class="section-card border-white/60 bg-[linear-gradient(135deg,rgba(255,255,255,0.98),rgba(239,246,255,0.88))] dark:border-white/8 dark:bg-[linear-gradient(135deg,rgba(17,24,39,0.96),rgba(30,41,59,0.88))]"
+                        class="section-card student-dashboard-card student-dashboard-surface relative overflow-hidden border-white/60 bg-[linear-gradient(135deg,rgba(255,255,255,0.98),rgba(239,246,255,0.88))] dark:border-white/8 dark:bg-[linear-gradient(135deg,rgba(17,24,39,0.96),rgba(30,41,59,0.88))]"
                     >
+                        <MathMotionPanel
+                            variant="card"
+                            :equations="['2x + 5', 'tan a', 'm/s^2']"
+                        />
                         <CardHeader>
                             <CardDescription class="flex items-center gap-2 text-muted-foreground">
                                 <BookOpenCheck class="size-4 text-primary" />
@@ -105,8 +127,12 @@ defineProps<{
                     </Card>
 
                     <Card
-                        class="section-card border-white/60 bg-[linear-gradient(135deg,rgba(37,99,235,0.09),rgba(255,255,255,0.98))] dark:border-white/8 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(51,65,85,0.88))]"
+                        class="section-card student-dashboard-card student-dashboard-surface relative overflow-hidden border-white/60 bg-[linear-gradient(135deg,rgba(37,99,235,0.09),rgba(255,255,255,0.98))] dark:border-white/8 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.98),rgba(51,65,85,0.88))]"
                     >
+                        <MathMotionPanel
+                            variant="card"
+                            :equations="['rank 1', '95/100', '3 : 1']"
+                        />
                         <CardHeader>
                             <CardDescription class="flex items-center gap-2 text-muted-foreground">
                                 <Trophy class="size-4 text-amber-500" />
@@ -127,7 +153,11 @@ defineProps<{
                     </Card>
                 </div>
 
-                <Card class="section-card">
+                <Card class="section-card student-dashboard-card student-dashboard-surface relative overflow-hidden">
+                    <MathMotionPanel
+                        variant="card"
+                        :equations="['8/10', 'x = 14', 'AB^2 + BC^2']"
+                    />
                     <CardHeader>
                         <CardDescription class="flex items-center gap-2 text-muted-foreground">
                             <Medal class="size-4 text-amber-500" />

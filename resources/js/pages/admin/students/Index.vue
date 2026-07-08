@@ -37,7 +37,7 @@ import studentsRoutes from '@/routes/admin/students';
 import type { PaginatedResponse } from '@/types';
 import type { Student } from '@/types/student';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Pencil, Plus, ShieldCheck, Trash2, UserPlus, Users } from 'lucide-vue-next';
+import { KeyRound, Pencil, ShieldCheck, Trash2, UserPlus, Users } from 'lucide-vue-next';
 import { computed, reactive, ref } from 'vue';
 
 const props = defineProps<{
@@ -100,6 +100,10 @@ const updateFilter = (key: 'class_name' | 'status' | 'sort', value: unknown) => 
 
 const remove = (student: Student) => {
     router.delete(studentsRoutes.destroy(student));
+};
+
+const resendLogin = (student: Student) => {
+    router.post(`/admin/students/${student.id}/resend-login`);
 };
 </script>
 
@@ -262,6 +266,15 @@ const remove = (student: Student) => {
                                         </TableCell>
                                         <TableCell class="text-right">
                                             <div class="flex justify-end gap-2">
+                                                <Button
+                                                    v-if="student.email"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    @click="resendLogin(student)"
+                                                >
+                                                    <KeyRound class="size-4" />
+                                                    Resend Login
+                                                </Button>
                                                 <Button as-child variant="outline" size="icon-sm">
                                                     <Link
                                                         :href="studentsRoutes.edit(student)"

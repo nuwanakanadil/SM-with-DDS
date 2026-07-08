@@ -38,7 +38,7 @@ import type { PaginatedResponse } from '@/types';
 import type { Assessment } from '@/types/assessment';
 import { formatDateOnly } from '@/utils/dateTime';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { BookCheck, BookMarked, Pencil, ScrollText, ShieldCheck, Trash2 } from 'lucide-vue-next';
+import { BookCheck, BookMarked, Pencil, ScrollText, ShieldCheck, ShieldOff, Trash2 } from 'lucide-vue-next';
 import { computed, reactive, ref } from 'vue';
 
 const props = defineProps<{
@@ -101,6 +101,14 @@ const updateFilter = (key: 'class_name' | 'status' | 'sort', value: unknown) => 
 
 const remove = (assessment: Assessment) => {
     router.delete(assessmentsRoutes.destroy(assessment));
+};
+
+const publish = (assessment: Assessment) => {
+    router.post(`/admin/assessments/${assessment.id}/publish`);
+};
+
+const unpublish = (assessment: Assessment) => {
+    router.post(`/admin/assessments/${assessment.id}/unpublish`);
 };
 </script>
 
@@ -259,6 +267,24 @@ const remove = (assessment: Assessment) => {
                                         </TableCell>
                                         <TableCell class="text-right">
                                             <div class="flex justify-end gap-2">
+                                                <Button
+                                                    v-if="!assessment.is_published"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    @click="publish(assessment)"
+                                                >
+                                                    <ShieldCheck class="size-4" />
+                                                    Publish
+                                                </Button>
+                                                <Button
+                                                    v-else
+                                                    variant="outline"
+                                                    size="sm"
+                                                    @click="unpublish(assessment)"
+                                                >
+                                                    <ShieldOff class="size-4" />
+                                                    Unpublish
+                                                </Button>
                                                 <Button as-child variant="outline" size="icon-sm">
                                                     <Link
                                                         :href="assessmentsRoutes.edit(assessment)"

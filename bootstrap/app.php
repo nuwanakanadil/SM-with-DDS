@@ -15,10 +15,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            \App\Http\Middleware\EnsurePasswordIsChanged::class,
         ]);
 
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(function (Request $request): string {
+            if ($request->user()?->must_change_password) {
+                return route('profile.edit').'#password';
+            }
+
             return $request->user()?->hasAnyRole(['admin', 'staff'])
                 ? route('admin.dashboard')
                 : route('dashboard');

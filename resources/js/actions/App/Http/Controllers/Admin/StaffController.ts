@@ -212,7 +212,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\Admin\StaffController::edit
- * @see app/Http/Controllers/Admin/StaffController.php:46
+ * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
 export const edit = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -227,7 +227,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\StaffController::edit
- * @see app/Http/Controllers/Admin/StaffController.php:46
+ * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
 edit.url = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -260,7 +260,7 @@ edit.url = (args: { staff: number | { id: number } } | [staff: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\Admin\StaffController::edit
- * @see app/Http/Controllers/Admin/StaffController.php:46
+ * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
 edit.get = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -269,7 +269,7 @@ edit.get = (args: { staff: number | { id: number } } | [staff: number | { id: nu
 })
 /**
 * @see \App\Http\Controllers\Admin\StaffController::edit
- * @see app/Http/Controllers/Admin/StaffController.php:46
+ * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
 edit.head = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -279,7 +279,7 @@ edit.head = (args: { staff: number | { id: number } } | [staff: number | { id: n
 
     /**
 * @see \App\Http\Controllers\Admin\StaffController::edit
- * @see app/Http/Controllers/Admin/StaffController.php:46
+ * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
     const editForm = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -289,7 +289,7 @@ edit.head = (args: { staff: number | { id: number } } | [staff: number | { id: n
 
             /**
 * @see \App\Http\Controllers\Admin\StaffController::edit
- * @see app/Http/Controllers/Admin/StaffController.php:46
+ * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
         editForm.get = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -298,7 +298,7 @@ edit.head = (args: { staff: number | { id: number } } | [staff: number | { id: n
         })
             /**
 * @see \App\Http\Controllers\Admin\StaffController::edit
- * @see app/Http/Controllers/Admin/StaffController.php:46
+ * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
         editForm.head = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -314,7 +314,7 @@ edit.head = (args: { staff: number | { id: number } } | [staff: number | { id: n
     edit.form = editForm
 /**
 * @see \App\Http\Controllers\Admin\StaffController::update
- * @see app/Http/Controllers/Admin/StaffController.php:55
+ * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
 export const update = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -329,7 +329,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\StaffController::update
- * @see app/Http/Controllers/Admin/StaffController.php:55
+ * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
 update.url = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -362,7 +362,7 @@ update.url = (args: { staff: number | { id: number } } | [staff: number | { id: 
 
 /**
 * @see \App\Http\Controllers\Admin\StaffController::update
- * @see app/Http/Controllers/Admin/StaffController.php:55
+ * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
 update.put = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -371,7 +371,7 @@ update.put = (args: { staff: number | { id: number } } | [staff: number | { id: 
 })
 /**
 * @see \App\Http\Controllers\Admin\StaffController::update
- * @see app/Http/Controllers/Admin/StaffController.php:55
+ * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
 update.patch = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -381,7 +381,7 @@ update.patch = (args: { staff: number | { id: number } } | [staff: number | { id
 
     /**
 * @see \App\Http\Controllers\Admin\StaffController::update
- * @see app/Http/Controllers/Admin/StaffController.php:55
+ * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
     const updateForm = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -396,7 +396,7 @@ update.patch = (args: { staff: number | { id: number } } | [staff: number | { id
 
             /**
 * @see \App\Http\Controllers\Admin\StaffController::update
- * @see app/Http/Controllers/Admin/StaffController.php:55
+ * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
         updateForm.put = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -410,7 +410,7 @@ update.patch = (args: { staff: number | { id: number } } | [staff: number | { id
         })
             /**
 * @see \App\Http\Controllers\Admin\StaffController::update
- * @see app/Http/Controllers/Admin/StaffController.php:55
+ * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
         updateForm.patch = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -426,7 +426,7 @@ update.patch = (args: { staff: number | { id: number } } | [staff: number | { id
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Admin\StaffController::destroy
- * @see app/Http/Controllers/Admin/StaffController.php:64
+ * @see app/Http/Controllers/Admin/StaffController.php:70
  * @route '/admin/staff/{staff}'
  */
 export const destroy = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -441,7 +441,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\StaffController::destroy
- * @see app/Http/Controllers/Admin/StaffController.php:64
+ * @see app/Http/Controllers/Admin/StaffController.php:70
  * @route '/admin/staff/{staff}'
  */
 destroy.url = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -474,7 +474,7 @@ destroy.url = (args: { staff: number | { id: number } } | [staff: number | { id:
 
 /**
 * @see \App\Http\Controllers\Admin\StaffController::destroy
- * @see app/Http/Controllers/Admin/StaffController.php:64
+ * @see app/Http/Controllers/Admin/StaffController.php:70
  * @route '/admin/staff/{staff}'
  */
 destroy.delete = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -484,7 +484,7 @@ destroy.delete = (args: { staff: number | { id: number } } | [staff: number | { 
 
     /**
 * @see \App\Http\Controllers\Admin\StaffController::destroy
- * @see app/Http/Controllers/Admin/StaffController.php:64
+ * @see app/Http/Controllers/Admin/StaffController.php:70
  * @route '/admin/staff/{staff}'
  */
     const destroyForm = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -499,7 +499,7 @@ destroy.delete = (args: { staff: number | { id: number } } | [staff: number | { 
 
             /**
 * @see \App\Http\Controllers\Admin\StaffController::destroy
- * @see app/Http/Controllers/Admin/StaffController.php:64
+ * @see app/Http/Controllers/Admin/StaffController.php:70
  * @route '/admin/staff/{staff}'
  */
         destroyForm.delete = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -513,6 +513,85 @@ destroy.delete = (args: { staff: number | { id: number } } | [staff: number | { 
         })
     
     destroy.form = destroyForm
-const StaffController = { index, create, store, edit, update, destroy }
+/**
+* @see \App\Http\Controllers\Admin\StaffController::resendLogin
+ * @see app/Http/Controllers/Admin/StaffController.php:83
+ * @route '/admin/staff/{staff}/resend-login'
+ */
+export const resendLogin = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: resendLogin.url(args, options),
+    method: 'post',
+})
+
+resendLogin.definition = {
+    methods: ["post"],
+    url: '/admin/staff/{staff}/resend-login',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Admin\StaffController::resendLogin
+ * @see app/Http/Controllers/Admin/StaffController.php:83
+ * @route '/admin/staff/{staff}/resend-login'
+ */
+resendLogin.url = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { staff: args }
+    }
+
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { staff: args.id }
+        }
+    
+    if (Array.isArray(args)) {
+        args = {
+                    staff: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        staff: typeof args.staff === 'object'
+                ? args.staff.id
+                : args.staff,
+                }
+
+    return resendLogin.definition.url
+            .replace('{staff}', parsedArgs.staff.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\StaffController::resendLogin
+ * @see app/Http/Controllers/Admin/StaffController.php:83
+ * @route '/admin/staff/{staff}/resend-login'
+ */
+resendLogin.post = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: resendLogin.url(args, options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\Admin\StaffController::resendLogin
+ * @see app/Http/Controllers/Admin/StaffController.php:83
+ * @route '/admin/staff/{staff}/resend-login'
+ */
+    const resendLoginForm = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: resendLogin.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\StaffController::resendLogin
+ * @see app/Http/Controllers/Admin/StaffController.php:83
+ * @route '/admin/staff/{staff}/resend-login'
+ */
+        resendLoginForm.post = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: resendLogin.url(args, options),
+            method: 'post',
+        })
+    
+    resendLogin.form = resendLoginForm
+const StaffController = { index, create, store, edit, update, destroy, resendLogin }
 
 export default StaffController

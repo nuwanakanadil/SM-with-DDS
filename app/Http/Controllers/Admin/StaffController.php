@@ -38,9 +38,15 @@ class StaffController extends Controller
 
     public function store(CreateStaffRequest $request): RedirectResponse
     {
-        $this->staffService->create($request->validated());
+        $result = $this->staffService->create($request->validated());
+        $response = redirect()->route('admin.staff.index')
+            ->with('success', 'Staff account created successfully.');
 
-        return redirect()->route('admin.staff.index')->with('success', 'Staff account created and login details emailed.');
+        if ($result['warning']) {
+            $response->with('warning', $result['warning']);
+        }
+
+        return $response;
     }
 
     public function edit(User $staff): Response
@@ -72,6 +78,16 @@ class StaffController extends Controller
         $this->staffService->delete($staff);
 
         return redirect()->route('admin.staff.index')->with('success', 'Staff account deleted successfully.');
+    }
+
+    public function resendLogin(User $staff): RedirectResponse
+    {
+        $this->ensureStaffAccount($staff);
+
+        $warning = $this->staffService->resendLoginDetails($staff);
+
+        return redirect()->route('admin.staff.index')
+            ->with($warning ? 'warning' : 'success', $warning ?: 'New login details sent to the staff member successfully.');
     }
 
     private function ensureStaffAccount(User $staff): void

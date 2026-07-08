@@ -64,9 +64,15 @@ class StudentController extends Controller
 
     public function store(CreateStudentRequest $request): RedirectResponse
     {
-        $this->studentService->create($request->validated());
+        $result = $this->studentService->create($request->validated());
+        $response = redirect()->route('admin.students.index')
+            ->with('success', 'Student created successfully.');
 
-        return redirect()->route('admin.students.index')->with('success', 'Student created successfully.');
+        if ($result['warning']) {
+            $response->with('warning', $result['warning']);
+        }
+
+        return $response;
     }
 
     public function edit(Student $student): Response
@@ -79,9 +85,23 @@ class StudentController extends Controller
 
     public function update(UpdateStudentRequest $request, Student $student): RedirectResponse
     {
-        $this->studentService->update($student, $request->validated());
+        $result = $this->studentService->update($student, $request->validated());
+        $response = redirect()->route('admin.students.index')
+            ->with('success', 'Student updated successfully.');
 
-        return redirect()->route('admin.students.index')->with('success', 'Student updated successfully.');
+        if ($result['warning']) {
+            $response->with('warning', $result['warning']);
+        }
+
+        return $response;
+    }
+
+    public function resendLogin(Student $student): RedirectResponse
+    {
+        $warning = $this->studentService->resendLoginDetails($student);
+
+        return redirect()->route('admin.students.index')
+            ->with($warning ? 'warning' : 'success', $warning ?: 'New login details sent to the student successfully.');
     }
 
     public function destroy(Student $student): RedirectResponse

@@ -67,4 +67,18 @@ class AssessmentController extends Controller
 
         return redirect()->route('admin.assessments.index')->with('success', 'Assessment deleted successfully.');
     }
+
+    public function publish(Assessment $assessment): RedirectResponse
+    {
+        $this->assessmentService->publish($assessment);
+
+        return redirect()->route('admin.assessments.index')->with('success', 'Assessment published successfully.');
+    }
+
+    public function unpublish(Assessment $assessment): RedirectResponse
+    {
+        $this->assessmentService->unpublish($assessment);
+
+        return redirect()->route('admin.assessments.index')->with('success', 'Assessment unpublished successfully.');
+    }
 }

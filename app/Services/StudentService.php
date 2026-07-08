@@ -14,7 +14,8 @@ class StudentService
         private readonly AccountProvisioningService $accountProvisioningService,
     ) {}
 
-    public function create(array $data): Student
+    /** @return array{student: Student, warning: string|null} */
+    public function create(array $data): array
     {
         $createdAccount = null;
 
@@ -30,18 +31,24 @@ class StudentService
             return $student->fresh(['user']);
         });
 
+        $warning = null;
+
         if (is_array($createdAccount)) {
-            $this->accountProvisioningService->sendAccountCreatedMail(
+            $warning = $this->accountProvisioningService->sendAccountCreatedMailSafely(
                 $createdAccount['user'],
                 $createdAccount['plain_password'],
                 UserTypes::Student,
             );
         }
 
-        return $student;
+        return [
+            'student' => $student,
+            'warning' => $warning,
+        ];
     }
 
-    public function update(Student $student, array $data): Student
+    /** @return array{student: Student, warning: string|null} */
+    public function update(Student $student, array $data): array
     {
         $createdAccount = null;
 
@@ -54,15 +61,29 @@ class StudentService
             return $student->fresh(['user']);
         });
 
+        $warning = null;
+
         if (is_array($createdAccount)) {
-            $this->accountProvisioningService->sendAccountCreatedMail(
+            $warning = $this->accountProvisioningService->sendAccountCreatedMailSafely(
                 $createdAccount['user'],
                 $createdAccount['plain_password'],
                 UserTypes::Student,
             );
         }
 
-        return $updatedStudent;
+        return [
+            'student' => $updatedStudent,
+            'warning' => $warning,
+        ];
+    }
+
+    public function resendLoginDetails(Student $student): ?string
+    {
+        if (! $student->user || ! $student->user->email) {
+            return 'This student does not have a linked login account to resend.';
+        }
+
+        return $this->accountProvisioningService->issueTemporaryPassword($student->user, UserTypes::Student);
     }
 
     private function syncLinkedUser(Student $student, array $data, ?array &$createdAccount = null): void

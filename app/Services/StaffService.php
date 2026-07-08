@@ -38,7 +38,8 @@ class StaffService
             ->withQueryString();
     }
 
-    public function create(array $data): User
+    /** @return array{staff: User, warning: string|null} */
+    public function create(array $data): array
     {
         $createdAccount = null;
 
@@ -54,15 +55,20 @@ class StaffService
             return $user->fresh() ?? $user;
         });
 
+        $warning = null;
+
         if (is_array($createdAccount)) {
-            $this->accountProvisioningService->sendAccountCreatedMail(
+            $warning = $this->accountProvisioningService->sendAccountCreatedMailSafely(
                 $createdAccount['user'],
                 $createdAccount['plain_password'],
                 UserTypes::Staff,
             );
         }
 
-        return $staff;
+        return [
+            'staff' => $staff,
+            'warning' => $warning,
+        ];
     }
 
     public function update(User $staff, array $data): User
@@ -83,5 +89,10 @@ class StaffService
     public function delete(User $staff): void
     {
         DB::transaction(fn () => $staff->delete());
+    }
+
+    public function resendLoginDetails(User $staff): ?string
+    {
+        return $this->accountProvisioningService->issueTemporaryPassword($staff, UserTypes::Staff);
     }
 }

@@ -12,8 +12,9 @@ import { Head } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
 import { computed, onMounted, ref } from 'vue';
 
-defineProps<{
+const props = defineProps<{
     mustVerifyEmail?: boolean;
+    mustChangePassword?: boolean;
     status?: string;
 }>();
 
@@ -61,6 +62,11 @@ onMounted(() => {
         return;
     }
 
+    if (props.mustChangePassword) {
+        activeTab.value = 'password';
+        return;
+    }
+
     const hash = window.location.hash.replace('#', '');
 
     if (hash === 'profile' || hash === 'password' || hash === 'appearance') {
@@ -94,6 +100,13 @@ onMounted(() => {
                 </Button>
             </template>
 
+            <div
+                v-if="mustChangePassword"
+                class="rounded-2xl border border-amber-200/80 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/12 dark:text-amber-100"
+            >
+                Update your password before continuing to the rest of the system.
+            </div>
+
             <div v-show="activeTab === 'profile'" class="flex flex-col space-y-6">
                 <Heading
                     variant="small"
@@ -114,7 +127,7 @@ onMounted(() => {
                     :description="activeCopy.description"
                 />
 
-                <UpdatePasswordForm />
+                <UpdatePasswordForm :must-change-password="mustChangePassword" />
             </div>
 
             <div v-show="activeTab === 'appearance'" class="space-y-6">
