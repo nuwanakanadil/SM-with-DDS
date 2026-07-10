@@ -7,7 +7,7 @@ defineProps<{
     compact?: boolean;
 }>();
 
-const hotlineNumber = '0750623988';
+const hotlineNumber = '0712378372';
 </script>
 
 <template>
