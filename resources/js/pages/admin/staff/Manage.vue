@@ -115,7 +115,7 @@ const fillGeneratedPassword = () => {
                                             Generate Random
                                         </Button>
                                     </div>
-                                    <Input id="password" v-model="form.password" type="text" placeholder="Leave blank to auto-generate a password" />
+                                    <Input id="password" v-model="form.password" type="password" placeholder="Leave blank to auto-generate a password" />
                                     <p class="text-sm text-muted-foreground">
                                         New accounts are emailed their login details automatically. Updating this later changes the saved password only.
                                     </p>
