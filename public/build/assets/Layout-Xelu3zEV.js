@@ -1,0 +1,1 @@
+import{C as e,G as t,H as n,b as r}from"./app-CvZkyz1t.js";import{r as i}from"./wayfinder-Di9OWG7m.js";var a={},o={class:`mx-auto w-full max-w-[96rem] px-5 py-8 md:px-8 md:py-10 xl:px-10`},s={class:`space-y-8 xl:space-y-10`};function c(i,a){return n(),e(`div`,o,[r(`section`,s,[t(i.$slots,`default`)])])}var l=i(a,[[`render`,c]]);export{l as t};
