@@ -239,6 +239,7 @@ const resendLogin = (student: Student) => {
                                 <TableRow class="bg-secondary/70">
                                     <TableHead>Admission No</TableHead>
                                     <TableHead>Name</TableHead>
+                                    <TableHead>School</TableHead>
                                     <TableHead>Class</TableHead>
                                     <TableHead>Email</TableHead>
                                     <TableHead>Status</TableHead>
@@ -257,6 +258,7 @@ const resendLogin = (student: Student) => {
                                         <TableCell>
                                             {{ student.first_name }} {{ student.last_name }}
                                         </TableCell>
+                                        <TableCell>{{ student.school ?? '-' }}</TableCell>
                                         <TableCell>{{ student.class_name ?? '-' }}</TableCell>
                                         <TableCell>{{ student.email ?? '-' }}</TableCell>
                                         <TableCell>
@@ -306,7 +308,7 @@ const resendLogin = (student: Student) => {
                                     </TableRow>
                                 </template>
 
-                                <TableEmpty v-else :colspan="6" class="py-14">
+                                <TableEmpty v-else :colspan="7" class="py-14">
                                     No students have been added to {{ APP_BRAND_NAME }} yet. Add your first student to begin managing academic records.
                                 </TableEmpty>
                             </TableBody>

@@ -27,9 +27,8 @@ import { Head, useForm } from '@inertiajs/vue3';
 import {
     BadgeCheck,
     BookUser,
+    Building2,
     IdCard,
-    Mail,
-    Phone,
     RefreshCw,
     Save,
     UserRound,
@@ -48,6 +47,7 @@ const form = useForm({
     admission_no: props.student?.admission_no ?? '',
     first_name: props.student?.first_name ?? '',
     last_name: props.student?.last_name ?? '',
+    school: props.student?.school ?? '',
     email: props.student?.email ?? '',
     phone: props.student?.phone ?? '',
     class_name: props.student?.class_name ?? '',
@@ -150,12 +150,17 @@ const fillGeneratedPassword = () => {
 
                             <section class="space-y-4">
                                 <div class="flex items-center gap-2">
-                                    <Mail class="size-4 text-primary" />
+                                    <Building2 class="size-4 text-primary" />
                                     <h3 class="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                                        Contact Information
+                                        School and Contact Information
                                     </h3>
                                 </div>
                                 <div class="grid gap-5 md:grid-cols-2">
+                                    <div class="space-y-2 md:col-span-2">
+                                        <Label for="school">School</Label>
+                                        <Input id="school" v-model="form.school" placeholder="Enter school name" />
+                                        <InputError :message="form.errors.school" />
+                                    </div>
                                     <div class="space-y-2">
                                         <Label for="email">Email</Label>
                                         <Input id="email" v-model="form.email" type="email" placeholder="Enter email address" />

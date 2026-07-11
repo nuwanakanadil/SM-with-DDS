@@ -19,6 +19,7 @@ class Student extends Model
         'admission_no',
         'first_name',
         'last_name',
+        'school',
         'email',
         'phone',
         'class_name',
