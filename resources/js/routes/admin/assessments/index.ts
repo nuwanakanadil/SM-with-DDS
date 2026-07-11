@@ -215,7 +215,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
  * @see app/Http/Controllers/Admin/AssessmentController.php:49
  * @route '/admin/assessments/{assessment}/edit'
  */
-export const edit = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const edit = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -230,7 +230,7 @@ edit.definition = {
  * @see app/Http/Controllers/Admin/AssessmentController.php:49
  * @route '/admin/assessments/{assessment}/edit'
  */
-edit.url = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+edit.url = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { assessment: args }
     }
@@ -263,7 +263,7 @@ edit.url = (args: { assessment: string | number | { id: string | number } } | [a
  * @see app/Http/Controllers/Admin/AssessmentController.php:49
  * @route '/admin/assessments/{assessment}/edit'
  */
-edit.get = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+edit.get = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -272,7 +272,7 @@ edit.get = (args: { assessment: string | number | { id: string | number } } | [a
  * @see app/Http/Controllers/Admin/AssessmentController.php:49
  * @route '/admin/assessments/{assessment}/edit'
  */
-edit.head = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+edit.head = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
     method: 'head',
 })
@@ -282,7 +282,7 @@ edit.head = (args: { assessment: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/Admin/AssessmentController.php:49
  * @route '/admin/assessments/{assessment}/edit'
  */
-    const editForm = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    const editForm = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: edit.url(args, options),
         method: 'get',
     })
@@ -292,7 +292,7 @@ edit.head = (args: { assessment: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/Admin/AssessmentController.php:49
  * @route '/admin/assessments/{assessment}/edit'
  */
-        editForm.get = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        editForm.get = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, options),
             method: 'get',
         })
@@ -301,7 +301,7 @@ edit.head = (args: { assessment: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/Admin/AssessmentController.php:49
  * @route '/admin/assessments/{assessment}/edit'
  */
-        editForm.head = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        editForm.head = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'HEAD',
@@ -317,7 +317,7 @@ edit.head = (args: { assessment: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/Admin/AssessmentController.php:57
  * @route '/admin/assessments/{assessment}'
  */
-export const update = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -332,7 +332,7 @@ update.definition = {
  * @see app/Http/Controllers/Admin/AssessmentController.php:57
  * @route '/admin/assessments/{assessment}'
  */
-update.url = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+update.url = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { assessment: args }
     }
@@ -365,7 +365,7 @@ update.url = (args: { assessment: string | number | { id: string | number } } | 
  * @see app/Http/Controllers/Admin/AssessmentController.php:57
  * @route '/admin/assessments/{assessment}'
  */
-update.put = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -374,7 +374,7 @@ update.put = (args: { assessment: string | number | { id: string | number } } | 
  * @see app/Http/Controllers/Admin/AssessmentController.php:57
  * @route '/admin/assessments/{assessment}'
  */
-update.patch = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -384,7 +384,7 @@ update.patch = (args: { assessment: string | number | { id: string | number } } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:57
  * @route '/admin/assessments/{assessment}'
  */
-    const updateForm = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const updateForm = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'PUT',
@@ -399,7 +399,7 @@ update.patch = (args: { assessment: string | number | { id: string | number } } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:57
  * @route '/admin/assessments/{assessment}'
  */
-        updateForm.put = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.put = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PUT',
@@ -413,7 +413,7 @@ update.patch = (args: { assessment: string | number | { id: string | number } } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:57
  * @route '/admin/assessments/{assessment}'
  */
-        updateForm.patch = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.patch = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PATCH',
@@ -429,7 +429,7 @@ update.patch = (args: { assessment: string | number | { id: string | number } } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:64
  * @route '/admin/assessments/{assessment}'
  */
-export const destroy = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -444,7 +444,7 @@ destroy.definition = {
  * @see app/Http/Controllers/Admin/AssessmentController.php:64
  * @route '/admin/assessments/{assessment}'
  */
-destroy.url = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { assessment: args }
     }
@@ -477,7 +477,7 @@ destroy.url = (args: { assessment: string | number | { id: string | number } } |
  * @see app/Http/Controllers/Admin/AssessmentController.php:64
  * @route '/admin/assessments/{assessment}'
  */
-destroy.delete = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -487,7 +487,7 @@ destroy.delete = (args: { assessment: string | number | { id: string | number } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:64
  * @route '/admin/assessments/{assessment}'
  */
-    const destroyForm = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const destroyForm = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'DELETE',
@@ -502,7 +502,7 @@ destroy.delete = (args: { assessment: string | number | { id: string | number } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:64
  * @route '/admin/assessments/{assessment}'
  */
-        destroyForm.delete = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        destroyForm.delete = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'DELETE',
@@ -518,7 +518,7 @@ destroy.delete = (args: { assessment: string | number | { id: string | number } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:71
  * @route '/admin/assessments/{assessment}/publish'
  */
-export const publish = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const publish = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: publish.url(args, options),
     method: 'post',
 })
@@ -533,7 +533,7 @@ publish.definition = {
  * @see app/Http/Controllers/Admin/AssessmentController.php:71
  * @route '/admin/assessments/{assessment}/publish'
  */
-publish.url = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+publish.url = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { assessment: args }
     }
@@ -566,7 +566,7 @@ publish.url = (args: { assessment: string | number | { id: string | number } } |
  * @see app/Http/Controllers/Admin/AssessmentController.php:71
  * @route '/admin/assessments/{assessment}/publish'
  */
-publish.post = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+publish.post = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: publish.url(args, options),
     method: 'post',
 })
@@ -576,7 +576,7 @@ publish.post = (args: { assessment: string | number | { id: string | number } } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:71
  * @route '/admin/assessments/{assessment}/publish'
  */
-    const publishForm = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const publishForm = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: publish.url(args, options),
         method: 'post',
     })
@@ -586,7 +586,7 @@ publish.post = (args: { assessment: string | number | { id: string | number } } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:71
  * @route '/admin/assessments/{assessment}/publish'
  */
-        publishForm.post = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        publishForm.post = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: publish.url(args, options),
             method: 'post',
         })
@@ -597,7 +597,7 @@ publish.post = (args: { assessment: string | number | { id: string | number } } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:78
  * @route '/admin/assessments/{assessment}/unpublish'
  */
-export const unpublish = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const unpublish = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: unpublish.url(args, options),
     method: 'post',
 })
@@ -612,7 +612,7 @@ unpublish.definition = {
  * @see app/Http/Controllers/Admin/AssessmentController.php:78
  * @route '/admin/assessments/{assessment}/unpublish'
  */
-unpublish.url = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+unpublish.url = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { assessment: args }
     }
@@ -645,7 +645,7 @@ unpublish.url = (args: { assessment: string | number | { id: string | number } }
  * @see app/Http/Controllers/Admin/AssessmentController.php:78
  * @route '/admin/assessments/{assessment}/unpublish'
  */
-unpublish.post = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+unpublish.post = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: unpublish.url(args, options),
     method: 'post',
 })
@@ -655,7 +655,7 @@ unpublish.post = (args: { assessment: string | number | { id: string | number } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:78
  * @route '/admin/assessments/{assessment}/unpublish'
  */
-    const unpublishForm = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const unpublishForm = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: unpublish.url(args, options),
         method: 'post',
     })
@@ -665,7 +665,7 @@ unpublish.post = (args: { assessment: string | number | { id: string | number } 
  * @see app/Http/Controllers/Admin/AssessmentController.php:78
  * @route '/admin/assessments/{assessment}/unpublish'
  */
-        unpublishForm.post = (args: { assessment: string | number | { id: string | number } } | [assessment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        unpublishForm.post = (args: { assessment: number | { id: number } } | [assessment: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: unpublish.url(args, options),
             method: 'post',
         })

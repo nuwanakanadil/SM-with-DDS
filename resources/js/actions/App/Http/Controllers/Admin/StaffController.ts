@@ -215,7 +215,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
  * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
-export const edit = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const edit = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -230,7 +230,7 @@ edit.definition = {
  * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
-edit.url = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+edit.url = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { staff: args }
     }
@@ -263,7 +263,7 @@ edit.url = (args: { staff: string | number | { id: string | number } } | [staff:
  * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
-edit.get = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+edit.get = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: edit.url(args, options),
     method: 'get',
 })
@@ -272,7 +272,7 @@ edit.get = (args: { staff: string | number | { id: string | number } } | [staff:
  * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
-edit.head = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+edit.head = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: edit.url(args, options),
     method: 'head',
 })
@@ -282,7 +282,7 @@ edit.head = (args: { staff: string | number | { id: string | number } } | [staff
  * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
-    const editForm = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    const editForm = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: edit.url(args, options),
         method: 'get',
     })
@@ -292,7 +292,7 @@ edit.head = (args: { staff: string | number | { id: string | number } } | [staff
  * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
-        editForm.get = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        editForm.get = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, options),
             method: 'get',
         })
@@ -301,7 +301,7 @@ edit.head = (args: { staff: string | number | { id: string | number } } | [staff
  * @see app/Http/Controllers/Admin/StaffController.php:52
  * @route '/admin/staff/{staff}/edit'
  */
-        editForm.head = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        editForm.head = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: edit.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'HEAD',
@@ -317,7 +317,7 @@ edit.head = (args: { staff: string | number | { id: string | number } } | [staff
  * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
-export const update = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+export const update = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -332,7 +332,7 @@ update.definition = {
  * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
-update.url = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+update.url = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { staff: args }
     }
@@ -365,7 +365,7 @@ update.url = (args: { staff: string | number | { id: string | number } } | [staf
  * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
-update.put = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+update.put = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
@@ -374,7 +374,7 @@ update.put = (args: { staff: string | number | { id: string | number } } | [staf
  * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
-update.patch = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+update.patch = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
@@ -384,7 +384,7 @@ update.patch = (args: { staff: string | number | { id: string | number } } | [st
  * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
-    const updateForm = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const updateForm = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: update.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'PUT',
@@ -399,7 +399,7 @@ update.patch = (args: { staff: string | number | { id: string | number } } | [st
  * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
-        updateForm.put = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.put = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PUT',
@@ -413,7 +413,7 @@ update.patch = (args: { staff: string | number | { id: string | number } } | [st
  * @see app/Http/Controllers/Admin/StaffController.php:61
  * @route '/admin/staff/{staff}'
  */
-        updateForm.patch = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        updateForm.patch = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: update.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'PATCH',
@@ -429,7 +429,7 @@ update.patch = (args: { staff: string | number | { id: string | number } } | [st
  * @see app/Http/Controllers/Admin/StaffController.php:70
  * @route '/admin/staff/{staff}'
  */
-export const destroy = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -444,7 +444,7 @@ destroy.definition = {
  * @see app/Http/Controllers/Admin/StaffController.php:70
  * @route '/admin/staff/{staff}'
  */
-destroy.url = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+destroy.url = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { staff: args }
     }
@@ -477,7 +477,7 @@ destroy.url = (args: { staff: string | number | { id: string | number } } | [sta
  * @see app/Http/Controllers/Admin/StaffController.php:70
  * @route '/admin/staff/{staff}'
  */
-destroy.delete = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -487,7 +487,7 @@ destroy.delete = (args: { staff: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/Admin/StaffController.php:70
  * @route '/admin/staff/{staff}'
  */
-    const destroyForm = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const destroyForm = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: destroy.url(args, {
                     [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                         _method: 'DELETE',
@@ -502,7 +502,7 @@ destroy.delete = (args: { staff: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/Admin/StaffController.php:70
  * @route '/admin/staff/{staff}'
  */
-        destroyForm.delete = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        destroyForm.delete = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: destroy.url(args, {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
                             _method: 'DELETE',
@@ -518,7 +518,7 @@ destroy.delete = (args: { staff: string | number | { id: string | number } } | [
  * @see app/Http/Controllers/Admin/StaffController.php:83
  * @route '/admin/staff/{staff}/resend-login'
  */
-export const resendLogin = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const resendLogin = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: resendLogin.url(args, options),
     method: 'post',
 })
@@ -533,7 +533,7 @@ resendLogin.definition = {
  * @see app/Http/Controllers/Admin/StaffController.php:83
  * @route '/admin/staff/{staff}/resend-login'
  */
-resendLogin.url = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
+resendLogin.url = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { staff: args }
     }
@@ -566,7 +566,7 @@ resendLogin.url = (args: { staff: string | number | { id: string | number } } | 
  * @see app/Http/Controllers/Admin/StaffController.php:83
  * @route '/admin/staff/{staff}/resend-login'
  */
-resendLogin.post = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+resendLogin.post = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: resendLogin.url(args, options),
     method: 'post',
 })
@@ -576,7 +576,7 @@ resendLogin.post = (args: { staff: string | number | { id: string | number } } |
  * @see app/Http/Controllers/Admin/StaffController.php:83
  * @route '/admin/staff/{staff}/resend-login'
  */
-    const resendLoginForm = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const resendLoginForm = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: resendLogin.url(args, options),
         method: 'post',
     })
@@ -586,7 +586,7 @@ resendLogin.post = (args: { staff: string | number | { id: string | number } } |
  * @see app/Http/Controllers/Admin/StaffController.php:83
  * @route '/admin/staff/{staff}/resend-login'
  */
-        resendLoginForm.post = (args: { staff: string | number | { id: string | number } } | [staff: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        resendLoginForm.post = (args: { staff: number | { id: number } } | [staff: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: resendLogin.url(args, options),
             method: 'post',
         })
