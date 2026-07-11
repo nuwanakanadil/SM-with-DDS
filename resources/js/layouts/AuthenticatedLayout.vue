@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
+import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton.vue';
+import { usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+
+const page = usePage();
+const isStudentUser = computed(() => {
+    const roles = page.props.auth?.roles;
+
+    return Array.isArray(roles) && roles.includes('student');
+});
 </script>
 
 <template>
@@ -14,5 +24,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 
             <slot />
         </div>
+
+        <WhatsAppFloatingButton v-if="isStudentUser" />
     </AppLayout>
 </template>
