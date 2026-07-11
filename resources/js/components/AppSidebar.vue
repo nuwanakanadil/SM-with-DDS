@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AppLogo from '@/components/AppLogo.vue';
+import { APP_BRAND_NAME, APP_SYSTEM_SUBTITLE } from '@/constants/branding';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { dashboard } from '@/routes';
@@ -108,8 +109,16 @@ const logoUrl = computed(() => (isAdminArea.value ? admin.dashboard.url() : dash
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child class="h-auto rounded-lg px-0 py-0 hover:bg-transparent">
-                        <Link :href="logoUrl" class="flex items-center">
+                        <Link :href="logoUrl" class="flex items-center gap-2.5">
                             <AppLogo />
+                            <div class="grid flex-1 text-left leading-tight">
+                                <span class="truncate text-[13px] font-semibold text-sidebar-foreground">
+                                    {{ APP_BRAND_NAME }}
+                                </span>
+                                <span class="truncate text-[11px] text-sidebar-foreground/55">
+                                    {{ APP_SYSTEM_SUBTITLE }}
+                                </span>
+                            </div>
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
