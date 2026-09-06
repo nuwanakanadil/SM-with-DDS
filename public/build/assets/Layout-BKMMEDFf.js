@@ -1,1 +1,0 @@
-import{C as e,G as t,H as n,b as r}from"./app-B1-xb3-0.js";import{t as i}from"./_plugin-vue_export-helper-BDNMzG2s.js";var a={},o={class:`mx-auto w-full max-w-[92rem] px-5 py-8 md:px-8 md:py-10 xl:px-10`},s={class:`space-y-8 xl:space-y-10`};function c(i,a){return n(),e(`div`,o,[r(`section`,s,[t(i.$slots,`default`)])])}var l=i(a,[[`render`,c]]);export{l as t};

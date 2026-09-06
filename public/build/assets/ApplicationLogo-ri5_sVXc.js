@@ -1,0 +1,1 @@
+import{C as e,H as t}from"./app-CfWT2na8.js";import{t as n}from"./_plugin-vue_export-helper-BDNMzG2s.js";var r={},i={src:`/images/logo-cropped.png?v=20260711`,alt:`Super Maths with Damith logo`,class:`block max-w-full object-contain`};function a(n,r){return t(),e(`img`,i)}var o=n(r,[[`render`,a]]);export{o as t};
