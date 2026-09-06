@@ -64,7 +64,7 @@ class AccountProvisioningService
         }
 
         $user->password = Hash::make($plainPassword);
-        $user->must_change_password = false;
+        $user->must_change_password = true;
     }
 
     public function issueTemporaryPassword(User $user, UserTypes $role): ?string

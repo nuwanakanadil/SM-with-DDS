@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\PublicResultController::index
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\PublicResultController::index
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PublicResultController::index
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\PublicResultController::index
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\PublicResultController::index
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\PublicResultController::index
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\PublicResultController::index
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\PublicResultController::search
- * @see app/Http/Controllers/PublicResultController.php:24
+ * @see app/Http/Controllers/PublicResultController.php:25
  * @route '/results/search'
  */
 export const search = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ search.definition = {
 
 /**
 * @see \App\Http\Controllers\PublicResultController::search
- * @see app/Http/Controllers/PublicResultController.php:24
+ * @see app/Http/Controllers/PublicResultController.php:25
  * @route '/results/search'
  */
 search.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ search.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PublicResultController::search
- * @see app/Http/Controllers/PublicResultController.php:24
+ * @see app/Http/Controllers/PublicResultController.php:25
  * @route '/results/search'
  */
 search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -112,7 +112,7 @@ search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\PublicResultController::search
- * @see app/Http/Controllers/PublicResultController.php:24
+ * @see app/Http/Controllers/PublicResultController.php:25
  * @route '/results/search'
  */
 search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -122,7 +122,7 @@ search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\PublicResultController::search
- * @see app/Http/Controllers/PublicResultController.php:24
+ * @see app/Http/Controllers/PublicResultController.php:25
  * @route '/results/search'
  */
     const searchForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -132,7 +132,7 @@ search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\PublicResultController::search
- * @see app/Http/Controllers/PublicResultController.php:24
+ * @see app/Http/Controllers/PublicResultController.php:25
  * @route '/results/search'
  */
         searchForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -141,7 +141,7 @@ search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\PublicResultController::search
- * @see app/Http/Controllers/PublicResultController.php:24
+ * @see app/Http/Controllers/PublicResultController.php:25
  * @route '/results/search'
  */
         searchForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

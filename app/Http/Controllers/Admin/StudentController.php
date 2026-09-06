@@ -19,12 +19,19 @@ class StudentController extends Controller
 
     public function index(Request $request): Response
     {
-        $filters = [
-            'search' => $request->string('search')->toString(),
-            'class_name' => $request->string('class_name')->toString(),
-            'status' => $request->string('status')->toString(),
-            'sort' => $request->string('sort')->toString(),
-        ];
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'class_name' => ['nullable', 'string', 'max:120', \Illuminate\Validation\Rule::in(Grades::values())],
+            'status' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['active', 'inactive'])],
+            'sort' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['name_asc', 'name_desc', 'admission_asc', 'admission_desc'])],
+        ]);
+
+        $filters = array_merge([
+            'search' => '',
+            'class_name' => '',
+            'status' => '',
+            'sort' => '',
+        ], $filters);
 
         $students = Student::query()
             ->when($filters['search'], function ($query, string $search) {

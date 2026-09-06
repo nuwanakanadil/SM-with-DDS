@@ -18,12 +18,19 @@ class AssessmentController extends Controller
 
     public function index(Request $request): Response
     {
-        $filters = [
-            'search' => $request->string('search')->toString(),
-            'class_name' => $request->string('class_name')->toString(),
-            'status' => $request->string('status')->toString(),
-            'sort' => $request->string('sort')->toString(),
-        ];
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'class_name' => ['nullable', 'string', 'max:120', \Illuminate\Validation\Rule::in(Grades::values())],
+            'status' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['published', 'draft'])],
+            'sort' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['title_asc', 'title_desc', 'date_asc', 'date_desc'])],
+        ]);
+
+        $filters = array_merge([
+            'search' => '',
+            'class_name' => '',
+            'status' => '',
+            'sort' => '',
+        ], $filters);
 
         return Inertia::render('admin/assessments/Index', [
             'assessments' => $this->assessmentService->paginated($filters),

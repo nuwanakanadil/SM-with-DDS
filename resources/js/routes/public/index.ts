@@ -2,7 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 import results8ded7a from './results'
 /**
 * @see \App\Http\Controllers\PublicResultController::results
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
 export const results = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -17,7 +17,7 @@ results.definition = {
 
 /**
 * @see \App\Http\Controllers\PublicResultController::results
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
 results.url = (options?: RouteQueryOptions) => {
@@ -26,7 +26,7 @@ results.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\PublicResultController::results
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
 results.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -35,7 +35,7 @@ results.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\PublicResultController::results
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
 results.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -45,7 +45,7 @@ results.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\PublicResultController::results
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
     const resultsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -55,7 +55,7 @@ results.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\PublicResultController::results
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
         resultsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -64,7 +64,7 @@ results.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\PublicResultController::results
- * @see app/Http/Controllers/PublicResultController.php:17
+ * @see app/Http/Controllers/PublicResultController.php:18
  * @route '/results'
  */
         resultsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

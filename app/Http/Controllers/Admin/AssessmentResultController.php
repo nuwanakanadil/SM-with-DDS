@@ -19,8 +19,14 @@ class AssessmentResultController extends Controller
 
     public function index(Request $request): Response
     {
-        $assessment = $request->assessment_id
-            ? Assessment::find($request->assessment_id)
+        $validated = $request->validate([
+            'assessment_id' => ['nullable', 'integer', 'exists:assessments,id'],
+        ]);
+
+        $assessmentId = $validated['assessment_id'] ?? null;
+
+        $assessment = $assessmentId
+            ? Assessment::find($assessmentId)
             : Assessment::query()->latest()->first();
 
         return Inertia::render('admin/results/Index', [

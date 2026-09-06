@@ -1,9 +1,25 @@
 <script setup lang="ts">
-const formatEquation = (equation: string) =>
+type EquationPart = {
+    text: string;
+    exponent?: string;
+};
+
+const formatEquation = (equation: string): EquationPart[] =>
     equation
-        .replace(/\^2/g, '<sup>2</sup>')
-        .replace(/\^3/g, '<sup>3</sup>')
-        .replace(/->/g, '&rarr;');
+        .replace(/->/g, '\u2192')
+        .split(/(\^2|\^3)/g)
+        .filter(Boolean)
+        .reduce<EquationPart[]>((parts, value) => {
+            if ((value === '^2' || value === '^3') && parts.length) {
+                parts[parts.length - 1].exponent = value.slice(1);
+
+                return parts;
+            }
+
+            parts.push({ text: value });
+
+            return parts;
+        }, []);
 
 type Variant = 'hero' | 'card' | 'compact';
 
@@ -84,7 +100,13 @@ withDefaults(defineProps<Props>(), {
             :key="`${equation}-${index}`"
             class="math-motion-panel__formula"
             :style="{ '--math-index': index }"
-            v-html="formatEquation(equation)"
-        ></span>
+        >
+            <template
+                v-for="(part, partIndex) in formatEquation(equation)"
+                :key="`${equation}-${index}-${partIndex}`"
+            >
+                {{ part.text }}<sup v-if="part.exponent">{{ part.exponent }}</sup>
+            </template>
+        </span>
     </div>
 </template>

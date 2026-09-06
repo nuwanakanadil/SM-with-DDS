@@ -20,10 +20,15 @@ class StaffController extends Controller
 
     public function index(Request $request): Response
     {
-        $filters = [
-            'search' => $request->string('search')->toString(),
-            'sort' => $request->string('sort')->toString(),
-        ];
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'sort' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['name_asc', 'name_desc', 'email_asc', 'email_desc'])],
+        ]);
+
+        $filters = array_merge([
+            'search' => '',
+            'sort' => '',
+        ], $filters);
 
         return Inertia::render('admin/staff/Index', [
             'staffMembers' => $this->staffService->paginated($filters),

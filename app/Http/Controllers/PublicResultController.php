@@ -7,6 +7,7 @@ use App\Models\Student;
 use App\Services\RankingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,9 +24,20 @@ class PublicResultController extends Controller
 
     public function search(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'admission_no' => ['required', 'string', 'max:120'],
+        $validator = Validator::make($request->query(), [
+            'admission_no' => ['required', 'string', 'max:50', 'regex:/^[A-Za-z0-9._\-\/]+$/'],
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Invalid admission number.',
+                'student' => null,
+                'results' => [],
+                'summary' => null,
+            ], 422);
+        }
+
+        $validated = $validator->validated();
 
         $student = Student::query()
             ->where('is_active', true)
@@ -60,7 +72,7 @@ class PublicResultController extends Controller
                 $percentage = $totalMarks && $totalMarks > 0 ? round(($marks / $totalMarks) * 100, 2) : null;
 
                 return [
-                    'id' => $result->id,
+                    'row_key' => hash('sha256', $student->admission_no.'|'.$result->assessment_id),
                     'exam_name' => $assessment?->title,
                     'subject' => $assessment?->title,
                     'class_name' => $assessment?->class_name,

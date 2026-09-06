@@ -39,7 +39,7 @@ class Assessment extends Model
     public function scopeRelevantToStudent(Builder $query, ?Student $student): Builder
     {
         if (! $student?->class_name) {
-            return $query->whereRaw('1 = 0');
+            return $query->whereKey(null);
         }
 
         return $query->where('class_name', $student->class_name);

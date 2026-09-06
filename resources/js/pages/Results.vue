@@ -9,7 +9,7 @@ import { AlertCircle, Award, BookOpenCheck, LoaderCircle, Search, Trophy } from 
 import { computed, ref } from 'vue';
 
 type PublicResult = {
-    id: number;
+    row_key: string;
     exam_name: string | null;
     subject: string | null;
     class_name: string | null;
@@ -102,6 +102,14 @@ const viewResults = async () => {
                 Accept: 'application/json',
             },
         });
+
+        if (response.status === 422) {
+            throw new Error('Enter a valid admission number.');
+        }
+
+        if (response.status === 429) {
+            throw new Error('Too many result searches. Please wait a minute and try again.');
+        }
 
         if (!response.ok) {
             throw new Error('Unable to load results right now.');
@@ -240,7 +248,7 @@ const viewResults = async () => {
 
                 <div
                     v-for="result in payload?.results"
-                    :key="result.id"
+                    :key="result.row_key"
                     class="overflow-hidden rounded-[0.875rem] border border-border bg-card shadow-sm"
                 >
                     <div class="flex flex-col gap-4 border-b border-border bg-secondary/60 p-5 sm:flex-row sm:items-start sm:justify-between">

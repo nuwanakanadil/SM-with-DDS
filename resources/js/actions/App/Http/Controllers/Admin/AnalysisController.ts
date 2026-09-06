@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:14
+ * @see app/Http/Controllers/Admin/AnalysisController.php:17
  * @route '/admin/analysis'
  */
 const AnalysisController = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ AnalysisController.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:14
+ * @see app/Http/Controllers/Admin/AnalysisController.php:17
  * @route '/admin/analysis'
  */
 AnalysisController.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ AnalysisController.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:14
+ * @see app/Http/Controllers/Admin/AnalysisController.php:17
  * @route '/admin/analysis'
  */
 AnalysisController.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ AnalysisController.get = (options?: RouteQueryOptions): RouteDefinition<'get'> =
 })
 /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:14
+ * @see app/Http/Controllers/Admin/AnalysisController.php:17
  * @route '/admin/analysis'
  */
 AnalysisController.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ AnalysisController.head = (options?: RouteQueryOptions): RouteDefinition<'head'>
 
     /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:14
+ * @see app/Http/Controllers/Admin/AnalysisController.php:17
  * @route '/admin/analysis'
  */
     const AnalysisControllerForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ AnalysisController.head = (options?: RouteQueryOptions): RouteDefinition<'head'>
 
             /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:14
+ * @see app/Http/Controllers/Admin/AnalysisController.php:17
  * @route '/admin/analysis'
  */
         AnalysisControllerForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ AnalysisController.head = (options?: RouteQueryOptions): RouteDefinition<'head'>
         })
             /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:14
+ * @see app/Http/Controllers/Admin/AnalysisController.php:17
  * @route '/admin/analysis'
  */
         AnalysisControllerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

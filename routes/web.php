@@ -18,7 +18,7 @@ Route::get('/', function () {
 
 Route::get('/results', [PublicResultController::class, 'index'])->name('public.results');
 Route::get('/results/search', [PublicResultController::class, 'search'])
-    ->middleware('throttle:30,1')
+    ->middleware('throttle:public-results')
     ->name('public.results.search');
 
 Route::middleware('auth')->group(function () {

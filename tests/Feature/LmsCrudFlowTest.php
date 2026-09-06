@@ -351,6 +351,7 @@ test('public results checker shows only published matching student results', fun
         ->assertJsonPath('results.0.grade', 'A')
         ->assertJsonPath('results.0.rank', 2)
         ->assertJsonPath('results.0.average', 89)
+        ->assertJsonMissingPath('results.0.id')
         ->assertJsonMissing(['exam_name' => 'Draft Paper'])
         ->assertJsonMissing(['remarks' => 'Should stay hidden']);
 
@@ -358,6 +359,50 @@ test('public results checker shows only published matching student results', fun
         ->assertOk()
         ->assertJsonPath('student', null)
         ->assertJsonCount(0, 'results');
+
+    $this->withHeaders(['Accept' => 'application/json'])
+        ->get('/results/search?admission_no='.urlencode('<script>'))
+        ->assertUnprocessable();
+});
+
+test('public results checker is rate limited by searched admission number', function () {
+    for ($attempt = 0; $attempt < 12; $attempt++) {
+        $this->getJson('/results/search?admission_no=ADM-RATE')
+            ->assertOk();
+    }
+
+    $this->getJson('/results/search?admission_no=ADM-RATE')
+        ->assertTooManyRequests();
+});
+
+test('security headers are applied to web responses', function () {
+    $this->get('/results')
+        ->assertOk()
+        ->assertHeader('X-Content-Type-Options', 'nosniff')
+        ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+        ->assertHeader('X-Frame-Options', 'SAMEORIGIN')
+        ->assertHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+        ->assertHeader('Content-Security-Policy', "frame-ancestors 'self'");
+});
+
+test('admin routes enforce granular permissions beyond staff role membership', function () {
+    $staff = createLmsUser(UserTypes::Staff->value);
+    $staff->roles->firstOrFail()->syncPermissions([Permissions::ViewDashboard->value]);
+
+    $student = Student::query()->create([
+        'admission_no' => 'ADM-SEC',
+        'first_name' => 'Secure',
+        'class_name' => Grades::Grade9->value,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($staff)
+        ->get('/admin/students')
+        ->assertForbidden();
+
+    $this->actingAs($staff)
+        ->delete("/admin/students/{$student->id}")
+        ->assertForbidden();
 });
 
 test('admin can filter student and assessment listings', function () {
