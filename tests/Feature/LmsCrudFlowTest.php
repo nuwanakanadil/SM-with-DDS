@@ -288,6 +288,78 @@ test('student pages render live database records', function () {
         ->assertDontSee('Other student result');
 });
 
+test('public results checker shows only published matching student results', function () {
+    $student = Student::query()->create([
+        'admission_no' => 'ADM-300',
+        'first_name' => 'Dinuka',
+        'last_name' => 'Jayasinghe',
+        'class_name' => Grades::Grade10->value,
+        'is_active' => true,
+    ]);
+    $otherStudent = Student::query()->create([
+        'admission_no' => 'ADM-301',
+        'first_name' => 'Mihiri',
+        'last_name' => 'Perera',
+        'class_name' => Grades::Grade10->value,
+        'is_active' => true,
+    ]);
+
+    $publishedAssessment = Assessment::query()->create([
+        'title' => 'Grade 10 Term Test',
+        'class_name' => Grades::Grade10->value,
+        'assessment_date' => '2026-07-10',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+    $draftAssessment = Assessment::query()->create([
+        'title' => 'Draft Paper',
+        'class_name' => Grades::Grade10->value,
+        'assessment_date' => '2026-07-11',
+        'total_marks' => 100,
+        'is_published' => false,
+    ]);
+
+    AssessmentResult::query()->create([
+        'assessment_id' => $publishedAssessment->id,
+        'student_id' => $student->id,
+        'marks' => 86,
+        'remarks' => 'Strong result',
+    ]);
+    AssessmentResult::query()->create([
+        'assessment_id' => $publishedAssessment->id,
+        'student_id' => $otherStudent->id,
+        'marks' => 92,
+    ]);
+    AssessmentResult::query()->create([
+        'assessment_id' => $draftAssessment->id,
+        'student_id' => $student->id,
+        'marks' => 99,
+        'remarks' => 'Should stay hidden',
+    ]);
+
+    $this->get('/results')
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('Results')
+            ->where('searchUrl', route('public.results.search')));
+
+    $this->getJson('/results/search?admission_no=ADM-300')
+        ->assertOk()
+        ->assertJsonPath('student.name', 'Dinuka Jayasinghe')
+        ->assertJsonPath('student.admission_no', 'ADM-300')
+        ->assertJsonPath('results.0.exam_name', 'Grade 10 Term Test')
+        ->assertJsonPath('results.0.grade', 'A')
+        ->assertJsonPath('results.0.rank', 2)
+        ->assertJsonPath('results.0.average', 89)
+        ->assertJsonMissing(['exam_name' => 'Draft Paper'])
+        ->assertJsonMissing(['remarks' => 'Should stay hidden']);
+
+    $this->getJson('/results/search?admission_no=INVALID')
+        ->assertOk()
+        ->assertJsonPath('student', null)
+        ->assertJsonCount(0, 'results');
+});
+
 test('admin can filter student and assessment listings', function () {
     $admin = createLmsUser();
 
