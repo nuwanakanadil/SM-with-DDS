@@ -27,7 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return $request->user()?->hasAnyRole(['admin', 'staff'])
                 ? route('admin.dashboard')
-                : route('dashboard');
+                : route('public.results');
         });
 
         $middleware->alias([

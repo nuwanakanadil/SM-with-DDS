@@ -689,7 +689,264 @@
         display: none;
     }
 
+    .results-math-background {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+        background:
+            radial-gradient(circle at 12% 18%, rgba(37, 99, 235, 0.16), transparent 24%),
+            radial-gradient(circle at 88% 18%, rgba(14, 165, 233, 0.18), transparent 26%),
+            radial-gradient(circle at 22% 82%, rgba(244, 114, 182, 0.14), transparent 26%),
+            linear-gradient(135deg, rgba(239, 246, 255, 0.96), rgba(248, 250, 252, 0.72));
+    }
+
+    .results-math-background__grid {
+        position: absolute;
+        inset: -20%;
+        opacity: 0.42;
+        background-image:
+            linear-gradient(rgba(37, 99, 235, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(37, 99, 235, 0.1) 1px, transparent 1px);
+        background-size: 42px 42px;
+        transform: rotate(-7deg);
+        animation: results-grid-slide 16s linear infinite;
+    }
+
+    .results-math-background__axis {
+        position: absolute;
+        width: 52rem;
+        height: 52rem;
+        border: 1px solid rgba(37, 99, 235, 0.18);
+        border-radius: 50%;
+        animation: results-spin 28s linear infinite;
+    }
+
+    .results-math-background__axis::before,
+    .results-math-background__axis::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        background: rgba(37, 99, 235, 0.12);
+        transform: translate(-50%, -50%);
+    }
+
+    .results-math-background__axis::before {
+        width: 100%;
+        height: 1px;
+    }
+
+    .results-math-background__axis::after {
+        width: 1px;
+        height: 100%;
+    }
+
+    .results-math-background__axis--one {
+        left: -20rem;
+        top: 4rem;
+    }
+
+    .results-math-background__axis--two {
+        right: -16rem;
+        bottom: -18rem;
+        width: 44rem;
+        height: 44rem;
+        animation-duration: 23s;
+        animation-direction: reverse;
+    }
+
+    .results-math-background__ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 2px dashed rgba(14, 165, 233, 0.26);
+        box-shadow: 0 0 55px rgba(14, 165, 233, 0.1);
+        animation: results-orbit 9s ease-in-out infinite;
+    }
+
+    .results-math-background__ring--one {
+        right: 9%;
+        top: 17%;
+        width: 11rem;
+        height: 11rem;
+    }
+
+    .results-math-background__ring--two {
+        left: 8%;
+        bottom: 18%;
+        width: 8rem;
+        height: 8rem;
+        animation-delay: -4s;
+    }
+
+    .results-math-background__triangle {
+        position: absolute;
+        left: 13%;
+        top: 27%;
+        width: 8rem;
+        height: 7rem;
+        clip-path: polygon(50% 0, 100% 100%, 0 100%);
+        border: 3px solid rgba(236, 72, 153, 0.32);
+        background: linear-gradient(135deg, rgba(244, 114, 182, 0.12), rgba(125, 211, 252, 0.12));
+        animation: results-float-rotate 11s ease-in-out infinite;
+    }
+
+    .results-math-background__parabola,
+    .results-math-background__wave {
+        position: absolute;
+        opacity: 0.58;
+    }
+
+    .results-math-background__parabola {
+        left: 8%;
+        bottom: 7%;
+        width: min(28rem, 44vw);
+        height: 12rem;
+        animation: results-path-float 10s ease-in-out infinite;
+    }
+
+    .results-math-background__wave {
+        right: 4%;
+        top: 46%;
+        width: min(35rem, 48vw);
+        height: 11rem;
+        animation: results-path-float 8s ease-in-out infinite reverse;
+    }
+
+    .results-math-background__parabola path,
+    .results-math-background__wave path {
+        stroke: rgba(37, 99, 235, 0.42);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        filter: drop-shadow(0 14px 26px rgba(37, 99, 235, 0.12));
+        animation: results-draw 5.5s ease-in-out infinite;
+    }
+
+    .results-math-background__wave path {
+        stroke: rgba(236, 72, 153, 0.34);
+        animation-delay: -2s;
+    }
+
+    .results-math-background__formula {
+        position: absolute;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 4.25rem;
+        padding: 0.52rem 0.85rem;
+        border-radius: 9999px;
+        border: 1px solid rgba(37, 99, 235, 0.18);
+        background: rgba(255, 255, 255, 0.7);
+        color: rgba(30, 64, 175, 0.78);
+        font-size: clamp(0.78rem, 0.9vw, 1rem);
+        font-weight: 700;
+        line-height: 1;
+        white-space: nowrap;
+        box-shadow: 0 18px 50px rgba(37, 99, 235, 0.1);
+        backdrop-filter: blur(10px);
+        animation:
+            results-formula-drift 13s ease-in-out infinite,
+            results-formula-pulse 4.8s ease-in-out infinite;
+        animation-delay:
+            calc(var(--formula-index, 0) * -0.9s),
+            calc(var(--formula-index, 0) * -0.35s);
+    }
+
+    .results-math-background__formula:nth-of-type(8n + 1) {
+        left: 5%;
+        top: 9%;
+        --formula-x: 36px;
+        --formula-y: 22px;
+        --formula-r: -7deg;
+    }
+
+    .results-math-background__formula:nth-of-type(8n + 2) {
+        left: 28%;
+        top: 13%;
+        --formula-x: -28px;
+        --formula-y: 30px;
+        --formula-r: 5deg;
+    }
+
+    .results-math-background__formula:nth-of-type(8n + 3) {
+        right: 18%;
+        top: 9%;
+        --formula-x: 24px;
+        --formula-y: -18px;
+        --formula-r: 8deg;
+    }
+
+    .results-math-background__formula:nth-of-type(8n + 4) {
+        right: 5%;
+        top: 31%;
+        --formula-x: -34px;
+        --formula-y: 28px;
+        --formula-r: -5deg;
+    }
+
+    .results-math-background__formula:nth-of-type(8n + 5) {
+        left: 7%;
+        top: 55%;
+        --formula-x: 30px;
+        --formula-y: -24px;
+        --formula-r: 6deg;
+    }
+
+    .results-math-background__formula:nth-of-type(8n + 6) {
+        left: 32%;
+        bottom: 10%;
+        --formula-x: -38px;
+        --formula-y: -28px;
+        --formula-r: -8deg;
+    }
+
+    .results-math-background__formula:nth-of-type(8n + 7) {
+        right: 30%;
+        bottom: 15%;
+        --formula-x: 30px;
+        --formula-y: 24px;
+        --formula-r: 5deg;
+    }
+
+    .results-math-background__formula:nth-of-type(8n + 8) {
+        right: 7%;
+        bottom: 8%;
+        --formula-x: -28px;
+        --formula-y: -24px;
+        --formula-r: -6deg;
+    }
+
     @media (width < 768px) {
+        .results-math-background__formula {
+            font-size: 0.72rem;
+            opacity: 0.82;
+        }
+
+        .results-math-background__formula:nth-of-type(n + 9) {
+            display: none;
+        }
+
+        .results-math-background__axis--one {
+            left: -26rem;
+        }
+
+        .results-math-background__axis--two {
+            right: -24rem;
+        }
+
+        .results-math-background__wave {
+            right: -9rem;
+            width: 26rem;
+        }
+
+        .results-math-background__parabola {
+            left: -5rem;
+            width: 24rem;
+        }
+
         .math-motion-panel--hero .math-motion-panel__math-totem {
             right: 0.6rem;
             width: 5rem;
@@ -819,6 +1076,49 @@
 .dark .math-motion-panel__geometry-triangle {
     border-color: rgba(244, 114, 182, 0.7);
     background: rgba(244, 114, 182, 0.16);
+}
+
+.dark .results-math-background {
+    background:
+        radial-gradient(circle at 12% 18%, rgba(37, 99, 235, 0.22), transparent 24%),
+        radial-gradient(circle at 88% 18%, rgba(14, 165, 233, 0.2), transparent 26%),
+        radial-gradient(circle at 22% 82%, rgba(244, 114, 182, 0.18), transparent 26%),
+        linear-gradient(135deg, rgba(2, 6, 23, 0.98), rgba(15, 23, 42, 0.88));
+}
+
+.dark .results-math-background__grid {
+    opacity: 0.34;
+    background-image:
+        linear-gradient(rgba(125, 211, 252, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(125, 211, 252, 0.1) 1px, transparent 1px);
+}
+
+.dark .results-math-background__formula {
+    border-color: rgba(125, 211, 252, 0.18);
+    background: rgba(15, 23, 42, 0.62);
+    color: rgba(226, 232, 240, 0.84);
+    box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+}
+
+.dark .results-math-background__axis {
+    border-color: rgba(125, 211, 252, 0.16);
+}
+
+.dark .results-math-background__axis::before,
+.dark .results-math-background__axis::after {
+    background: rgba(125, 211, 252, 0.1);
+}
+
+.dark .results-math-background__parabola path {
+    stroke: rgba(125, 211, 252, 0.38);
+}
+
+.dark .results-math-background__wave path {
+    stroke: rgba(244, 114, 182, 0.34);
+}
+
+.dark .results-math-background__ring {
+    border-color: rgba(125, 211, 252, 0.24);
 }
 
 @keyframes math-float {
@@ -983,6 +1283,92 @@
     }
 }
 
+@keyframes results-grid-slide {
+    from {
+        background-position: 0 0, 0 0;
+    }
+    to {
+        background-position: 42px 24px, 42px 24px;
+    }
+}
+
+@keyframes results-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes results-orbit {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+    }
+    50% {
+        transform: translate3d(0, -16px, 0) rotate(16deg) scale(1.06);
+    }
+}
+
+@keyframes results-float-rotate {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) rotate(-8deg);
+    }
+    50% {
+        transform: translate3d(24px, -18px, 0) rotate(12deg);
+    }
+}
+
+@keyframes results-path-float {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+    50% {
+        transform: translate3d(18px, -14px, 0);
+    }
+}
+
+@keyframes results-draw {
+    0% {
+        stroke-dashoffset: 1;
+        opacity: 0.2;
+    }
+    45%,
+    60% {
+        stroke-dashoffset: 0;
+        opacity: 0.78;
+    }
+    100% {
+        stroke-dashoffset: -1;
+        opacity: 0.2;
+    }
+}
+
+@keyframes results-formula-drift {
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    50% {
+        transform:
+            translate3d(var(--formula-x, 20px), var(--formula-y, -20px), 0)
+            rotate(var(--formula-r, 4deg));
+    }
+}
+
+@keyframes results-formula-pulse {
+    0%,
+    100% {
+        opacity: 0.62;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .student-dashboard-surface,
     .student-dashboard-surface:hover,
@@ -999,7 +1385,16 @@
     .math-motion-panel__geometry-ring,
     .math-motion-panel__geometry-triangle,
     .math-motion-panel__geometry-plus,
-    .math-motion-panel__grid {
+    .math-motion-panel__grid,
+    .results-math-background__grid,
+    .results-math-background__axis,
+    .results-math-background__ring,
+    .results-math-background__triangle,
+    .results-math-background__parabola,
+    .results-math-background__wave,
+    .results-math-background__parabola path,
+    .results-math-background__wave path,
+    .results-math-background__formula {
         animation: none !important;
         transform: none !important;
     }

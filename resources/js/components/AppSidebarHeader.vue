@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Breadcrumbs from '@/components/Breadcrumbs.vue';
+import ThemeIconToggle from '@/components/ThemeIconToggle.vue';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import type { BreadcrumbItem } from '@/types';
 
@@ -24,6 +25,9 @@ withDefaults(
                     <Breadcrumbs :breadcrumbs="breadcrumbs" />
                 </template>
             </div>
+        </div>
+        <div class="ml-auto rounded-xl border border-border bg-card/80 p-1 shadow-sm">
+            <ThemeIconToggle />
         </div>
     </header>
 </template>

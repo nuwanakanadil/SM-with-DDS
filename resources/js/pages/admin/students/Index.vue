@@ -37,7 +37,7 @@ import studentsRoutes from '@/routes/admin/students';
 import type { PaginatedResponse } from '@/types';
 import type { Student } from '@/types/student';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { KeyRound, Pencil, ShieldCheck, Trash2, UserPlus, Users } from 'lucide-vue-next';
+import { Pencil, ShieldCheck, Trash2, UserPlus, Users } from 'lucide-vue-next';
 import { computed, reactive, ref } from 'vue';
 
 const props = defineProps<{
@@ -102,9 +102,6 @@ const remove = (student: Student) => {
     router.delete(studentsRoutes.destroy(student));
 };
 
-const resendLogin = (student: Student) => {
-    router.post(`/admin/students/${student.id}/resend-login`);
-};
 </script>
 
 <template>
@@ -115,7 +112,7 @@ const resendLogin = (student: Student) => {
                 <PageHero
                     eyebrow="Student Registry"
                     title="Manage Student Records"
-                    description="Create, review, and maintain the student directory used for login access, marks entry, and rank generation."
+                    description="Create, review, and maintain the student directory used for marks entry, result lookup, and rank generation."
                 >
                     <template #meta>
                         <Badge variant="outline" class="rounded-full px-4 py-1.5">
@@ -241,7 +238,6 @@ const resendLogin = (student: Student) => {
                                     <TableHead>Name</TableHead>
                                     <TableHead>School</TableHead>
                                     <TableHead>Class</TableHead>
-                                    <TableHead>Email</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead class="text-right">Actions</TableHead>
                                 </TableRow>
@@ -260,7 +256,6 @@ const resendLogin = (student: Student) => {
                                         </TableCell>
                                         <TableCell>{{ student.school ?? '-' }}</TableCell>
                                         <TableCell>{{ student.class_name ?? '-' }}</TableCell>
-                                        <TableCell>{{ student.email ?? '-' }}</TableCell>
                                         <TableCell>
                                             <Badge :variant="student.is_active ? 'default' : 'secondary'">
                                                 {{ student.is_active ? 'Active' : 'Inactive' }}
@@ -268,15 +263,6 @@ const resendLogin = (student: Student) => {
                                         </TableCell>
                                         <TableCell class="text-right">
                                             <div class="flex justify-end gap-2">
-                                                <Button
-                                                    v-if="student.email"
-                                                    variant="outline"
-                                                    size="sm"
-                                                    @click="resendLogin(student)"
-                                                >
-                                                    <KeyRound class="size-4" />
-                                                    Resend Login
-                                                </Button>
                                                 <Button as-child variant="outline" size="icon-sm">
                                                     <Link
                                                         :href="studentsRoutes.edit(student)"
@@ -308,7 +294,7 @@ const resendLogin = (student: Student) => {
                                     </TableRow>
                                 </template>
 
-                                <TableEmpty v-else :colspan="7" class="py-14">
+                                <TableEmpty v-else :colspan="6" class="py-14">
                                     No students have been added to {{ APP_BRAND_NAME }} yet. Add your first student to begin managing academic records.
                                 </TableEmpty>
                             </TableBody>

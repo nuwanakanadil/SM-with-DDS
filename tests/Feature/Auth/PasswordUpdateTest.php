@@ -62,7 +62,7 @@ test('temporary-password users are redirected to change password and can update 
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect('/dashboard');
+        ->assertRedirect('/results');
 
     $user->refresh();
 

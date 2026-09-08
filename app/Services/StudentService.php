@@ -2,157 +2,37 @@
 
 namespace App\Services;
 
-use App\Enums\UserTypes;
 use App\Models\Student;
-use App\Models\User;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class StudentService
 {
-    public function __construct(
-        private readonly AccountProvisioningService $accountProvisioningService,
-    ) {}
-
     /** @return array{student: Student, warning: string|null} */
     public function create(array $data): array
     {
-        $createdAccount = null;
-
-        $student = DB::transaction(function () use ($data, &$createdAccount): Student {
-            $student = new Student(Arr::except($data, ['password']));
-
-            if ($user = $this->makeLinkedUser($data, $createdAccount)) {
-                $student->user()->associate($user);
-            }
-
-            $student->save();
-
-            return $student->fresh(['user']);
+        $student = DB::transaction(function () use ($data): Student {
+            return Student::query()->create($data);
         });
-
-        $warning = null;
-
-        if (is_array($createdAccount)) {
-            $warning = $this->accountProvisioningService->sendAccountCreatedMailSafely(
-                $createdAccount['user'],
-                $createdAccount['plain_password'],
-                UserTypes::Student,
-            );
-        }
 
         return [
             'student' => $student,
-            'warning' => $warning,
+            'warning' => null,
         ];
     }
 
     /** @return array{student: Student, warning: string|null} */
     public function update(Student $student, array $data): array
     {
-        $createdAccount = null;
-
-        $updatedStudent = DB::transaction(function () use ($student, $data, &$createdAccount): Student {
-            $student->fill(Arr::except($data, ['password']));
+        $updatedStudent = DB::transaction(function () use ($student, $data): Student {
+            $student->fill($data);
             $student->save();
 
-            $this->syncLinkedUser($student, $data, $createdAccount);
-
-            return $student->fresh(['user']);
+            return $student->fresh();
         });
-
-        $warning = null;
-
-        if (is_array($createdAccount)) {
-            $warning = $this->accountProvisioningService->sendAccountCreatedMailSafely(
-                $createdAccount['user'],
-                $createdAccount['plain_password'],
-                UserTypes::Student,
-            );
-        }
 
         return [
             'student' => $updatedStudent,
-            'warning' => $warning,
+            'warning' => null,
         ];
-    }
-
-    public function resendLoginDetails(Student $student): ?string
-    {
-        if (! $student->user || ! $student->user->email) {
-            return 'This student does not have a linked login account to resend.';
-        }
-
-        return $this->accountProvisioningService->issueTemporaryPassword($student->user, UserTypes::Student);
-    }
-
-    private function syncLinkedUser(Student $student, array $data, ?array &$createdAccount = null): void
-    {
-        $email = $data['email'] ?? null;
-        $password = $data['password'] ?? null;
-
-        if ($student->user) {
-            $student->user->fill([
-                'name' => $this->resolveUserName($data),
-            ]);
-
-            if (filled($email)) {
-                $student->user->email = $email;
-            }
-
-            if (filled($password)) {
-                $this->accountProvisioningService->syncPassword($student->user, $password);
-            }
-
-            if ($student->user->isDirty()) {
-                $student->user->save();
-            }
-
-            return;
-        }
-
-        if (! filled($email)) {
-            return;
-        }
-
-        $user = $this->makeLinkedUser($data, $createdAccount);
-
-        if (! $user) {
-            return;
-        }
-
-        $student->user()->associate($user);
-        $student->save();
-    }
-
-    private function makeLinkedUser(array $data, ?array &$createdAccount = null): ?User
-    {
-        $email = $data['email'] ?? null;
-
-        if (! filled($email)) {
-            return null;
-        }
-
-        $temporaryPassword = filled($data['password'] ?? null)
-            ? $data['password']
-            : null;
-
-        $createdAccount = $this->accountProvisioningService->create([
-            'name' => $this->resolveUserName($data),
-            'email' => $email,
-        ], UserTypes::Student, $temporaryPassword);
-
-        return $createdAccount['user'];
-    }
-
-    private function resolveUserName(array $data): string
-    {
-        $name = trim(sprintf(
-            '%s %s',
-            $data['first_name'] ?? '',
-            $data['last_name'] ?? '',
-        ));
-
-        return $name !== '' ? $name : ($data['admission_no'] ?? 'Student');
     }
 }

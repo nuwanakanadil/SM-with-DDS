@@ -61,20 +61,18 @@ test('admin can create update and delete students assessments and results', func
         'admission_no' => 'ADM-001',
         'first_name' => 'Alice',
         'last_name' => 'Perera',
-        'email' => 'alice@example.com',
         'phone' => '0711111111',
         'class_name' => Grades::Grade10->value,
-        'password' => 'secret123',
         'is_active' => true,
     ])->assertRedirect('/admin/students');
 
     $student = Student::query()->where('admission_no', 'ADM-001')->firstOrFail();
+    expect($student->user_id)->toBeNull();
 
     $this->put("/admin/students/{$student->id}", [
         'admission_no' => 'ADM-001',
         'first_name' => 'Alicia',
         'last_name' => 'Perera',
-        'email' => 'alice@example.com',
         'phone' => '0722222222',
         'class_name' => Grades::Grade11->value,
         'is_active' => true,
@@ -209,9 +207,9 @@ test('result entry blocks students from a different grade than the assessment', 
     expect(AssessmentResult::query()->count())->toBe(0);
 });
 
-test('student pages render live database records', function () {
+test('student account pages are temporarily disabled', function () {
     $studentUser = createLmsUser(UserTypes::Student->value);
-    $student = Student::query()->create([
+    Student::query()->create([
         'user_id' => $studentUser->id,
         'admission_no' => 'ADM-200',
         'first_name' => 'Saman',
@@ -220,72 +218,22 @@ test('student pages render live database records', function () {
         'class_name' => Grades::Grade9->value,
         'is_active' => true,
     ]);
-    $assessment = Assessment::query()->create([
-        'title' => 'Science Quiz',
-        'class_name' => Grades::Grade9->value,
-        'assessment_date' => '2026-06-23',
-        'total_marks' => 50,
-        'is_published' => true,
-    ]);
-    AssessmentResult::query()->create([
-        'assessment_id' => $assessment->id,
-        'student_id' => $student->id,
-        'marks' => 42,
-        'remarks' => 'Good work',
-    ]);
-    $otherStudentUser = createLmsUser(UserTypes::Student->value);
-    $otherStudent = Student::query()->create([
-        'user_id' => $otherStudentUser->id,
-        'admission_no' => 'ADM-201',
-        'first_name' => 'Kasun',
-        'last_name' => 'Perera',
-        'email' => $otherStudentUser->email,
-        'class_name' => Grades::Grade9->value,
-        'is_active' => true,
-    ]);
-    AssessmentResult::query()->create([
-        'assessment_id' => $assessment->id,
-        'student_id' => $otherStudent->id,
-        'marks' => 48,
-        'remarks' => 'Other student result',
-    ]);
-    $otherClassAssessment = Assessment::query()->create([
-        'title' => 'History Test',
-        'class_name' => Grades::Grade10->value,
-        'assessment_date' => '2026-06-24',
-        'total_marks' => 50,
-        'is_published' => true,
-    ]);
-    AssessmentResult::query()->create([
-        'assessment_id' => $otherClassAssessment->id,
-        'student_id' => $student->id,
-        'marks' => 10,
-        'remarks' => 'Should stay hidden',
-    ]);
 
     $this->actingAs($studentUser)
         ->get('/dashboard')
-        ->assertOk()
-        ->assertSee('Science Quiz')
-        ->assertSee('42')
-        ->assertDontSee('History Test');
+        ->assertNotFound();
 
     $this->actingAs($studentUser)
         ->get('/my-results')
-        ->assertOk()
-        ->assertSee('Science Quiz')
-        ->assertSee('Good work')
-        ->assertDontSee('History Test')
-        ->assertDontSee('Should stay hidden');
+        ->assertNotFound();
 
     $this->actingAs($studentUser)
         ->get('/my-placement')
-        ->assertOk()
-        ->assertSee('Science Quiz')
-        ->assertSee('1')
-        ->assertDontSee('History Test')
-        ->assertDontSee('Kasun')
-        ->assertDontSee('Other student result');
+        ->assertNotFound();
+
+    $this->actingAs($studentUser)
+        ->get('/')
+        ->assertRedirect('/results');
 });
 
 test('public results checker shows only published matching student results', function () {
@@ -453,7 +401,7 @@ test('admin can filter student and assessment listings', function () {
         ->assertDontSee('Science Mock');
 });
 
-test('account creation emails are sent for new student and staff accounts', function () {
+test('student creation does not provision login accounts but staff creation still sends account emails', function () {
     Mail::fake();
 
     $admin = createLmsUser();
@@ -463,22 +411,16 @@ test('account creation emails are sent for new student and staff accounts', func
             'admission_no' => 'ADM-900',
             'first_name' => 'Maya',
             'last_name' => 'Silva',
-            'email' => 'maya@example.com',
             'phone' => '0710000000',
             'class_name' => Grades::Grade10->value,
-            'password' => 'StudentPass123',
             'is_active' => true,
         ])
         ->assertRedirect('/admin/students');
 
-    $studentUser = User::query()->where('email', 'maya@example.com')->firstOrFail();
+    $student = Student::query()->where('admission_no', 'ADM-900')->firstOrFail();
 
-    expect($studentUser->hasRole(UserTypes::Student->value))->toBeTrue();
-    Mail::assertSent(AccountCreatedMail::class, function (AccountCreatedMail $mail) use ($studentUser) {
-        return $mail->user->is($studentUser)
-            && $mail->plainPassword === 'StudentPass123'
-            && $mail->role === UserTypes::Student;
-    });
+    expect($student->user_id)->toBeNull();
+    Mail::assertNothingSent();
 
     $this->actingAs($admin)
         ->post('/admin/staff', [
@@ -520,26 +462,10 @@ test('account creation continues with a warning if email sending fails', functio
     expect($staffUser->hasRole(UserTypes::Staff->value))->toBeTrue();
 });
 
-test('admin can resend login details for staff and student accounts', function () {
+test('admin can resend login details for staff accounts', function () {
     Mail::fake();
     $admin = createLmsUser();
-    createLmsUser(UserTypes::Student->value);
     createLmsUser(UserTypes::Staff->value);
-
-    $studentUser = User::factory()->create([
-        'email' => 'student-login@example.com',
-        'must_change_password' => false,
-    ]);
-    $studentUser->assignRole(UserTypes::Student->value);
-    $student = Student::query()->create([
-        'user_id' => $studentUser->id,
-        'admission_no' => 'ADM-950',
-        'first_name' => 'Rashi',
-        'last_name' => 'Perera',
-        'email' => $studentUser->email,
-        'class_name' => Grades::Grade9->value,
-        'is_active' => true,
-    ]);
 
     $staffUser = User::factory()->create([
         'email' => 'staff-login@example.com',
@@ -547,29 +473,16 @@ test('admin can resend login details for staff and student accounts', function (
     ]);
     $staffUser->assignRole(UserTypes::Staff->value);
 
-    $oldStudentPassword = $studentUser->password;
     $oldStaffPassword = $staffUser->password;
-
-    $this->actingAs($admin)
-        ->post("/admin/students/{$student->id}/resend-login")
-        ->assertRedirect('/admin/students');
 
     $this->actingAs($admin)
         ->post("/admin/staff/{$staffUser->id}/resend-login")
         ->assertRedirect('/admin/staff');
 
-    $studentUser->refresh();
     $staffUser->refresh();
 
-    expect($studentUser->password)->not->toBe($oldStudentPassword);
     expect($staffUser->password)->not->toBe($oldStaffPassword);
-    expect($studentUser->must_change_password)->toBeTrue();
     expect($staffUser->must_change_password)->toBeTrue();
-
-    Mail::assertSent(AccountCreatedMail::class, function (AccountCreatedMail $mail) use ($studentUser) {
-        return $mail->user->is($studentUser)
-            && Hash::check($mail->plainPassword, $studentUser->refresh()->password);
-    });
 
     Mail::assertSent(AccountCreatedMail::class, function (AccountCreatedMail $mail) use ($staffUser) {
         return $mail->user->is($staffUser)

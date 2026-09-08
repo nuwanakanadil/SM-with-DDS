@@ -104,14 +104,6 @@ class StudentController extends Controller
         return $response;
     }
 
-    public function resendLogin(Student $student): RedirectResponse
-    {
-        $warning = $this->studentService->resendLoginDetails($student);
-
-        return redirect()->route('admin.students.index')
-            ->with($warning ? 'warning' : 'success', $warning ?: 'New login details sent to the student successfully.');
-    }
-
     public function destroy(Student $student): RedirectResponse
     {
         $student->delete();

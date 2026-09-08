@@ -426,7 +426,7 @@ update.patch = (args: { student: number | { id: number } } | [student: number | 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Admin\StudentController::destroy
- * @see app/Http/Controllers/Admin/StudentController.php:115
+ * @see app/Http/Controllers/Admin/StudentController.php:107
  * @route '/admin/students/{student}'
  */
 export const destroy = (args: { student: number | { id: number } } | [student: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -441,7 +441,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\StudentController::destroy
- * @see app/Http/Controllers/Admin/StudentController.php:115
+ * @see app/Http/Controllers/Admin/StudentController.php:107
  * @route '/admin/students/{student}'
  */
 destroy.url = (args: { student: number | { id: number } } | [student: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -474,7 +474,7 @@ destroy.url = (args: { student: number | { id: number } } | [student: number | {
 
 /**
 * @see \App\Http\Controllers\Admin\StudentController::destroy
- * @see app/Http/Controllers/Admin/StudentController.php:115
+ * @see app/Http/Controllers/Admin/StudentController.php:107
  * @route '/admin/students/{student}'
  */
 destroy.delete = (args: { student: number | { id: number } } | [student: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -484,7 +484,7 @@ destroy.delete = (args: { student: number | { id: number } } | [student: number 
 
     /**
 * @see \App\Http\Controllers\Admin\StudentController::destroy
- * @see app/Http/Controllers/Admin/StudentController.php:115
+ * @see app/Http/Controllers/Admin/StudentController.php:107
  * @route '/admin/students/{student}'
  */
     const destroyForm = (args: { student: number | { id: number } } | [student: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -499,7 +499,7 @@ destroy.delete = (args: { student: number | { id: number } } | [student: number 
 
             /**
 * @see \App\Http\Controllers\Admin\StudentController::destroy
- * @see app/Http/Controllers/Admin/StudentController.php:115
+ * @see app/Http/Controllers/Admin/StudentController.php:107
  * @route '/admin/students/{student}'
  */
         destroyForm.delete = (args: { student: number | { id: number } } | [student: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -513,85 +513,6 @@ destroy.delete = (args: { student: number | { id: number } } | [student: number 
         })
     
     destroy.form = destroyForm
-/**
-* @see \App\Http\Controllers\Admin\StudentController::resendLogin
- * @see app/Http/Controllers/Admin/StudentController.php:107
- * @route '/admin/students/{student}/resend-login'
- */
-export const resendLogin = (args: { student: number | { id: number } } | [student: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: resendLogin.url(args, options),
-    method: 'post',
-})
-
-resendLogin.definition = {
-    methods: ["post"],
-    url: '/admin/students/{student}/resend-login',
-} satisfies RouteDefinition<["post"]>
-
-/**
-* @see \App\Http\Controllers\Admin\StudentController::resendLogin
- * @see app/Http/Controllers/Admin/StudentController.php:107
- * @route '/admin/students/{student}/resend-login'
- */
-resendLogin.url = (args: { student: number | { id: number } } | [student: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
-    if (typeof args === 'string' || typeof args === 'number') {
-        args = { student: args }
-    }
-
-            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-            args = { student: args.id }
-        }
-    
-    if (Array.isArray(args)) {
-        args = {
-                    student: args[0],
-                }
-    }
-
-    args = applyUrlDefaults(args)
-
-    const parsedArgs = {
-                        student: typeof args.student === 'object'
-                ? args.student.id
-                : args.student,
-                }
-
-    return resendLogin.definition.url
-            .replace('{student}', parsedArgs.student.toString())
-            .replace(/\/+$/, '') + queryParams(options)
-}
-
-/**
-* @see \App\Http\Controllers\Admin\StudentController::resendLogin
- * @see app/Http/Controllers/Admin/StudentController.php:107
- * @route '/admin/students/{student}/resend-login'
- */
-resendLogin.post = (args: { student: number | { id: number } } | [student: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: resendLogin.url(args, options),
-    method: 'post',
-})
-
-    /**
-* @see \App\Http\Controllers\Admin\StudentController::resendLogin
- * @see app/Http/Controllers/Admin/StudentController.php:107
- * @route '/admin/students/{student}/resend-login'
- */
-    const resendLoginForm = (args: { student: number | { id: number } } | [student: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: resendLogin.url(args, options),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Admin\StudentController::resendLogin
- * @see app/Http/Controllers/Admin/StudentController.php:107
- * @route '/admin/students/{student}/resend-login'
- */
-        resendLoginForm.post = (args: { student: number | { id: number } } | [student: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: resendLogin.url(args, options),
-            method: 'post',
-        })
-    
-    resendLogin.form = resendLoginForm
-const StudentController = { index, create, store, edit, update, destroy, resendLogin }
+const StudentController = { index, create, store, edit, update, destroy }
 
 export default StudentController

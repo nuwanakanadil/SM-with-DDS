@@ -8,6 +8,11 @@ test('login screen can be rendered', function () {
     $response->assertStatus(200);
 });
 
+test('guests are sent to the public results checker from the home page', function () {
+    $this->get('/')
+        ->assertRedirect(route('public.results', absolute: false));
+});
+
 test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
 
@@ -17,7 +22,7 @@ test('users can authenticate using the login screen', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $response->assertRedirect(route('public.results', absolute: false));
 });
 
 test('users can not authenticate with invalid password', function () {

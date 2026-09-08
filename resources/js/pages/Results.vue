@@ -1,12 +1,21 @@
 <script setup lang="ts">
 import ApplicationLogo from '@/components/ApplicationLogo.vue';
+import ThemeIconToggle from '@/components/ThemeIconToggle.vue';
 import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { APP_BRAND_NAME } from '@/constants/branding';
-import { Head } from '@inertiajs/vue3';
-import { AlertCircle, Award, BookOpenCheck, LoaderCircle, Search, Trophy } from 'lucide-vue-next';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { AlertCircle, Award, BookOpenCheck, LayoutDashboard, LoaderCircle, LogIn, LogOut, Search, Trophy, UserCircle } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
+import { login, logout } from '@/routes';
+import admin from '@/routes/admin';
 
 type PublicResult = {
     row_key: string;
@@ -38,6 +47,24 @@ type PublicResultResponse = {
 
 const props = defineProps<{ searchUrl: string }>();
 
+const backgroundFormulas = [
+    'x^2 + y^2 = r^2',
+    'y = mx + c',
+    'a^2 + b^2 = c^2',
+    'f(x) = 2x + 5',
+    'sin A / cos A',
+    'avg = total / n',
+    'rank = 1',
+    'pi = 3.14',
+    'sqrt 81 = 9',
+    'P(A|B)',
+    '3 : 1',
+    '75 / 100',
+    'x = 14',
+    'sum n',
+];
+
+const page = usePage();
 const admissionNo = ref('');
 const loading = ref(false);
 const error = ref('');
@@ -45,6 +72,9 @@ const searched = ref(false);
 const payload = ref<PublicResultResponse | null>(null);
 
 const hasResults = computed(() => Boolean(payload.value?.student && payload.value.results.length));
+const user = computed(() => page.props.auth.user);
+const roles = computed(() => page.props.auth.roles ?? []);
+const isAdminOrStaff = computed(() => roles.value.some((role) => ['admin', 'staff'].includes(role)));
 
 const resultCountLabel = computed(() => {
     const count = payload.value?.results.length ?? 0;
@@ -128,15 +158,83 @@ const viewResults = async () => {
 <template>
     <Head title="Student Results" />
 
-    <main class="min-h-screen bg-background text-foreground">
-        <div class="border-b border-border bg-secondary/70">
+    <main class="relative min-h-screen overflow-hidden bg-background text-foreground">
+        <div class="results-math-background" aria-hidden="true">
+            <div class="results-math-background__grid"></div>
+            <div class="results-math-background__axis results-math-background__axis--one"></div>
+            <div class="results-math-background__axis results-math-background__axis--two"></div>
+            <div class="results-math-background__ring results-math-background__ring--one"></div>
+            <div class="results-math-background__ring results-math-background__ring--two"></div>
+            <div class="results-math-background__triangle"></div>
+            <div class="results-math-background__parabola">
+                <svg viewBox="0 0 420 180" fill="none" preserveAspectRatio="none">
+                    <path d="M8 162C82 68 142 22 210 22C278 22 338 68 412 162" pathLength="1" />
+                </svg>
+            </div>
+            <div class="results-math-background__wave">
+                <svg viewBox="0 0 520 160" fill="none" preserveAspectRatio="none">
+                    <path d="M0 80C32 80 32 28 65 28C98 28 98 132 130 132C162 132 162 28 195 28C228 28 228 132 260 132C292 132 292 28 325 28C358 28 358 132 390 132C422 132 422 28 455 28C488 28 488 80 520 80" pathLength="1" />
+                </svg>
+            </div>
+            <span
+                v-for="(formula, index) in backgroundFormulas"
+                :key="formula"
+                class="results-math-background__formula"
+                :style="{ '--formula-index': index }"
+            >
+                {{ formula }}
+            </span>
+        </div>
+
+        <div class="fixed right-3 top-3 z-50 sm:right-5 sm:top-5">
+            <div class="inline-flex items-center gap-2 rounded-xl border border-border bg-card/88 p-1 shadow-sm backdrop-blur-md dark:bg-card/78">
+                <ThemeIconToggle />
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger as-child>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            class="rounded-lg"
+                            aria-label="Account menu"
+                            title="Account menu"
+                        >
+                            <UserCircle class="size-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" class="w-56 rounded-lg">
+                        <DropdownMenuItem v-if="!user" :as-child="true">
+                            <Link :href="login.url()" class="w-full cursor-pointer">
+                                <LogIn class="mr-2 size-4" />
+                                Staff/Admin Login
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem v-else-if="isAdminOrStaff" :as-child="true">
+                            <Link :href="admin.dashboard.url()" class="w-full cursor-pointer">
+                                <LayoutDashboard class="mr-2 size-4" />
+                                Admin Dashboard
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem v-else :as-child="true">
+                            <Link :href="logout.url()" method="post" as="button" class="w-full cursor-pointer">
+                                <LogOut class="mr-2 size-4" />
+                                Logout for Staff/Admin Login
+                            </Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        </div>
+
+        <div class="relative z-10 border-b border-border bg-secondary/35 backdrop-blur-[1px]">
             <div
                 class="mx-auto flex w-full max-w-6xl flex-col px-4 py-5 sm:px-6 lg:px-8"
                 :class="hasResults ? 'min-h-[58vh]' : 'min-h-screen'"
             >
                 <section class="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center py-8 sm:py-12">
-                    <div class="overflow-hidden rounded-[0.875rem] border border-border bg-card shadow-sm">
-                        <div class="border-b border-border bg-card px-5 py-6 sm:px-8 sm:py-8">
+                    <div class="student-dashboard-surface relative overflow-hidden rounded-[0.875rem] border border-primary/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.78),rgba(219,234,254,0.62))] shadow-sm backdrop-blur-sm dark:border-white/8 dark:bg-[linear-gradient(135deg,rgba(15,23,42,0.78),rgba(30,41,59,0.62))]">
+                        <div class="relative z-10 border-b border-border bg-card/82 px-5 py-6 backdrop-blur-sm sm:px-8 sm:py-8">
                             <div class="flex flex-col items-center text-center">
                                 <div class="flex size-20 items-center justify-center rounded-[0.875rem] border border-border bg-background p-3 shadow-sm">
                                     <ApplicationLogo class="h-full w-full" />
@@ -148,7 +246,7 @@ const viewResults = async () => {
                             </div>
                         </div>
 
-                        <div class="bg-background/70 px-5 py-5 sm:px-8 sm:py-6">
+                        <div class="relative z-10 bg-background/78 px-5 py-5 backdrop-blur-sm sm:px-8 sm:py-6">
                             <form class="grid gap-3 sm:grid-cols-[1fr_auto]" @submit.prevent="viewResults">
                                 <Input
                                     v-model="admissionNo"
@@ -176,32 +274,36 @@ const viewResults = async () => {
 
                     <section
                         v-if="loading"
-                        class="mt-6 rounded-[0.875rem] border border-border bg-card px-5 py-8 text-center text-sm font-medium text-muted-foreground shadow-sm"
+                        class="student-dashboard-surface relative mt-6 overflow-hidden rounded-[0.875rem] border border-border bg-card/90 px-5 py-8 text-center text-sm font-medium text-muted-foreground shadow-sm backdrop-blur-sm"
                     >
-                        <LoaderCircle class="mx-auto mb-3 size-6 animate-spin text-primary" />
-                        Loading results...
+                        <div class="relative z-10">
+                            <LoaderCircle class="mx-auto mb-3 size-6 animate-spin text-primary" />
+                            Loading results...
+                        </div>
                     </section>
 
                     <section
                         v-else-if="searched && !hasResults && !error"
-                        class="mt-6 rounded-[0.875rem] border border-dashed border-border bg-card px-5 py-8 text-center shadow-sm"
+                        class="student-dashboard-surface relative mt-6 overflow-hidden rounded-[0.875rem] border border-dashed border-border bg-card/90 px-5 py-8 text-center shadow-sm backdrop-blur-sm"
                     >
-                        <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-secondary text-primary">
-                            <Search class="size-5" />
+                        <div class="relative z-10">
+                            <div class="mx-auto flex size-12 items-center justify-center rounded-full bg-secondary text-primary">
+                                <Search class="size-5" />
+                            </div>
+                            <h2 class="mt-4 text-lg font-semibold tracking-normal text-foreground">No results found</h2>
+                            <p class="mt-1 text-sm text-muted-foreground">
+                                Check the admission number and try again.
+                            </p>
                         </div>
-                        <h2 class="mt-4 text-lg font-semibold tracking-normal text-foreground">No results found</h2>
-                        <p class="mt-1 text-sm text-muted-foreground">
-                            Check the admission number and try again.
-                        </p>
                     </section>
                 </section>
             </div>
         </div>
 
-        <section v-if="hasResults" class="bg-background px-4 py-8 sm:px-6 lg:px-8">
+        <section v-if="hasResults" class="relative z-10 bg-background/70 px-4 py-8 backdrop-blur-[1px] sm:px-6 lg:px-8">
             <div class="mx-auto w-full max-w-6xl space-y-6">
-                <div class="rounded-[0.875rem] border border-border bg-card p-5 shadow-sm sm:p-6">
-                    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div class="student-dashboard-surface relative overflow-hidden rounded-[0.875rem] border border-border bg-card/92 p-5 shadow-sm backdrop-blur-sm sm:p-6">
+                    <div class="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                             <p class="text-sm font-semibold text-primary">{{ resultCountLabel }}</p>
                             <h2 class="mt-1 text-2xl font-bold tracking-normal text-foreground">
@@ -223,35 +325,41 @@ const viewResults = async () => {
                 </div>
 
                 <div class="grid gap-4 sm:grid-cols-3">
-                    <div class="rounded-[0.875rem] border border-border bg-card p-5 shadow-sm">
-                        <div class="flex items-center justify-between gap-3">
-                            <p class="text-sm font-semibold text-muted-foreground">Total</p>
-                            <BookOpenCheck class="size-5 text-primary" />
+                    <div class="student-dashboard-surface relative overflow-hidden rounded-[0.875rem] border border-border bg-card/92 p-5 shadow-sm backdrop-blur-sm">
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between gap-3">
+                                <p class="text-sm font-semibold text-muted-foreground">Total</p>
+                                <BookOpenCheck class="size-5 text-primary" />
+                            </div>
+                            <p class="mt-3 text-3xl font-bold tracking-normal">{{ formatNumber(payload?.summary?.total) }}</p>
                         </div>
-                        <p class="mt-3 text-3xl font-bold tracking-normal">{{ formatNumber(payload?.summary?.total) }}</p>
                     </div>
-                    <div class="rounded-[0.875rem] border border-border bg-card p-5 shadow-sm">
-                        <div class="flex items-center justify-between gap-3">
-                            <p class="text-sm font-semibold text-muted-foreground">Average</p>
-                            <Award class="size-5 text-primary" />
+                    <div class="student-dashboard-surface relative overflow-hidden rounded-[0.875rem] border border-border bg-card/92 p-5 shadow-sm backdrop-blur-sm">
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between gap-3">
+                                <p class="text-sm font-semibold text-muted-foreground">Average</p>
+                                <Award class="size-5 text-primary" />
+                            </div>
+                            <p class="mt-3 text-3xl font-bold tracking-normal">{{ formatNumber(payload?.summary?.average) }}</p>
                         </div>
-                        <p class="mt-3 text-3xl font-bold tracking-normal">{{ formatNumber(payload?.summary?.average) }}</p>
                     </div>
-                    <div class="rounded-[0.875rem] border border-border bg-card p-5 shadow-sm">
-                        <div class="flex items-center justify-between gap-3">
-                            <p class="text-sm font-semibold text-muted-foreground">Rank</p>
-                            <Trophy class="size-5 text-primary" />
+                    <div class="student-dashboard-surface relative overflow-hidden rounded-[0.875rem] border border-border bg-card/92 p-5 shadow-sm backdrop-blur-sm">
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between gap-3">
+                                <p class="text-sm font-semibold text-muted-foreground">Rank</p>
+                                <Trophy class="size-5 text-primary" />
+                            </div>
+                            <p class="mt-3 text-3xl font-bold tracking-normal">{{ payload?.summary?.rank ? `#${payload.summary.rank}` : '-' }}</p>
                         </div>
-                        <p class="mt-3 text-3xl font-bold tracking-normal">{{ payload?.summary?.rank ? `#${payload.summary.rank}` : '-' }}</p>
                     </div>
                 </div>
 
                 <div
                     v-for="result in payload?.results"
                     :key="result.row_key"
-                    class="overflow-hidden rounded-[0.875rem] border border-border bg-card shadow-sm"
+                    class="student-dashboard-surface relative overflow-hidden rounded-[0.875rem] border border-border bg-card/92 shadow-sm backdrop-blur-sm"
                 >
-                    <div class="flex flex-col gap-4 border-b border-border bg-secondary/60 p-5 sm:flex-row sm:items-start sm:justify-between">
+                    <div class="relative z-10 flex flex-col gap-4 border-b border-border bg-secondary/70 p-5 backdrop-blur-sm sm:flex-row sm:items-start sm:justify-between">
                         <div>
                             <p class="text-xs font-semibold uppercase text-muted-foreground">{{ formatDate(result.assessment_date) }}</p>
                             <h3 class="mt-1 text-xl font-bold tracking-normal text-foreground">{{ result.exam_name || 'Exam Result' }}</h3>
@@ -267,7 +375,7 @@ const viewResults = async () => {
                         </div>
                     </div>
 
-                    <div class="grid gap-3 p-5 sm:hidden">
+                    <div class="relative z-10 grid gap-3 bg-card/80 p-5 backdrop-blur-sm sm:hidden">
                         <div class="rounded-lg border border-border bg-background px-4 py-3">
                             <p class="text-xs font-semibold uppercase text-muted-foreground">Subject / Paper</p>
                             <p class="mt-1 font-semibold text-foreground">{{ result.subject || result.exam_name || '-' }}</p>
@@ -288,7 +396,7 @@ const viewResults = async () => {
                         </div>
                     </div>
 
-                    <div class="hidden overflow-x-auto sm:block">
+                    <div class="relative z-10 hidden overflow-x-auto bg-card/82 backdrop-blur-sm sm:block">
                         <Table>
                             <TableHeader>
                                 <TableRow>

@@ -24,9 +24,6 @@ Route::middleware(['auth', 'verified', 'role:admin|staff'])
             ->except(['show'])
             ->middlewareFor(['index'], 'can:'.Permissions::ViewStudents->value)
             ->middlewareFor(['create', 'store', 'edit', 'update', 'destroy'], 'can:'.Permissions::ManageStudents->value);
-        Route::post('/students/{student}/resend-login', [StudentController::class, 'resendLogin'])
-            ->middleware('can:'.Permissions::ManageStudents->value)
-            ->name('students.resend-login');
 
         Route::resource('assessments', AssessmentController::class)
             ->except(['show'])

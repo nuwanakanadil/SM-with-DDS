@@ -28,7 +28,7 @@ class PasswordController extends Controller
         ]);
 
         if ($mustChangePassword) {
-            return redirect()->route($request->user()->hasAnyRole(['admin', 'staff']) ? 'admin.dashboard' : 'dashboard')
+            return redirect()->route($request->user()->hasAnyRole(['admin', 'staff']) ? 'admin.dashboard' : 'public.results')
                 ->with('success', 'Password updated successfully.');
         }
 

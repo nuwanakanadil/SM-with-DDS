@@ -3,9 +3,8 @@ import AppLogo from '@/components/AppLogo.vue';
 import { APP_BRAND_NAME, APP_SYSTEM_SUBTITLE } from '@/constants/branding';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
-import { dashboard } from '@/routes';
 import admin from '@/routes/admin';
-import student from '@/routes/student';
+import publicRoutes from '@/routes/public';
 import {
     Sidebar,
     SidebarContent,
@@ -21,9 +20,8 @@ import {
     BarChart3,
     BriefcaseBusiness,
     ClipboardList,
-    GraduationCap,
     LayoutDashboard,
-    Medal,
+    Search,
     ScrollText,
     Users,
 } from 'lucide-vue-next';
@@ -83,24 +81,14 @@ const adminItems = computed<NavItem[]>(() => {
 
 const studentItems: NavItem[] = [
     {
-        title: 'Dashboard',
-        href: dashboard.url(),
-        icon: GraduationCap,
-    },
-    {
-        title: 'My Results',
-        href: student.results.url(),
-        icon: GraduationCap,
-    },
-    {
-        title: 'My Placement',
-        href: student.placement.url(),
-        icon: Medal,
+        title: 'Check Results',
+        href: publicRoutes.results.url(),
+        icon: Search,
     },
 ];
 
 const mainNavItems = computed(() => (isAdminArea.value ? adminItems.value : studentItems));
-const logoUrl = computed(() => (isAdminArea.value ? admin.dashboard.url() : dashboard.url()));
+const logoUrl = computed(() => (isAdminArea.value ? admin.dashboard.url() : publicRoutes.results.url()));
 </script>
 
 <template>

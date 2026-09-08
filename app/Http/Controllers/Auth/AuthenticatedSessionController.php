@@ -39,9 +39,9 @@ class AuthenticatedSessionController extends Controller
 
         $dashboard = $request->user()->hasAnyRole(['admin', 'staff'])
             ? route('admin.dashboard', absolute: false)
-            : route('dashboard', absolute: false);
+            : route('public.results', absolute: false);
 
-        return redirect()->intended($dashboard);
+        return redirect($dashboard);
     }
 
     /**

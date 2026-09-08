@@ -22,16 +22,13 @@ import {
 import AppLayout from '@/layouts/AppLayout.vue';
 import AdminLayout from '@/layouts/admin/Layout.vue';
 import type { Student } from '@/types/student';
-import { generatePassword } from '@/utils/password';
 import { Head, useForm } from '@inertiajs/vue3';
 import {
     BadgeCheck,
     BookUser,
     Building2,
     IdCard,
-    RefreshCw,
     Save,
-    UserRound,
     X,
 } from 'lucide-vue-next';
 import students from '@/routes/admin/students';
@@ -48,10 +45,8 @@ const form = useForm({
     first_name: props.student?.first_name ?? '',
     last_name: props.student?.last_name ?? '',
     school: props.student?.school ?? '',
-    email: props.student?.email ?? '',
     phone: props.student?.phone ?? '',
     class_name: props.student?.class_name ?? '',
-    password: '',
     is_active: props.student?.is_active ?? true,
 });
 
@@ -63,10 +58,6 @@ const submit = () =>
 const updateClassName = (value: unknown) => {
     const normalizedValue = value == null ? '' : String(value);
     form.class_name = !normalizedValue || normalizedValue === '__none__' ? '' : normalizedValue;
-};
-
-const fillGeneratedPassword = () => {
-    form.password = generatePassword();
 };
 </script>
 
@@ -84,7 +75,7 @@ const fillGeneratedPassword = () => {
                 <PageHero
                     eyebrow="Student Profile"
                     :title="isEdit ? 'Edit Student Record' : 'Create Student Record'"
-                    description="Capture the identity, contact, class, and access details required for a professional academic workflow."
+                    description="Capture the student identity, school, contact number, and class details used for marks entry and result lookup."
                 >
                     <template #meta>
                         <Badge variant="outline" class="rounded-full px-4 py-1.5">
@@ -98,7 +89,7 @@ const fillGeneratedPassword = () => {
                     <CardHeader>
                         <CardTitle>Student Details</CardTitle>
                         <CardDescription>
-                            Organised sections help keep records accurate for authentication, marks entry, and ranking.
+                            Organised sections help keep records accurate for marks entry, ranking, and public result checks.
                         </CardDescription>
                     </CardHeader>
 
@@ -162,38 +153,10 @@ const fillGeneratedPassword = () => {
                                         <InputError :message="form.errors.school" />
                                     </div>
                                     <div class="space-y-2">
-                                        <Label for="email">Email</Label>
-                                        <Input id="email" v-model="form.email" type="email" placeholder="Enter email address" />
-                                        <InputError :message="form.errors.email" />
-                                    </div>
-                                    <div class="space-y-2">
                                         <Label for="phone">Phone</Label>
                                         <Input id="phone" v-model="form.phone" placeholder="Enter phone number" />
                                         <InputError :message="form.errors.phone" />
                                     </div>
-                                </div>
-                            </section>
-
-                            <section v-if="!isEdit" class="space-y-4">
-                                <div class="flex items-center gap-2">
-                                    <UserRound class="size-4 text-primary" />
-                                    <h3 class="text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                                        Access Setup
-                                    </h3>
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="flex items-center justify-between gap-3">
-                                        <Label for="password">Password</Label>
-                                        <Button type="button" variant="outline" size="sm" @click="fillGeneratedPassword">
-                                            <RefreshCw class="size-4" />
-                                            Generate Random
-                                        </Button>
-                                    </div>
-                                    <Input id="password" v-model="form.password" type="password" placeholder="Leave blank to auto-generate a password" />
-                                    <p class="text-sm text-muted-foreground">
-                                        If an email is provided, login details are sent automatically when the account is created.
-                                    </p>
-                                    <InputError :message="form.errors.password" />
                                 </div>
                             </section>
 

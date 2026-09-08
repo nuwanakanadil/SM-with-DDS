@@ -321,8 +321,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     
     logout.form = logoutForm
 /**
-* @see \App\Http\Controllers\Student\DashboardController::__invoke
- * @see app/Http/Controllers/Student/DashboardController.php:17
+ * @see routes/student.php:6
  * @route '/dashboard'
  */
 export const dashboard = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -336,8 +335,7 @@ dashboard.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\Student\DashboardController::__invoke
- * @see app/Http/Controllers/Student/DashboardController.php:17
+ * @see routes/student.php:6
  * @route '/dashboard'
  */
 dashboard.url = (options?: RouteQueryOptions) => {
@@ -345,8 +343,7 @@ dashboard.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see \App\Http\Controllers\Student\DashboardController::__invoke
- * @see app/Http/Controllers/Student/DashboardController.php:17
+ * @see routes/student.php:6
  * @route '/dashboard'
  */
 dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -354,8 +351,7 @@ dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
-* @see \App\Http\Controllers\Student\DashboardController::__invoke
- * @see app/Http/Controllers/Student/DashboardController.php:17
+ * @see routes/student.php:6
  * @route '/dashboard'
  */
 dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -364,8 +360,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
-* @see \App\Http\Controllers\Student\DashboardController::__invoke
- * @see app/Http/Controllers/Student/DashboardController.php:17
+ * @see routes/student.php:6
  * @route '/dashboard'
  */
     const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -374,8 +369,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
-* @see \App\Http\Controllers\Student\DashboardController::__invoke
- * @see app/Http/Controllers/Student/DashboardController.php:17
+ * @see routes/student.php:6
  * @route '/dashboard'
  */
         dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -383,8 +377,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
-* @see \App\Http\Controllers\Student\DashboardController::__invoke
- * @see app/Http/Controllers/Student/DashboardController.php:17
+ * @see routes/student.php:6
  * @route '/dashboard'
  */
         dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

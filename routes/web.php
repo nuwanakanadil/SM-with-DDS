@@ -8,12 +8,12 @@ Route::get('/', function () {
     $user = auth()->user();
 
     if (! $user) {
-        return redirect()->route('login');
+        return redirect()->route('public.results');
     }
 
     return $user->hasAnyRole(['admin', 'staff'])
         ? redirect()->route('admin.dashboard')
-        : redirect()->route('dashboard');
+        : redirect()->route('public.results');
 });
 
 Route::get('/results', [PublicResultController::class, 'index'])->name('public.results');

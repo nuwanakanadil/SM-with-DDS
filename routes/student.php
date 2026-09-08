@@ -1,12 +1,9 @@
 <?php
 
-use App\Http\Controllers\Student\DashboardController;
-use App\Http\Controllers\Student\MyResultController;
-use App\Http\Controllers\Student\PlacementController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
-    Route::get('/dashboard', DashboardController::class)->name('dashboard');
-    Route::get('/my-results', MyResultController::class)->name('student.results');
-    Route::get('/my-placement', PlacementController::class)->name('student.placement');
+    Route::get('/dashboard', fn () => abort(404))->name('dashboard');
+    Route::get('/my-results', fn () => abort(404))->name('student.results');
+    Route::get('/my-placement', fn () => abort(404))->name('student.placement');
 });
