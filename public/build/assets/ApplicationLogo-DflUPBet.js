@@ -1,0 +1,1 @@
+import{C as e,H as t}from"./app-nchy4TrM.js";import{r as n}from"./wayfinder-Di9OWG7m.js";var r={},i={src:`/images/logo-cropped.png?v=20260711`,alt:`Super Maths with Damith logo`,class:`block max-w-full object-contain`};function a(n,r){return t(),e(`img`,i)}var o=n(r,[[`render`,a]]);export{o as t};

@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { APP_BRAND_NAME } from '@/constants/branding';
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import { AlertCircle, Award, BookOpenCheck, LayoutDashboard, LoaderCircle, LogIn, LogOut, Search, Trophy, UserCircle } from 'lucide-vue-next';
+import { AlertCircle, Award, BookOpenCheck, LayoutDashboard, LoaderCircle, LogIn, LogOut, PhoneCall, Search, Trophy, UserCircle } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import { login, logout } from '@/routes';
 import admin from '@/routes/admin';
@@ -261,6 +261,23 @@ const viewResults = async () => {
                                     {{ loading ? 'Loading...' : 'View Results' }}
                                 </Button>
                             </form>
+
+                            <div class="mt-4 flex flex-col gap-3 rounded-lg border border-primary/15 bg-secondary/55 px-4 py-3 text-sm leading-6 text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+                                <div class="flex items-start gap-3">
+                                    <span class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                        <PhoneCall class="size-4" />
+                                    </span>
+                                    <p class="font-semibold">
+                                        විභාග අංකය අමතක ද? එසේනම් මෙම අංකය අමතන්න
+                                    </p>
+                                </div>
+                                <a
+                                    href="tel:0712378372"
+                                    class="inline-flex items-center justify-center rounded-lg border border-primary/20 bg-background px-3 py-2 font-bold text-primary transition hover:bg-primary hover:text-primary-foreground"
+                                >
+                                    0712378372
+                                </a>
+                            </div>
 
                             <p
                                 v-if="error"
