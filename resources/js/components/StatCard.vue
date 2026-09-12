@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { Link } from '@inertiajs/vue3';
 import type { Component } from 'vue';
 
 type Tone = 'default' | 'warning' | 'success';
@@ -11,6 +12,7 @@ type Props = {
     hint?: string;
     icon?: Component;
     tone?: Tone;
+    href?: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -28,7 +30,14 @@ const toneClasses: Record<Tone, string> = {
     <Card class="gap-0 border-border/70 py-0">
         <div class="flex flex-row items-start justify-between gap-3 px-3.5 py-3.5 md:px-4 md:py-3.5">
             <div class="space-y-1.5">
-                <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                <Link
+                    v-if="href"
+                    :href="href"
+                    class="block text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground transition hover:text-foreground"
+                >
+                    {{ label }}
+                </Link>
+                <p v-else class="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                     {{ label }}
                 </p>
                 <p class="text-[1.45rem] font-extrabold tracking-[-0.04em] text-foreground md:text-[1.7rem]">

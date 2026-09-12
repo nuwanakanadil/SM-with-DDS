@@ -29,7 +29,9 @@ import {
 import AppLayout from '@/layouts/AppLayout.vue';
 import AdminLayout from '@/layouts/admin/Layout.vue';
 import admin from '@/routes/admin';
+import resultsRoutes from '@/routes/admin/results';
 import { Head, router } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import {
     BriefcaseBusiness,
     CircleAlert,
@@ -73,6 +75,12 @@ const updateGrade = (value: unknown) => {
         replace: true,
     });
 };
+
+const pendingResultsHref = (grade?: string | null) => resultsRoutes.pending({
+    query: {
+        grade: grade || undefined,
+    },
+}).url;
 </script>
 
 <template>
@@ -153,6 +161,7 @@ const updateGrade = (value: unknown) => {
                         hint="Expected result entries that still need attention."
                         :icon="CircleAlert"
                         tone="warning"
+                        :href="pendingResultsHref(props.dashboard.selected_grade)"
                     />
                 </div>
 
@@ -190,7 +199,14 @@ const updateGrade = (value: unknown) => {
                                         <TableCell>{{ row.students }}</TableCell>
                                         <TableCell>{{ row.exams }}</TableCell>
                                         <TableCell>{{ row.results_entered }}</TableCell>
-                                        <TableCell>{{ row.pending_results }}</TableCell>
+                                        <TableCell>
+                                            <Link
+                                                :href="pendingResultsHref(row.grade)"
+                                                class="font-semibold text-amber-700 hover:text-amber-800 dark:text-amber-300 dark:hover:text-amber-200"
+                                            >
+                                                {{ row.pending_results }}
+                                            </Link>
+                                        </TableCell>
                                     </TableRow>
                                 </template>
                                 <TableEmpty v-else :colspan="5" class="py-14">

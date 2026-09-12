@@ -1,12 +1,12 @@
 <?php
 
+use App\Enums\Permissions;
 use App\Http\Controllers\Admin\AnalysisController;
 use App\Http\Controllers\Admin\AssessmentController;
 use App\Http\Controllers\Admin\AssessmentResultController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\StudentController;
-use App\Enums\Permissions;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'role:admin|staff'])
@@ -41,6 +41,9 @@ Route::middleware(['auth', 'verified', 'role:admin|staff'])
             ->except(['show'])
             ->middlewareFor(['index'], 'can:'.Permissions::ViewResults->value)
             ->middlewareFor(['create', 'store', 'edit', 'update', 'destroy'], 'can:'.Permissions::ManageResults->value);
+        Route::get('/results/pending', [AssessmentResultController::class, 'pending'])
+            ->middleware('can:'.Permissions::ViewResults->value)
+            ->name('results.pending');
 
         Route::resource('staff', StaffController::class)->middleware('can:manage_staff')->except(['show']);
         Route::post('/staff/{staff}/resend-login', [StaffController::class, 'resendLogin'])->middleware('can:manage_staff')->name('staff.resend-login');

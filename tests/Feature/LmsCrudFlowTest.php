@@ -596,6 +596,78 @@ test('admin dashboard shows grade aware management counts', function () {
         );
 });
 
+test('pending results page lists missing student exam pairs', function () {
+    $admin = createLmsUser();
+
+    $firstStudent = Student::query()->create([
+        'admission_no' => 'ADM-451',
+        'first_name' => 'Ruwan',
+        'last_name' => 'Perera',
+        'class_name' => Grades::Grade10->value,
+        'is_active' => true,
+    ]);
+    $secondStudent = Student::query()->create([
+        'admission_no' => 'ADM-452',
+        'first_name' => 'Nadee',
+        'last_name' => 'Silva',
+        'class_name' => Grades::Grade10->value,
+        'is_active' => true,
+    ]);
+    Student::query()->create([
+        'admission_no' => 'ADM-453',
+        'first_name' => 'Asha',
+        'last_name' => 'Fernando',
+        'class_name' => Grades::Grade11->value,
+        'is_active' => true,
+    ]);
+
+    $gradeTenExam = Assessment::query()->create([
+        'title' => 'Grade 10 Maths',
+        'class_name' => Grades::Grade10->value,
+        'assessment_date' => '2026-07-03',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+    $sharedExam = Assessment::query()->create([
+        'title' => 'General Aptitude',
+        'class_name' => null,
+        'assessment_date' => '2026-07-04',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+    Assessment::query()->create([
+        'title' => 'Grade 11 Science',
+        'class_name' => Grades::Grade11->value,
+        'assessment_date' => '2026-07-05',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+
+    AssessmentResult::query()->create([
+        'assessment_id' => $gradeTenExam->id,
+        'student_id' => $firstStudent->id,
+        'marks' => 80,
+    ]);
+    AssessmentResult::query()->create([
+        'assessment_id' => $sharedExam->id,
+        'student_id' => $firstStudent->id,
+        'marks' => 75,
+    ]);
+
+    $this->actingAs($admin)
+        ->get('/admin/results/pending?grade='.urlencode(Grades::Grade10->value))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/results/Pending')
+            ->where('filters.grade', Grades::Grade10->value)
+            ->where('pendingResults.total', 2)
+            ->where('pendingResults.data.0.student_id', $secondStudent->id)
+            ->where('pendingResults.data.0.assessment_id', $gradeTenExam->id)
+            ->where('pendingResults.data.1.student_id', $secondStudent->id)
+            ->where('pendingResults.data.1.assessment_id', $sharedExam->id)
+        );
+});
+
 test('analysis filters scope performance data by grade and exam', function () {
     $admin = createLmsUser();
 
