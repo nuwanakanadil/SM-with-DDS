@@ -666,6 +666,15 @@ test('pending results page lists missing student exam pairs', function () {
             ->where('pendingResults.data.1.student_id', $secondStudent->id)
             ->where('pendingResults.data.1.assessment_id', $sharedExam->id)
         );
+
+    $this->actingAs($admin)
+        ->get("/admin/results/create?assessment_id={$gradeTenExam->id}&student_id={$secondStudent->id}")
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/results/Manage')
+            ->where('defaultAssessmentId', $gradeTenExam->id)
+            ->where('defaultStudentId', $secondStudent->id)
+        );
 });
 
 test('analysis filters scope performance data by grade and exam', function () {

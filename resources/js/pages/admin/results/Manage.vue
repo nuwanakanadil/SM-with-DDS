@@ -28,13 +28,15 @@ const props = defineProps<{
     result?: AssessmentResult;
     assessments: Assessment[];
     students: Student[];
+    defaultAssessmentId?: number | null;
+    defaultStudentId?: number | null;
 }>();
 
 const isEdit = Boolean(props.result);
 
 const form = useForm({
-    assessment_id: props.result?.assessment_id ? String(props.result.assessment_id) : '',
-    student_id: props.result?.student_id ? String(props.result.student_id) : '',
+    assessment_id: props.result?.assessment_id ? String(props.result.assessment_id) : props.defaultAssessmentId ? String(props.defaultAssessmentId) : '',
+    student_id: props.result?.student_id ? String(props.result.student_id) : props.defaultStudentId ? String(props.defaultStudentId) : '',
     marks: props.result?.marks ?? '',
     remarks: props.result?.remarks ?? '',
 });

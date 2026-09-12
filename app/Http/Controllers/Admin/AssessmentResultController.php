@@ -111,11 +111,18 @@ class AssessmentResultController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
+        $validated = $request->validate([
+            'assessment_id' => ['nullable', 'integer', 'exists:assessments,id'],
+            'student_id' => ['nullable', 'integer', 'exists:students,id'],
+        ]);
+
         return Inertia::render('admin/results/Manage', [
             'assessments' => Assessment::latest()->get(['id', 'title', 'class_name', 'total_marks']),
             'students' => Student::where('is_active', true)->orderBy('first_name')->get(['id', 'admission_no', 'first_name', 'last_name', 'class_name']),
+            'defaultAssessmentId' => $request->filled('assessment_id') ? $request->integer('assessment_id') : null,
+            'defaultStudentId' => $request->filled('student_id') ? $request->integer('student_id') : null,
         ]);
     }
 

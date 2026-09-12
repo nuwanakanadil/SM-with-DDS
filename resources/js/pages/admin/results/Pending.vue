@@ -95,6 +95,17 @@ const applyFilters = () => {
 watch(() => [filters.grade, filters.assessment_id], () => {
     applyFilters();
 });
+
+const resultEntryHref = (row: PendingResult) => resultsRoutes.create({
+    query: {
+        assessment_id: row.assessment_id,
+        student_id: row.student_id,
+    },
+}).url;
+
+const openResultEntry = (row: PendingResult) => {
+    router.visit(resultEntryHref(row));
+};
 </script>
 
 <template>
@@ -184,6 +195,13 @@ watch(() => [filters.grade, filters.assessment_id], () => {
                                     <TableRow
                                         v-for="row in props.pendingResults.data"
                                         :key="`${row.student_id}-${row.assessment_id}`"
+                                        role="link"
+                                        tabindex="0"
+                                        class="cursor-pointer"
+                                        :title="`Enter marks for ${row.first_name} ${row.last_name ?? ''} - ${row.assessment_title}`"
+                                        @click="openResultEntry(row)"
+                                        @keydown.enter.prevent="openResultEntry(row)"
+                                        @keydown.space.prevent="openResultEntry(row)"
                                     >
                                         <TableCell class="font-semibold text-foreground">
                                             {{ row.first_name }} {{ row.last_name ?? '' }}

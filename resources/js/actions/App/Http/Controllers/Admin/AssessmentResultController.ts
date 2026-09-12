@@ -157,7 +157,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     create.form = createForm
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::store
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:122
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
  * @route '/admin/results'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -172,7 +172,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::store
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:122
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
  * @route '/admin/results'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -181,7 +181,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::store
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:122
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
  * @route '/admin/results'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -191,7 +191,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::store
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:122
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
  * @route '/admin/results'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -201,7 +201,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::store
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:122
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
  * @route '/admin/results'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -212,7 +212,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::edit
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:136
  * @route '/admin/results/{result}/edit'
  */
 export const edit = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -227,7 +227,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::edit
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:136
  * @route '/admin/results/{result}/edit'
  */
 edit.url = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -260,7 +260,7 @@ edit.url = (args: { result: number | { id: number } } | [result: number | { id: 
 
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::edit
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:136
  * @route '/admin/results/{result}/edit'
  */
 edit.get = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -269,7 +269,7 @@ edit.get = (args: { result: number | { id: number } } | [result: number | { id: 
 })
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::edit
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:136
  * @route '/admin/results/{result}/edit'
  */
 edit.head = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -279,7 +279,7 @@ edit.head = (args: { result: number | { id: number } } | [result: number | { id:
 
     /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::edit
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:136
  * @route '/admin/results/{result}/edit'
  */
     const editForm = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -289,7 +289,7 @@ edit.head = (args: { result: number | { id: number } } | [result: number | { id:
 
             /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::edit
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:136
  * @route '/admin/results/{result}/edit'
  */
         editForm.get = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -298,7 +298,7 @@ edit.head = (args: { result: number | { id: number } } | [result: number | { id:
         })
             /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::edit
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:129
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:136
  * @route '/admin/results/{result}/edit'
  */
         editForm.head = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -314,7 +314,7 @@ edit.head = (args: { result: number | { id: number } } | [result: number | { id:
     edit.form = editForm
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::update
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:138
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
  * @route '/admin/results/{result}'
  */
 export const update = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -329,7 +329,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::update
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:138
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
  * @route '/admin/results/{result}'
  */
 update.url = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -362,7 +362,7 @@ update.url = (args: { result: number | { id: number } } | [result: number | { id
 
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::update
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:138
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
  * @route '/admin/results/{result}'
  */
 update.put = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -371,7 +371,7 @@ update.put = (args: { result: number | { id: number } } | [result: number | { id
 })
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::update
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:138
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
  * @route '/admin/results/{result}'
  */
 update.patch = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -381,7 +381,7 @@ update.patch = (args: { result: number | { id: number } } | [result: number | { 
 
     /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::update
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:138
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
  * @route '/admin/results/{result}'
  */
     const updateForm = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -396,7 +396,7 @@ update.patch = (args: { result: number | { id: number } } | [result: number | { 
 
             /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::update
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:138
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
  * @route '/admin/results/{result}'
  */
         updateForm.put = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -410,7 +410,7 @@ update.patch = (args: { result: number | { id: number } } | [result: number | { 
         })
             /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::update
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:138
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
  * @route '/admin/results/{result}'
  */
         updateForm.patch = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -426,7 +426,7 @@ update.patch = (args: { result: number | { id: number } } | [result: number | { 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::destroy
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:152
  * @route '/admin/results/{result}'
  */
 export const destroy = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -441,7 +441,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::destroy
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:152
  * @route '/admin/results/{result}'
  */
 destroy.url = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -474,7 +474,7 @@ destroy.url = (args: { result: number | { id: number } } | [result: number | { i
 
 /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::destroy
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:152
  * @route '/admin/results/{result}'
  */
 destroy.delete = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -484,7 +484,7 @@ destroy.delete = (args: { result: number | { id: number } } | [result: number | 
 
     /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::destroy
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:152
  * @route '/admin/results/{result}'
  */
     const destroyForm = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -499,7 +499,7 @@ destroy.delete = (args: { result: number | { id: number } } | [result: number | 
 
             /**
 * @see \App\Http\Controllers\Admin\AssessmentResultController::destroy
- * @see app/Http/Controllers/Admin/AssessmentResultController.php:145
+ * @see app/Http/Controllers/Admin/AssessmentResultController.php:152
  * @route '/admin/results/{result}'
  */
         destroyForm.delete = (args: { result: number | { id: number } } | [result: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
