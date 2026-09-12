@@ -30,9 +30,9 @@ const toneClasses: Record<Tone, string> = {
     <Link
         v-if="href"
         :href="href"
-        class="block rounded-lg outline-none transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        class="block h-full rounded-lg outline-none transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
-        <Card class="gap-0 border-border/70 py-0 transition hover:border-foreground/25 hover:bg-accent/35">
+        <Card class="h-full gap-0 border-border/70 py-0 transition hover:border-foreground/25 hover:bg-accent/35">
             <div class="flex flex-row items-start justify-between gap-3 px-3.5 py-3.5 md:px-4 md:py-3.5">
                 <div class="space-y-1.5">
                     <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
@@ -62,7 +62,7 @@ const toneClasses: Record<Tone, string> = {
         </Card>
     </Link>
 
-    <Card v-else class="gap-0 border-border/70 py-0">
+    <Card v-else class="h-full gap-0 border-border/70 py-0">
         <div class="flex flex-row items-start justify-between gap-3 px-3.5 py-3.5 md:px-4 md:py-3.5">
             <div class="space-y-1.5">
                 <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
