@@ -91,12 +91,13 @@ class PublicResultController extends Controller
                 'name' => $student->full_name,
                 'admission_no' => $student->admission_no,
                 'class_name' => $student->class_name,
+                'class_group' => $student->class_group,
             ],
             'results' => $results,
             'summary' => [
                 'total' => round((float) $results->sum('marks'), 2),
                 'average' => $results->isNotEmpty() ? round((float) $results->avg('marks'), 2) : null,
-                'rank' => $this->rankingService->getStudentRank($student),
+                'rank' => $this->rankingService->getStudentGradeRank($student),
             ],
         ]);
     }

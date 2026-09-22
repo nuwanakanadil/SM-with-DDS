@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ClassGroups;
 use App\Enums\Grades;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\CreateStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Models\Student;
 use App\Services\StudentService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,30 +24,21 @@ class StudentController extends Controller
     {
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
-            'class_name' => ['nullable', 'string', 'max:120', \Illuminate\Validation\Rule::in(Grades::values())],
-            'status' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['active', 'inactive'])],
-            'sort' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['name_asc', 'name_desc', 'admission_asc', 'admission_desc'])],
+            'class_name' => ['nullable', 'string', 'max:120', Rule::in(Grades::values())],
+            'class_group' => ['nullable', 'string', 'max:120', Rule::in([...ClassGroups::values(), 'unassigned'])],
+            'status' => ['nullable', 'string', Rule::in(['active', 'inactive'])],
+            'sort' => ['nullable', 'string', Rule::in(['name_asc', 'name_desc', 'admission_asc', 'admission_desc'])],
         ]);
 
         $filters = array_merge([
             'search' => '',
             'class_name' => '',
+            'class_group' => '',
             'status' => '',
             'sort' => '',
         ], $filters);
 
-        $students = Student::query()
-            ->when($filters['search'], function ($query, string $search) {
-                $query->where(function ($studentQuery) use ($search) {
-                    $studentQuery->where('first_name', 'like', "%{$search}%")
-                        ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('admission_no', 'like', "%{$search}%")
-                        ->orWhere('school', 'like', "%{$search}%");
-                });
-            })
-            ->when($filters['class_name'], fn ($query, string $className) => $query->where('class_name', $className))
-            ->when($filters['status'] === 'active', fn ($query) => $query->where('is_active', true))
-            ->when($filters['status'] === 'inactive', fn ($query) => $query->where('is_active', false))
+        $students = $this->filteredStudentsQuery($filters)
             ->when($filters['sort'] === 'name_asc', fn ($query) => $query->orderBy('first_name')->orderBy('last_name'))
             ->when($filters['sort'] === 'name_desc', fn ($query) => $query->orderByDesc('first_name')->orderByDesc('last_name'))
             ->when($filters['sort'] === 'admission_asc', fn ($query) => $query->orderBy('admission_no'))
@@ -60,6 +54,7 @@ class StudentController extends Controller
             'students' => $students,
             'filters' => $filters,
             'gradeOptions' => Grades::values(),
+            'classGroupOptions' => ClassGroups::values(),
         ]);
     }
 
@@ -67,6 +62,7 @@ class StudentController extends Controller
     {
         return Inertia::render('admin/students/Manage', [
             'gradeOptions' => Grades::values(),
+            'classGroupOptions' => ClassGroups::values(),
         ]);
     }
 
@@ -88,6 +84,7 @@ class StudentController extends Controller
         return Inertia::render('admin/students/Manage', [
             'student' => $student,
             'gradeOptions' => Grades::values(),
+            'classGroupOptions' => ClassGroups::values(),
         ]);
     }
 
@@ -109,5 +106,26 @@ class StudentController extends Controller
         $student->delete();
 
         return redirect()->route('admin.students.index')->with('success', 'Student deleted successfully.');
+    }
+
+    private function filteredStudentsQuery(array $filters): Builder
+    {
+        return Student::query()
+            ->when($filters['search'] ?? '', function ($query, string $search) {
+                $query->where(function ($studentQuery) use ($search) {
+                    $studentQuery->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('admission_no', 'like', "%{$search}%")
+                        ->orWhere('school', 'like', "%{$search}%");
+                });
+            })
+            ->when($filters['class_name'] ?? '', fn ($query, string $className) => $query->where('class_name', $className))
+            ->when(($filters['class_group'] ?? '') === 'unassigned', fn ($query) => $query->whereNull('class_group'))
+            ->when(
+                ($filters['class_group'] ?? '') && ($filters['class_group'] ?? '') !== 'unassigned',
+                fn ($query) => $query->where('class_group', $filters['class_group'])
+            )
+            ->when(($filters['status'] ?? '') === 'active', fn ($query) => $query->where('is_active', true))
+            ->when(($filters['status'] ?? '') === 'inactive', fn ($query) => $query->where('is_active', false));
     }
 }

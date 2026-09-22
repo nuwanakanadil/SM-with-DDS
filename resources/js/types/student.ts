@@ -7,5 +7,6 @@ export interface Student {
     email?: string | null;
     phone?: string | null;
     class_name?: string | null;
+    class_group?: string | null;
     is_active: boolean;
 }

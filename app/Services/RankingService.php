@@ -23,10 +23,21 @@ class RankingService
         ];
     }
 
-    public function ranksForAssessment(Assessment $assessment): Collection
+    public function ranksForAssessment(Assessment $assessment, ?string $classGroup = null): Collection
     {
         $results = $assessment->results()
             ->with('student')
+            ->whereHas('student', function ($query) use ($assessment, $classGroup) {
+                $query->where('is_active', true);
+
+                if ($assessment->class_name) {
+                    $query->where('class_name', $assessment->class_name);
+                }
+
+                if ($classGroup) {
+                    $query->where('class_group', $classGroup);
+                }
+            })
             ->orderByDesc('marks')
             ->orderBy('student_id')
             ->get();
@@ -56,7 +67,7 @@ class RankingService
     public function placementForStudent(Assessment $assessment, Student $student): ?array
     {
         /** @var array<string, int|float|string>|null $placement */
-        $placement = $this->ranksForAssessment($assessment)
+        $placement = $this->ranksForAssessment($assessment, $student->class_group)
             ->firstWhere('student_id', $student->id);
 
         return $placement;
@@ -64,16 +75,49 @@ class RankingService
 
     public function getStudentRank(Student $student): ?int
     {
+        return $this->getStudentGradeRank($student);
+    }
+
+    public function getStudentGradeRank(Student $student): ?int
+    {
+        if (! $student->class_name) {
+            return null;
+        }
+
         $totals = AssessmentResult::query()
-            ->selectRaw('student_id, SUM(marks) as total_marks')
-            ->groupBy('student_id')
+            ->join('assessments', 'assessments.id', '=', 'assessment_results.assessment_id')
+            ->join('students', 'students.id', '=', 'assessment_results.student_id')
+            ->where('students.is_active', true)
+            ->where('assessments.is_published', true)
+            ->whereNull('assessments.deleted_at')
+            ->whereNull('students.deleted_at')
+            ->where('students.class_name', $student->class_name)
+            ->where('assessments.class_name', $student->class_name)
+            ->selectRaw('assessment_results.student_id, SUM(assessment_results.marks) as total_marks')
+            ->groupBy('assessment_results.student_id')
             ->orderByDesc('total_marks')
-            ->pluck('student_id')
-            ->values();
+            ->orderBy('assessment_results.student_id')
+            ->get();
 
-        $position = $totals->search($student->id);
+        $position = 0;
+        $rank = 0;
+        $previousMarks = null;
 
-        return $position === false ? null : $position + 1;
+        foreach ($totals as $total) {
+            $position++;
+            $marks = (float) $total->total_marks;
+
+            if ($previousMarks === null || $marks !== $previousMarks) {
+                $rank = $position;
+                $previousMarks = $marks;
+            }
+
+            if ((int) $total->student_id === $student->id) {
+                return $rank;
+            }
+        }
+
+        return null;
     }
 
     public function getHighestMarks(int $limit = 10)

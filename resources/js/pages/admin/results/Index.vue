@@ -159,6 +159,7 @@ const remove = (result: AssessmentResult) => {
                             <TableHeader>
                                 <TableRow class="bg-secondary/70">
                                     <TableHead>Student</TableHead>
+                                    <TableHead>Class</TableHead>
                                     <TableHead>Marks</TableHead>
                                     <TableHead>Remarks</TableHead>
                                     <TableHead class="text-right">Actions</TableHead>
@@ -172,6 +173,9 @@ const remove = (result: AssessmentResult) => {
                                     >
                                         <TableCell class="font-semibold text-foreground">
                                             {{ result.student?.first_name }} {{ result.student?.last_name }}
+                                        </TableCell>
+                                        <TableCell>
+                                            {{ [result.student?.class_name, result.student?.class_group].filter(Boolean).join(' - ') || '-' }}
                                         </TableCell>
                                         <TableCell>{{ result.marks }}</TableCell>
                                         <TableCell>{{ result.remarks || '-' }}</TableCell>
@@ -208,7 +212,7 @@ const remove = (result: AssessmentResult) => {
                                     </TableRow>
                                 </template>
 
-                                <TableEmpty v-else :colspan="4" class="py-14">
+                                <TableEmpty v-else :colspan="5" class="py-14">
                                     No results have been recorded for the selected assessment in {{ APP_BRAND_NAME }} yet.
                                 </TableEmpty>
                             </TableBody>

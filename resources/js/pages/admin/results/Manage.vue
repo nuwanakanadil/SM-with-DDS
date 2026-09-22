@@ -74,10 +74,13 @@ const assessmentOptions = computed(() =>
     })),
 );
 
+const formatStudentClass = (student: Student) =>
+    [student.class_name, student.class_group].filter(Boolean).join(' - ');
+
 const studentOptions = computed(() =>
     filteredStudents.value.map((student) => ({
         key: String(student.id),
-        label: `${student.admission_no} - ${student.first_name} ${student.last_name ?? ''}${student.class_name ? ` (${student.class_name})` : ''}`.trim(),
+        label: `${student.admission_no} - ${student.first_name} ${student.last_name ?? ''}${formatStudentClass(student) ? ` (${formatStudentClass(student)})` : ''}`.trim(),
     })),
 );
 

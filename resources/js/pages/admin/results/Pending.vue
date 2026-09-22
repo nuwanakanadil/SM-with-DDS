@@ -36,6 +36,7 @@ type PendingResult = {
     first_name: string;
     last_name?: string | null;
     student_class_name?: string | null;
+    student_class_group?: string | null;
     assessment_id: number;
     assessment_title: string;
     assessment_class_name?: string | null;
@@ -184,6 +185,7 @@ const openResultEntry = (row: PendingResult) => {
                                     <TableHead>Student</TableHead>
                                     <TableHead>Admission No</TableHead>
                                     <TableHead>Grade</TableHead>
+                                    <TableHead>Class Group</TableHead>
                                     <TableHead>Exam</TableHead>
                                     <TableHead>Exam Grade</TableHead>
                                     <TableHead>Date</TableHead>
@@ -208,6 +210,7 @@ const openResultEntry = (row: PendingResult) => {
                                         </TableCell>
                                         <TableCell>{{ row.admission_no }}</TableCell>
                                         <TableCell>{{ row.student_class_name || '-' }}</TableCell>
+                                        <TableCell>{{ row.student_class_group || '-' }}</TableCell>
                                         <TableCell>{{ row.assessment_title }}</TableCell>
                                         <TableCell>{{ row.assessment_class_name || 'All grades' }}</TableCell>
                                         <TableCell>{{ formatDateOnly(row.assessment_date) }}</TableCell>
@@ -215,7 +218,7 @@ const openResultEntry = (row: PendingResult) => {
                                     </TableRow>
                                 </template>
 
-                                <TableEmpty v-else :colspan="7" class="py-14">
+                                <TableEmpty v-else :colspan="8" class="py-14">
                                     No pending results found for the selected filters.
                                 </TableEmpty>
                             </TableBody>

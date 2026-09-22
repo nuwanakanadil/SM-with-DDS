@@ -87,6 +87,7 @@ class AssessmentResultController extends Controller
                 'students.first_name',
                 'students.last_name',
                 'students.class_name as student_class_name',
+                'students.class_group as student_class_group',
                 'assessments.id as assessment_id',
                 'assessments.title as assessment_title',
                 'assessments.class_name as assessment_class_name',
@@ -94,6 +95,7 @@ class AssessmentResultController extends Controller
                 'assessments.total_marks',
             ])
             ->orderBy('students.class_name')
+            ->orderBy('students.class_group')
             ->orderBy('assessments.assessment_date')
             ->orderBy('assessments.title')
             ->orderBy('students.first_name')
@@ -120,7 +122,7 @@ class AssessmentResultController extends Controller
 
         return Inertia::render('admin/results/Manage', [
             'assessments' => Assessment::latest()->get(['id', 'title', 'class_name', 'total_marks']),
-            'students' => Student::where('is_active', true)->orderBy('first_name')->get(['id', 'admission_no', 'first_name', 'last_name', 'class_name']),
+            'students' => Student::where('is_active', true)->orderBy('first_name')->get(['id', 'admission_no', 'first_name', 'last_name', 'class_name', 'class_group']),
             'defaultAssessmentId' => $request->filled('assessment_id') ? $request->integer('assessment_id') : null,
             'defaultStudentId' => $request->filled('student_id') ? $request->integer('student_id') : null,
         ]);
@@ -138,7 +140,7 @@ class AssessmentResultController extends Controller
         return Inertia::render('admin/results/Manage', [
             'result' => $result->load('student', 'assessment'),
             'assessments' => Assessment::latest()->get(['id', 'title', 'class_name', 'total_marks']),
-            'students' => Student::where('is_active', true)->orderBy('first_name')->get(['id', 'admission_no', 'first_name', 'last_name', 'class_name']),
+            'students' => Student::where('is_active', true)->orderBy('first_name')->get(['id', 'admission_no', 'first_name', 'last_name', 'class_name', 'class_group']),
         ]);
     }
 

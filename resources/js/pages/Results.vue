@@ -36,6 +36,7 @@ type PublicResultResponse = {
         name: string;
         admission_no: string;
         class_name: string | null;
+        class_group: string | null;
     } | null;
     results: PublicResult[];
     summary: {
@@ -97,6 +98,13 @@ const formatMarks = (marks: number, totalMarks: number | null) => {
 
     return `${formatNumber(marks)} / ${formatNumber(totalMarks)}`;
 };
+
+const formatStudentClass = computed(() => {
+    const grade = payload.value?.student?.class_name;
+    const group = payload.value?.student?.class_group;
+
+    return [grade, group].filter(Boolean).join(' - ') || '-';
+});
 
 const formatDate = (value: string | null) => {
     if (!value) {
@@ -335,7 +343,7 @@ const viewResults = async () => {
                             </div>
                             <div class="rounded-lg border border-border bg-secondary/60 px-4 py-3">
                                 <p class="text-xs font-semibold uppercase text-muted-foreground">Class</p>
-                                <p class="mt-1 font-semibold text-foreground">{{ payload?.student?.class_name || '-' }}</p>
+                                <p class="mt-1 font-semibold text-foreground">{{ formatStudentClass }}</p>
                             </div>
                         </div>
                     </div>
@@ -363,7 +371,7 @@ const viewResults = async () => {
                     <div class="student-dashboard-surface relative overflow-hidden rounded-[0.875rem] border border-border bg-card/92 p-5 shadow-sm backdrop-blur-sm">
                         <div class="relative z-10">
                             <div class="flex items-center justify-between gap-3">
-                                <p class="text-sm font-semibold text-muted-foreground">Rank</p>
+                                <p class="text-sm font-semibold text-muted-foreground">Grade Rank</p>
                                 <Trophy class="size-5 text-primary" />
                             </div>
                             <p class="mt-3 text-3xl font-bold tracking-normal">{{ payload?.summary?.rank ? `#${payload.summary.rank}` : '-' }}</p>
@@ -380,14 +388,14 @@ const viewResults = async () => {
                         <div>
                             <p class="text-xs font-semibold uppercase text-muted-foreground">{{ formatDate(result.assessment_date) }}</p>
                             <h3 class="mt-1 text-xl font-bold tracking-normal text-foreground">{{ result.exam_name || 'Exam Result' }}</h3>
-                            <p class="mt-1 text-sm text-muted-foreground">{{ result.class_name || payload?.student?.class_name || '-' }}</p>
+                            <p class="mt-1 text-sm text-muted-foreground">{{ formatStudentClass }}</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
                             <span class="rounded-full border border-primary/20 bg-background px-3 py-1 text-sm font-semibold text-primary">
                                 Grade {{ result.grade || '-' }}
                             </span>
                             <span class="rounded-full border border-border bg-background px-3 py-1 text-sm font-semibold text-foreground">
-                                Rank {{ result.rank ? `#${result.rank}` : '-' }}
+                                {{ payload?.student?.class_group || 'Class' }} Rank {{ result.rank ? `#${result.rank}` : '-' }}
                             </span>
                         </div>
                     </div>

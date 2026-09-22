@@ -43,9 +43,11 @@ import { computed, reactive, ref } from 'vue';
 const props = defineProps<{
     students: PaginatedResponse<Student>;
     gradeOptions: string[];
+    classGroupOptions: string[];
     filters?: {
         search?: string;
         class_name?: string;
+        class_group?: string;
         status?: string;
         sort?: string;
     };
@@ -54,6 +56,7 @@ const props = defineProps<{
 const filters = reactive({
     search: props.filters?.search ?? '',
     class_name: props.filters?.class_name ?? '',
+    class_group: props.filters?.class_group ?? '',
     status: props.filters?.status ?? '',
     sort: props.filters?.sort ?? '',
 });
@@ -68,6 +71,7 @@ const applyFilters = () => {
         query: {
             search: filters.search || undefined,
             class_name: filters.class_name || undefined,
+            class_group: filters.class_group || undefined,
             status: filters.status || undefined,
             sort: filters.sort || undefined,
         },
@@ -83,6 +87,7 @@ const applyFilters = () => {
 const clearFilters = () => {
     filters.search = '';
     filters.class_name = '';
+    filters.class_group = '';
     filters.status = '';
     filters.sort = '';
     applyFilters();
@@ -93,7 +98,7 @@ const processSearch = (value: string) => {
     applyFilters();
 };
 
-const updateFilter = (key: 'class_name' | 'status' | 'sort', value: unknown) => {
+const updateFilter = (key: 'class_name' | 'class_group' | 'status' | 'sort', value: unknown) => {
     filters[key] = value == null || value === '__all__' ? '' : String(value);
     applyFilters();
 };
@@ -101,7 +106,6 @@ const updateFilter = (key: 'class_name' | 'status' | 'sort', value: unknown) => 
 const remove = (student: Student) => {
     router.delete(studentsRoutes.destroy(student));
 };
-
 </script>
 
 <template>
@@ -150,8 +154,8 @@ const remove = (student: Student) => {
                             Narrow the student directory by name, grade, status, or sort order.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent class="grid gap-4 lg:grid-cols-4">
-                        <div class="lg:col-span-4">
+                    <CardContent class="grid gap-4 lg:grid-cols-5">
+                        <div class="lg:col-span-5">
                             <SearchBar
                                 v-model="isSearching"
                                 :search="filters.search"
@@ -172,6 +176,24 @@ const remove = (student: Student) => {
                                     <SelectItem value="__all__">All grades</SelectItem>
                                     <SelectItem v-for="grade in props.gradeOptions" :key="grade" :value="grade">
                                         {{ grade }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="space-y-2">
+                            <Label for="student-group-filter">Class Group</Label>
+                            <Select
+                                :model-value="filters.class_group || '__all__'"
+                                @update:model-value="(value) => updateFilter('class_group', value)"
+                            >
+                                <SelectTrigger id="student-group-filter" class="w-full">
+                                    <SelectValue placeholder="All groups" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">All groups</SelectItem>
+                                    <SelectItem value="unassigned">Unassigned</SelectItem>
+                                    <SelectItem v-for="group in props.classGroupOptions" :key="group" :value="group">
+                                        {{ group }}
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
@@ -237,7 +259,8 @@ const remove = (student: Student) => {
                                     <TableHead>Admission No</TableHead>
                                     <TableHead>Name</TableHead>
                                     <TableHead>School</TableHead>
-                                    <TableHead>Class</TableHead>
+                                    <TableHead>Grade</TableHead>
+                                    <TableHead>Class Group</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead class="text-right">Actions</TableHead>
                                 </TableRow>
@@ -256,6 +279,7 @@ const remove = (student: Student) => {
                                         </TableCell>
                                         <TableCell>{{ student.school ?? '-' }}</TableCell>
                                         <TableCell>{{ student.class_name ?? '-' }}</TableCell>
+                                        <TableCell>{{ student.class_group ?? '-' }}</TableCell>
                                         <TableCell>
                                             <Badge :variant="student.is_active ? 'default' : 'secondary'">
                                                 {{ student.is_active ? 'Active' : 'Inactive' }}
@@ -294,7 +318,7 @@ const remove = (student: Student) => {
                                     </TableRow>
                                 </template>
 
-                                <TableEmpty v-else :colspan="6" class="py-14">
+                                <TableEmpty v-else :colspan="7" class="py-14">
                                     No students have been added to {{ APP_BRAND_NAME }} yet. Add your first student to begin managing academic records.
                                 </TableEmpty>
                             </TableBody>

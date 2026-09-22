@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Student;
 
+use App\Enums\ClassGroups;
 use App\Enums\Grades;
 use App\Enums\Permissions;
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,6 +24,7 @@ class CreateStudentRequest extends FormRequest
             'school' => ['nullable', 'string', 'max:190'],
             'phone' => ['nullable', 'string', 'max:30'],
             'class_name' => ['nullable', 'string', 'max:120', Rule::in(Grades::values())],
+            'class_group' => ['nullable', 'string', 'max:120', Rule::in(ClassGroups::values())],
             'is_active' => ['boolean'],
         ];
     }

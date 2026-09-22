@@ -36,6 +36,7 @@ import students from '@/routes/admin/students';
 const props = defineProps<{
     student?: Student;
     gradeOptions: string[];
+    classGroupOptions: string[];
 }>();
 
 const isEdit = Boolean(props.student);
@@ -47,6 +48,7 @@ const form = useForm({
     school: props.student?.school ?? '',
     phone: props.student?.phone ?? '',
     class_name: props.student?.class_name ?? '',
+    class_group: props.student?.class_group ?? '',
     is_active: props.student?.is_active ?? true,
 });
 
@@ -58,6 +60,11 @@ const submit = () =>
 const updateClassName = (value: unknown) => {
     const normalizedValue = value == null ? '' : String(value);
     form.class_name = !normalizedValue || normalizedValue === '__none__' ? '' : normalizedValue;
+};
+
+const updateClassGroup = (value: unknown) => {
+    const normalizedValue = value == null ? '' : String(value);
+    form.class_group = !normalizedValue || normalizedValue === '__none__' ? '' : normalizedValue;
 };
 </script>
 
@@ -109,7 +116,7 @@ const updateClassName = (value: unknown) => {
                                         <InputError :message="form.errors.admission_no" />
                                     </div>
                                     <div class="space-y-2">
-                                        <Label for="class_name">Class</Label>
+                                        <Label for="class_name">Grade</Label>
                                         <Select
                                             :model-value="form.class_name || '__none__'"
                                             @update:model-value="updateClassName"
@@ -125,6 +132,24 @@ const updateClassName = (value: unknown) => {
                                             </SelectContent>
                                         </Select>
                                         <InputError :message="form.errors.class_name" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="class_group">Class Group</Label>
+                                        <Select
+                                            :model-value="form.class_group || '__none__'"
+                                            @update:model-value="updateClassGroup"
+                                        >
+                                            <SelectTrigger id="class_group" class="w-full">
+                                                <SelectValue placeholder="Select class group" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="__none__">Not assigned</SelectItem>
+                                                <SelectItem v-for="group in props.classGroupOptions" :key="group" :value="group">
+                                                    {{ group }}
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError :message="form.errors.class_group" />
                                     </div>
                                     <div class="space-y-2">
                                         <Label for="first_name">First Name</Label>
