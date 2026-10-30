@@ -1,6 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
- * @see routes/student.php:7
+* @see \App\Http\Controllers\Student\MyResultController::__invoke
+ * @see app/Http/Controllers/Student/MyResultController.php:11
  * @route '/my-results'
  */
 export const results = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -14,7 +15,8 @@ results.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/student.php:7
+* @see \App\Http\Controllers\Student\MyResultController::__invoke
+ * @see app/Http/Controllers/Student/MyResultController.php:11
  * @route '/my-results'
  */
 results.url = (options?: RouteQueryOptions) => {
@@ -22,7 +24,8 @@ results.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/student.php:7
+* @see \App\Http\Controllers\Student\MyResultController::__invoke
+ * @see app/Http/Controllers/Student/MyResultController.php:11
  * @route '/my-results'
  */
 results.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -30,7 +33,8 @@ results.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/student.php:7
+* @see \App\Http\Controllers\Student\MyResultController::__invoke
+ * @see app/Http/Controllers/Student/MyResultController.php:11
  * @route '/my-results'
  */
 results.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -39,7 +43,8 @@ results.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/student.php:7
+* @see \App\Http\Controllers\Student\MyResultController::__invoke
+ * @see app/Http/Controllers/Student/MyResultController.php:11
  * @route '/my-results'
  */
     const resultsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -48,7 +53,8 @@ results.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/student.php:7
+* @see \App\Http\Controllers\Student\MyResultController::__invoke
+ * @see app/Http/Controllers/Student/MyResultController.php:11
  * @route '/my-results'
  */
         resultsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -56,7 +62,8 @@ results.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/student.php:7
+* @see \App\Http\Controllers\Student\MyResultController::__invoke
+ * @see app/Http/Controllers/Student/MyResultController.php:11
  * @route '/my-results'
  */
         resultsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -71,7 +78,8 @@ results.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     results.form = resultsForm
 /**
- * @see routes/student.php:8
+* @see \App\Http\Controllers\Student\PlacementController::__invoke
+ * @see app/Http/Controllers/Student/PlacementController.php:16
  * @route '/my-placement'
  */
 export const placement = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -85,7 +93,8 @@ placement.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/student.php:8
+* @see \App\Http\Controllers\Student\PlacementController::__invoke
+ * @see app/Http/Controllers/Student/PlacementController.php:16
  * @route '/my-placement'
  */
 placement.url = (options?: RouteQueryOptions) => {
@@ -93,7 +102,8 @@ placement.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/student.php:8
+* @see \App\Http\Controllers\Student\PlacementController::__invoke
+ * @see app/Http/Controllers/Student/PlacementController.php:16
  * @route '/my-placement'
  */
 placement.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -101,7 +111,8 @@ placement.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/student.php:8
+* @see \App\Http\Controllers\Student\PlacementController::__invoke
+ * @see app/Http/Controllers/Student/PlacementController.php:16
  * @route '/my-placement'
  */
 placement.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -110,7 +121,8 @@ placement.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/student.php:8
+* @see \App\Http\Controllers\Student\PlacementController::__invoke
+ * @see app/Http/Controllers/Student/PlacementController.php:16
  * @route '/my-placement'
  */
     const placementForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -119,7 +131,8 @@ placement.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/student.php:8
+* @see \App\Http\Controllers\Student\PlacementController::__invoke
+ * @see app/Http/Controllers/Student/PlacementController.php:16
  * @route '/my-placement'
  */
         placementForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -127,7 +140,8 @@ placement.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/student.php:8
+* @see \App\Http\Controllers\Student\PlacementController::__invoke
+ * @see app/Http/Controllers/Student/PlacementController.php:16
  * @route '/my-placement'
  */
         placementForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

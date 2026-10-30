@@ -5,7 +5,7 @@ import results from './results'
 import staff from './staff'
 /**
 * @see \App\Http\Controllers\Admin\DashboardController::__invoke
- * @see app/Http/Controllers/Admin/DashboardController.php:18
+ * @see app/Http/Controllers/Admin/DashboardController.php:19
  * @route '/admin'
  */
 export const dashboard = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -20,7 +20,7 @@ dashboard.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\DashboardController::__invoke
- * @see app/Http/Controllers/Admin/DashboardController.php:18
+ * @see app/Http/Controllers/Admin/DashboardController.php:19
  * @route '/admin'
  */
 dashboard.url = (options?: RouteQueryOptions) => {
@@ -29,7 +29,7 @@ dashboard.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\DashboardController::__invoke
- * @see app/Http/Controllers/Admin/DashboardController.php:18
+ * @see app/Http/Controllers/Admin/DashboardController.php:19
  * @route '/admin'
  */
 dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -38,7 +38,7 @@ dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Admin\DashboardController::__invoke
- * @see app/Http/Controllers/Admin/DashboardController.php:18
+ * @see app/Http/Controllers/Admin/DashboardController.php:19
  * @route '/admin'
  */
 dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -48,7 +48,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\DashboardController::__invoke
- * @see app/Http/Controllers/Admin/DashboardController.php:18
+ * @see app/Http/Controllers/Admin/DashboardController.php:19
  * @route '/admin'
  */
     const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -58,7 +58,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\DashboardController::__invoke
- * @see app/Http/Controllers/Admin/DashboardController.php:18
+ * @see app/Http/Controllers/Admin/DashboardController.php:19
  * @route '/admin'
  */
         dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -67,7 +67,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Admin\DashboardController::__invoke
- * @see app/Http/Controllers/Admin/DashboardController.php:18
+ * @see app/Http/Controllers/Admin/DashboardController.php:19
  * @route '/admin'
  */
         dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -83,7 +83,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     dashboard.form = dashboardForm
 /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:17
+ * @see app/Http/Controllers/Admin/AnalysisController.php:18
  * @route '/admin/analysis'
  */
 export const analysis = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -98,7 +98,7 @@ analysis.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:17
+ * @see app/Http/Controllers/Admin/AnalysisController.php:18
  * @route '/admin/analysis'
  */
 analysis.url = (options?: RouteQueryOptions) => {
@@ -107,7 +107,7 @@ analysis.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:17
+ * @see app/Http/Controllers/Admin/AnalysisController.php:18
  * @route '/admin/analysis'
  */
 analysis.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -116,7 +116,7 @@ analysis.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:17
+ * @see app/Http/Controllers/Admin/AnalysisController.php:18
  * @route '/admin/analysis'
  */
 analysis.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -126,7 +126,7 @@ analysis.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:17
+ * @see app/Http/Controllers/Admin/AnalysisController.php:18
  * @route '/admin/analysis'
  */
     const analysisForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -136,7 +136,7 @@ analysis.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:17
+ * @see app/Http/Controllers/Admin/AnalysisController.php:18
  * @route '/admin/analysis'
  */
         analysisForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -145,7 +145,7 @@ analysis.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Admin\AnalysisController::__invoke
- * @see app/Http/Controllers/Admin/AnalysisController.php:17
+ * @see app/Http/Controllers/Admin/AnalysisController.php:18
  * @route '/admin/analysis'
  */
         analysisForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -159,9 +159,88 @@ analysis.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
     
     analysis.form = analysisForm
+/**
+* @see \App\Http\Controllers\Admin\DataQualityController::__invoke
+ * @see app/Http/Controllers/Admin/DataQualityController.php:16
+ * @route '/admin/data-quality'
+ */
+export const dataQuality = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: dataQuality.url(options),
+    method: 'get',
+})
+
+dataQuality.definition = {
+    methods: ["get","head"],
+    url: '/admin/data-quality',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Admin\DataQualityController::__invoke
+ * @see app/Http/Controllers/Admin/DataQualityController.php:16
+ * @route '/admin/data-quality'
+ */
+dataQuality.url = (options?: RouteQueryOptions) => {
+    return dataQuality.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\DataQualityController::__invoke
+ * @see app/Http/Controllers/Admin/DataQualityController.php:16
+ * @route '/admin/data-quality'
+ */
+dataQuality.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: dataQuality.url(options),
+    method: 'get',
+})
+/**
+* @see \App\Http\Controllers\Admin\DataQualityController::__invoke
+ * @see app/Http/Controllers/Admin/DataQualityController.php:16
+ * @route '/admin/data-quality'
+ */
+dataQuality.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: dataQuality.url(options),
+    method: 'head',
+})
+
+    /**
+* @see \App\Http\Controllers\Admin\DataQualityController::__invoke
+ * @see app/Http/Controllers/Admin/DataQualityController.php:16
+ * @route '/admin/data-quality'
+ */
+    const dataQualityForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: dataQuality.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Admin\DataQualityController::__invoke
+ * @see app/Http/Controllers/Admin/DataQualityController.php:16
+ * @route '/admin/data-quality'
+ */
+        dataQualityForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: dataQuality.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Admin\DataQualityController::__invoke
+ * @see app/Http/Controllers/Admin/DataQualityController.php:16
+ * @route '/admin/data-quality'
+ */
+        dataQualityForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: dataQuality.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    dataQuality.form = dataQualityForm
 const admin = {
     dashboard: Object.assign(dashboard, dashboard),
 analysis: Object.assign(analysis, analysis),
+dataQuality: Object.assign(dataQuality, dataQuality),
 students: Object.assign(students, students),
 assessments: Object.assign(assessments, assessments),
 results: Object.assign(results, results),
