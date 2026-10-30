@@ -13,6 +13,10 @@ class AssessmentService
     {
         $search = $filters['search'] ?? null;
         $className = $filters['class_name'] ?? null;
+        $classGroup = $filters['class_group'] ?? null;
+        $academicYear = $filters['academic_year'] ?? null;
+        $term = $filters['term'] ?? null;
+        $examType = $filters['exam_type'] ?? null;
         $status = $filters['status'] ?? null;
         $sort = $filters['sort'] ?? null;
 
@@ -24,6 +28,12 @@ class AssessmentService
                 });
             })
             ->when($className, fn ($query, string $value) => $query->where('class_name', $value))
+            ->when($classGroup, fn ($query, string $value) => $query->where(function ($groupQuery) use ($value) {
+                $groupQuery->whereNull('class_group')->orWhere('class_group', $value);
+            }))
+            ->when($academicYear, fn ($query, $value) => $query->where('academic_year', $value))
+            ->when($term, fn ($query, string $value) => $query->where('term', $value))
+            ->when($examType, fn ($query, string $value) => $query->where('exam_type', $value))
             ->when($status === 'published', fn ($query) => $query->where('is_published', true))
             ->when($status === 'draft', fn ($query) => $query->where('is_published', false))
             ->when($sort === 'title_asc', fn ($query) => $query->orderBy('title'))
@@ -80,6 +90,6 @@ class AssessmentService
         return Assessment::query()
             ->latest('assessment_date')
             ->latest('id')
-            ->get(['id', 'title', 'class_name', 'assessment_date', 'total_marks', 'is_published']);
+            ->get(['id', 'title', 'class_name', 'class_group', 'academic_year', 'term', 'exam_type', 'assessment_date', 'total_marks', 'is_published']);
     }
 }

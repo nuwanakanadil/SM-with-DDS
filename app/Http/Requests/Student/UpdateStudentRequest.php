@@ -27,6 +27,7 @@ class UpdateStudentRequest extends FormRequest
             'last_name' => ['nullable', 'string', 'max:120'],
             'school' => ['nullable', 'string', 'max:190'],
             'phone' => ['nullable', 'string', 'max:30'],
+            'result_access_code' => ['nullable', 'string', 'regex:/^\d{4,12}$/'],
             'class_name' => ['nullable', 'string', 'max:120', Rule::in(Grades::values())],
             'class_group' => ['nullable', 'string', 'max:120', Rule::in(ClassGroups::values())],
             'is_active' => ['boolean'],

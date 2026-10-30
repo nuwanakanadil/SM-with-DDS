@@ -45,7 +45,9 @@ const props = defineProps<{
     dashboard: {
         viewer: 'admin' | 'staff';
         selected_grade: string | null;
+        selected_class_group: string | null;
         grade_options: string[];
+        class_group_options: string[];
         summary: {
             total_students: number;
             total_staff: number;
@@ -69,6 +71,7 @@ const updateGrade = (value: unknown) => {
     router.get(admin.dashboard({
         query: {
             grade,
+            class_group: props.dashboard.selected_class_group || undefined,
         },
     }), undefined, {
         preserveState: true,
@@ -76,9 +79,15 @@ const updateGrade = (value: unknown) => {
     });
 };
 
+const updateGroup = (value: unknown) => {
+    const classGroup = value == null || value === '__all__' ? undefined : String(value);
+    router.get(admin.dashboard({ query: { grade: props.dashboard.selected_grade || undefined, class_group: classGroup } }), undefined, { preserveState: true, replace: true });
+};
+
 const pendingResultsHref = (grade?: string | null) => resultsRoutes.pending({
     query: {
         grade: grade || undefined,
+        class_group: props.dashboard.selected_class_group || undefined,
     },
 }).url;
 </script>
@@ -108,8 +117,8 @@ const pendingResultsHref = (grade?: string | null) => resultsRoutes.pending({
                             Switch between all grades or focus this dashboard on a single grade.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent class="max-w-xl space-y-2">
-                        <Label for="dashboard-grade-filter">Grade</Label>
+                    <CardContent class="grid max-w-3xl gap-4 sm:grid-cols-2">
+                        <div class="space-y-2"><Label for="dashboard-grade-filter">Grade</Label>
                         <Select
                             :model-value="props.dashboard.selected_grade ?? '__all__'"
                             @update:model-value="updateGrade"
@@ -124,6 +133,12 @@ const pendingResultsHref = (grade?: string | null) => resultsRoutes.pending({
                                 </SelectItem>
                             </SelectContent>
                         </Select>
+                        </div>
+                        <div class="space-y-2"><Label for="dashboard-group-filter">Class Group</Label>
+                        <Select :model-value="props.dashboard.selected_class_group ?? '__all__'" @update:model-value="updateGroup">
+                            <SelectTrigger id="dashboard-group-filter" class="w-full"><SelectValue placeholder="Both groups" /></SelectTrigger>
+                            <SelectContent><SelectItem value="__all__">Walala + Mathale</SelectItem><SelectItem v-for="group in props.dashboard.class_group_options" :key="group" :value="group">{{ group }}</SelectItem></SelectContent>
+                        </Select></div>
                     </CardContent>
                 </Card>
 

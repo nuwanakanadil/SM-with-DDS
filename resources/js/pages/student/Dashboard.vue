@@ -33,6 +33,7 @@ defineProps<{
     latestAssessment?: Assessment | null;
     latestResult?: AssessmentResult | null;
     latestPlacement?: StudentRank | null;
+    latestGradePlacement?: StudentRank | null;
     publishedAssessmentsCount: number;
     resultsCount: number;
     averageMarks?: number | null;
@@ -59,7 +60,7 @@ defineProps<{
                         <template #meta>
                             <Badge variant="outline" class="rounded-full px-4 py-1.5">
                                 <GraduationCap class="size-3.5" />
-                                {{ student?.class_name ?? 'Class not assigned' }}
+                                {{ [student?.class_name, student?.class_group].filter(Boolean).join(' - ') || 'Class not assigned' }}
                             </Badge>
                         </template>
                     </PageHero>
@@ -87,9 +88,9 @@ defineProps<{
                     <div class="student-dashboard-stat-card student-dashboard-surface">
                         <MathMotionPanel variant="compact" :equations="['avg', '90%', 'x bar']" />
                         <StatCard
-                            label="Average Marks"
-                            :value="averageMarks ?? '-'"
-                            hint="Your average score across published results."
+                            label="Average Percentage"
+                            :value="averageMarks !== null && averageMarks !== undefined ? `${averageMarks}%` : '-'"
+                            hint="Your normalized average across published results."
                             :icon="CircleGauge"
                         />
                     </div>
@@ -145,7 +146,12 @@ defineProps<{
                         </CardHeader>
                         <CardContent class="space-y-3 text-[15px] leading-7 text-muted-foreground">
                             <p v-if="latestPlacement">
-                                You scored {{ latestPlacement.marks }} in your latest ranked exam.
+                                Rank #{{ latestPlacement.rank }} of {{ latestPlacement.students_count }} in
+                                {{ latestPlacement.class_group }}. You scored {{ latestPlacement.marks }}.
+                            </p>
+                            <p v-if="latestGradePlacement">
+                                {{ latestGradePlacement.class_name }} rank across both groups:
+                                #{{ latestGradePlacement.rank }} of {{ latestGradePlacement.students_count }}.
                             </p>
                             <p v-else>
                                 Placement appears once published results are available for a ranked exam.

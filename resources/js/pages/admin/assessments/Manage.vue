@@ -30,6 +30,10 @@ import { CalendarDays, ClipboardCheck, GraduationCap, NotebookPen, Save, X } fro
 const props = defineProps<{
     assessment?: Assessment;
     gradeOptions: string[];
+    groupOptions: string[];
+    yearOptions: number[];
+    termOptions: string[];
+    examTypeOptions: string[];
 }>();
 
 const isEdit = Boolean(props.assessment);
@@ -37,6 +41,10 @@ const isEdit = Boolean(props.assessment);
 const form = useForm({
     title: props.assessment?.title ?? '',
     class_name: props.assessment?.class_name ?? '',
+    class_group: props.assessment?.class_group ?? '',
+    academic_year: props.assessment?.academic_year ?? new Date().getFullYear(),
+    term: props.assessment?.term ?? 'Term 1',
+    exam_type: props.assessment?.exam_type ?? 'Term Test',
     assessment_date: toDateInputValue(props.assessment?.assessment_date),
     total_marks: props.assessment?.total_marks ?? 100,
     is_published: props.assessment?.is_published ?? false,
@@ -51,6 +59,9 @@ const updateClassName = (value: unknown) => {
     const normalizedValue = value == null ? '' : String(value);
     form.class_name = !normalizedValue || normalizedValue === '__none__' ? '' : normalizedValue;
 };
+
+const normalizeOptional = (value: unknown) =>
+    value == null || value === '__all__' ? '' : String(value);
 </script>
 
 <template>
@@ -122,6 +133,57 @@ const updateClassName = (value: unknown) => {
                                             </SelectContent>
                                         </Select>
                                         <InputError :message="form.errors.class_name" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="class_group">Class Group</Label>
+                                        <Select
+                                            :model-value="form.class_group || '__all__'"
+                                            @update:model-value="(value) => form.class_group = normalizeOptional(value)"
+                                        >
+                                            <SelectTrigger id="class_group" class="w-full">
+                                                <SelectValue placeholder="Both groups" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="__all__">Walala + Mathale</SelectItem>
+                                                <SelectItem v-for="group in props.groupOptions" :key="group" :value="group">
+                                                    {{ group }} only
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError :message="form.errors.class_group" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="academic_year">Academic Year</Label>
+                                        <Select
+                                            :model-value="String(form.academic_year)"
+                                            @update:model-value="(value) => form.academic_year = Number(value)"
+                                        >
+                                            <SelectTrigger id="academic_year" class="w-full"><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem v-for="year in props.yearOptions" :key="year" :value="String(year)">{{ year }}</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError :message="form.errors.academic_year" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="term">Term</Label>
+                                        <Select v-model="form.term">
+                                            <SelectTrigger id="term" class="w-full"><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem v-for="term in props.termOptions" :key="term" :value="term">{{ term }}</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError :message="form.errors.term" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="exam_type">Exam Type</Label>
+                                        <Select v-model="form.exam_type">
+                                            <SelectTrigger id="exam_type" class="w-full"><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem v-for="type in props.examTypeOptions" :key="type" :value="type">{{ type }}</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError :message="form.errors.exam_type" />
                                     </div>
                                     <div class="space-y-2">
                                         <Label for="assessment_date">Exam Date</Label>

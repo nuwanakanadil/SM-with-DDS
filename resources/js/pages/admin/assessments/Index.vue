@@ -44,9 +44,17 @@ import { computed, reactive, ref } from 'vue';
 const props = defineProps<{
     assessments: PaginatedResponse<Assessment>;
     gradeOptions: string[];
+    groupOptions: string[];
+    yearOptions: number[];
+    termOptions: string[];
+    examTypeOptions: string[];
     filters?: {
         search?: string;
         class_name?: string;
+        class_group?: string;
+        academic_year?: string | number;
+        term?: string;
+        exam_type?: string;
         status?: string;
         sort?: string;
     };
@@ -55,6 +63,10 @@ const props = defineProps<{
 const filters = reactive({
     search: props.filters?.search ?? '',
     class_name: props.filters?.class_name ?? '',
+    class_group: props.filters?.class_group ?? '',
+    academic_year: String(props.filters?.academic_year ?? ''),
+    term: props.filters?.term ?? '',
+    exam_type: props.filters?.exam_type ?? '',
     status: props.filters?.status ?? '',
     sort: props.filters?.sort ?? '',
 });
@@ -69,6 +81,10 @@ const applyFilters = () => {
         query: {
             search: filters.search || undefined,
             class_name: filters.class_name || undefined,
+            class_group: filters.class_group || undefined,
+            academic_year: filters.academic_year || undefined,
+            term: filters.term || undefined,
+            exam_type: filters.exam_type || undefined,
             status: filters.status || undefined,
             sort: filters.sort || undefined,
         },
@@ -84,6 +100,10 @@ const applyFilters = () => {
 const clearFilters = () => {
     filters.search = '';
     filters.class_name = '';
+    filters.class_group = '';
+    filters.academic_year = '';
+    filters.term = '';
+    filters.exam_type = '';
     filters.status = '';
     filters.sort = '';
     applyFilters();
@@ -94,7 +114,7 @@ const processSearch = (value: string) => {
     applyFilters();
 };
 
-const updateFilter = (key: 'class_name' | 'status' | 'sort', value: unknown) => {
+const updateFilter = (key: 'class_name' | 'class_group' | 'academic_year' | 'term' | 'exam_type' | 'status' | 'sort', value: unknown) => {
     filters[key] = value == null || value === '__all__' ? '' : String(value);
     applyFilters();
 };
@@ -158,7 +178,7 @@ const unpublish = (assessment: Assessment) => {
                             Refine the exam list by title, grade, publishing status, or sort order.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent class="grid gap-4 lg:grid-cols-4">
+                    <CardContent class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                         <div class="lg:col-span-4">
                             <SearchBar
                                 v-model="isSearching"
@@ -166,6 +186,46 @@ const unpublish = (assessment: Assessment) => {
                                 placeholder="Search exams"
                                 @process-search="processSearch"
                             />
+                        </div>
+                        <div class="space-y-2">
+                            <Label for="assessment-group-filter">Group</Label>
+                            <Select :model-value="filters.class_group || '__all__'" @update:model-value="(value) => updateFilter('class_group', value)">
+                                <SelectTrigger id="assessment-group-filter" class="w-full"><SelectValue placeholder="Both groups" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">All eligible groups</SelectItem>
+                                    <SelectItem v-for="group in props.groupOptions" :key="group" :value="group">{{ group }}</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="space-y-2">
+                            <Label for="assessment-year-filter">Academic Year</Label>
+                            <Select :model-value="filters.academic_year || '__all__'" @update:model-value="(value) => updateFilter('academic_year', value)">
+                                <SelectTrigger id="assessment-year-filter" class="w-full"><SelectValue placeholder="All years" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">All years</SelectItem>
+                                    <SelectItem v-for="year in props.yearOptions" :key="year" :value="String(year)">{{ year }}</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="space-y-2">
+                            <Label for="assessment-term-filter">Term</Label>
+                            <Select :model-value="filters.term || '__all__'" @update:model-value="(value) => updateFilter('term', value)">
+                                <SelectTrigger id="assessment-term-filter" class="w-full"><SelectValue placeholder="All terms" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">All terms</SelectItem>
+                                    <SelectItem v-for="term in props.termOptions" :key="term" :value="term">{{ term }}</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="space-y-2">
+                            <Label for="assessment-type-filter">Exam Type</Label>
+                            <Select :model-value="filters.exam_type || '__all__'" @update:model-value="(value) => updateFilter('exam_type', value)">
+                                <SelectTrigger id="assessment-type-filter" class="w-full"><SelectValue placeholder="All types" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">All types</SelectItem>
+                                    <SelectItem v-for="type in props.examTypeOptions" :key="type" :value="type">{{ type }}</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div class="space-y-2">
                             <Label for="assessment-grade-filter">Grade</Label>
@@ -242,6 +302,8 @@ const unpublish = (assessment: Assessment) => {
                                 <TableRow class="bg-secondary/70">
                                     <TableHead>Title</TableHead>
                                     <TableHead>Class</TableHead>
+                                    <TableHead>Scope</TableHead>
+                                    <TableHead>Cycle</TableHead>
                                     <TableHead>Date</TableHead>
                                     <TableHead>Total</TableHead>
                                     <TableHead>Status</TableHead>
@@ -258,6 +320,11 @@ const unpublish = (assessment: Assessment) => {
                                             {{ assessment.title }}
                                         </TableCell>
                                         <TableCell>{{ assessment.class_name ?? '-' }}</TableCell>
+                                        <TableCell>{{ assessment.class_group ?? 'Both groups' }}</TableCell>
+                                        <TableCell>
+                                            {{ assessment.academic_year ?? '-' }} · {{ assessment.term ?? '-' }}
+                                            <span class="block text-xs text-muted-foreground">{{ assessment.exam_type ?? '-' }}</span>
+                                        </TableCell>
                                         <TableCell>{{ formatDateOnly(assessment.assessment_date) }}</TableCell>
                                         <TableCell>{{ assessment.total_marks }}</TableCell>
                                         <TableCell>
@@ -316,7 +383,7 @@ const unpublish = (assessment: Assessment) => {
                                     </TableRow>
                                 </template>
 
-                                <TableEmpty v-else :colspan="6" class="py-14">
+                                <TableEmpty v-else :colspan="8" class="py-14">
                                     No exams have been added to {{ APP_BRAND_NAME }} yet. Add one to start building the academic cycle.
                                 </TableEmpty>
                             </TableBody>

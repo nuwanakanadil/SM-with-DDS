@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ClassGroups;
 use App\Enums\Grades;
 use App\Enums\Permissions;
 use App\Enums\UserTypes;
@@ -8,6 +9,7 @@ use App\Models\Assessment;
 use App\Models\AssessmentResult;
 use App\Models\Student;
 use App\Models\User;
+use App\Services\RankingService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -63,6 +65,7 @@ test('admin can create update and delete students assessments and results', func
         'last_name' => 'Perera',
         'phone' => '0711111111',
         'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
         'is_active' => true,
     ])->assertRedirect('/admin/students');
 
@@ -75,6 +78,7 @@ test('admin can create update and delete students assessments and results', func
         'last_name' => 'Perera',
         'phone' => '0722222222',
         'class_name' => Grades::Grade11->value,
+        'class_group' => ClassGroups::Walala->value,
         'is_active' => true,
     ])->assertRedirect('/admin/students');
 
@@ -88,6 +92,9 @@ test('admin can create update and delete students assessments and results', func
         'title' => 'Mid Term',
         'class_name' => Grades::Grade11->value,
         'assessment_date' => '2026-06-20',
+        'academic_year' => 2026,
+        'term' => 'Term 2',
+        'exam_type' => 'Term Test',
         'total_marks' => 100,
         'is_published' => true,
     ])->assertRedirect('/admin/assessments');
@@ -98,6 +105,9 @@ test('admin can create update and delete students assessments and results', func
         'title' => 'Mid Term Updated',
         'class_name' => Grades::Grade11->value,
         'assessment_date' => '2026-06-21',
+        'academic_year' => 2026,
+        'term' => 'Term 2',
+        'exam_type' => 'Term Test',
         'total_marks' => 120,
         'is_published' => true,
     ])->assertRedirect('/admin/assessments');
@@ -186,6 +196,7 @@ test('result entry blocks students from a different grade than the assessment', 
         'first_name' => 'Piumi',
         'last_name' => 'Silva',
         'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
         'is_active' => true,
     ]);
     $assessment = Assessment::query()->create([
@@ -207,7 +218,7 @@ test('result entry blocks students from a different grade than the assessment', 
     expect(AssessmentResult::query()->count())->toBe(0);
 });
 
-test('student account pages are temporarily disabled', function () {
+test('student account pages show the private student portal', function () {
     $studentUser = createLmsUser(UserTypes::Student->value);
     Student::query()->create([
         'user_id' => $studentUser->id,
@@ -216,20 +227,24 @@ test('student account pages are temporarily disabled', function () {
         'last_name' => 'Fernando',
         'email' => $studentUser->email,
         'class_name' => Grades::Grade9->value,
+        'class_group' => ClassGroups::Walala->value,
         'is_active' => true,
     ]);
 
     $this->actingAs($studentUser)
         ->get('/dashboard')
-        ->assertNotFound();
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->component('student/Dashboard'));
 
     $this->actingAs($studentUser)
         ->get('/my-results')
-        ->assertNotFound();
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->component('student/MyResults'));
 
     $this->actingAs($studentUser)
         ->get('/my-placement')
-        ->assertNotFound();
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->component('student/Placement'));
 
     $this->actingAs($studentUser)
         ->get('/')
@@ -242,6 +257,7 @@ test('public results checker shows only published matching student results', fun
         'first_name' => 'Dinuka',
         'last_name' => 'Jayasinghe',
         'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
         'is_active' => true,
     ]);
     $otherStudent = Student::query()->create([
@@ -249,6 +265,15 @@ test('public results checker shows only published matching student results', fun
         'first_name' => 'Mihiri',
         'last_name' => 'Perera',
         'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
+        'is_active' => true,
+    ]);
+    $mathaleStudent = Student::query()->create([
+        'admission_no' => 'ADM-302',
+        'first_name' => 'Mathale',
+        'last_name' => 'Leader',
+        'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Mathale->value,
         'is_active' => true,
     ]);
 
@@ -279,6 +304,11 @@ test('public results checker shows only published matching student results', fun
         'marks' => 92,
     ]);
     AssessmentResult::query()->create([
+        'assessment_id' => $publishedAssessment->id,
+        'student_id' => $mathaleStudent->id,
+        'marks' => 100,
+    ]);
+    AssessmentResult::query()->create([
         'assessment_id' => $draftAssessment->id,
         'student_id' => $student->id,
         'marks' => 99,
@@ -297,8 +327,12 @@ test('public results checker shows only published matching student results', fun
         ->assertJsonPath('student.admission_no', 'ADM-300')
         ->assertJsonPath('results.0.exam_name', 'Grade 10 Term Test')
         ->assertJsonPath('results.0.grade', 'A')
-        ->assertJsonPath('results.0.rank', 2)
+        ->assertJsonPath('results.0.group_rank', 2)
+        ->assertJsonPath('results.0.group_rank_out_of', 2)
+        ->assertJsonPath('results.0.grade_rank', 3)
+        ->assertJsonPath('results.0.grade_rank_out_of', 3)
         ->assertJsonPath('results.0.average', 89)
+        ->assertJsonPath('summary.average', 86)
         ->assertJsonMissingPath('results.0.id')
         ->assertJsonMissing(['exam_name' => 'Draft Paper'])
         ->assertJsonMissing(['remarks' => 'Should stay hidden']);
@@ -311,6 +345,172 @@ test('public results checker shows only published matching student results', fun
     $this->withHeaders(['Accept' => 'application/json'])
         ->get('/results/search?admission_no='.urlencode('<script>'))
         ->assertUnprocessable();
+});
+
+test('student exam placement returns class group and combined grade ranks', function () {
+    $student = Student::query()->create([
+        'admission_no' => 'ADM-310',
+        'first_name' => 'Target',
+        'last_name' => 'Student',
+        'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
+        'is_active' => true,
+    ]);
+    $walalaPeer = Student::query()->create([
+        'admission_no' => 'ADM-311',
+        'first_name' => 'Walala',
+        'last_name' => 'Peer',
+        'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
+        'is_active' => true,
+    ]);
+    $mathalePeer = Student::query()->create([
+        'admission_no' => 'ADM-312',
+        'first_name' => 'Mathale',
+        'last_name' => 'Peer',
+        'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Mathale->value,
+        'is_active' => true,
+    ]);
+
+    $firstExam = Assessment::query()->create([
+        'title' => 'Hundred Mark Paper',
+        'class_name' => Grades::Grade10->value,
+        'assessment_date' => '2026-10-20',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+    $secondExam = Assessment::query()->create([
+        'title' => 'Fifty Mark Paper',
+        'class_name' => Grades::Grade10->value,
+        'assessment_date' => '2026-10-21',
+        'total_marks' => 50,
+        'is_published' => true,
+    ]);
+
+    foreach ([
+        [$firstExam, $student, 80],
+        [$firstExam, $walalaPeer, 90],
+        [$firstExam, $mathalePeer, 100],
+        [$secondExam, $student, 50],
+        [$secondExam, $walalaPeer, 25],
+        [$secondExam, $mathalePeer, 50],
+    ] as [$assessment, $resultStudent, $marks]) {
+        AssessmentResult::query()->create([
+            'assessment_id' => $assessment->id,
+            'student_id' => $resultStudent->id,
+            'marks' => $marks,
+        ]);
+    }
+
+    $rankingService = app(RankingService::class);
+    $examPlacement = $rankingService->placementForStudent($firstExam, $student);
+    $gradePlacement = $rankingService->gradePlacementForStudent($firstExam, $student);
+
+    expect($examPlacement)
+        ->rank->toBe(2)
+        ->students_count->toBe(2)
+        ->class_group->toBe(ClassGroups::Walala->value)
+        ->and($gradePlacement)
+        ->rank->toBe(3)
+        ->students_count->toBe(3)
+        ->class_name->toBe(Grades::Grade10->value);
+});
+
+test('public results access code protects configured student records', function () {
+    $student = Student::query()->create([
+        'admission_no' => 'ADM-PIN',
+        'first_name' => 'Protected',
+        'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
+        'result_access_code_hash' => Hash::make('2468'),
+        'is_active' => true,
+    ]);
+    $assessment = Assessment::query()->create([
+        'title' => 'Protected Paper',
+        'class_name' => Grades::Grade10->value,
+        'assessment_date' => '2026-10-22',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+    AssessmentResult::query()->create([
+        'assessment_id' => $assessment->id,
+        'student_id' => $student->id,
+        'marks' => 81,
+    ]);
+
+    $this->getJson('/results/search?admission_no=ADM-PIN')->assertForbidden();
+    $this->getJson('/results/search?admission_no=ADM-PIN&access_code=0000')->assertForbidden();
+    $this->getJson('/results/search?admission_no=ADM-PIN&access_code=2468')
+        ->assertOk()
+        ->assertJsonPath('student.admission_no', 'ADM-PIN');
+});
+
+test('bulk group assignment and bulk marks enforce exam eligibility', function () {
+    $admin = createLmsUser();
+    $walala = Student::query()->create([
+        'admission_no' => 'ADM-BULK-1',
+        'first_name' => 'Walala',
+        'class_name' => Grades::Grade10->value,
+        'is_active' => true,
+    ]);
+    $mathale = Student::query()->create([
+        'admission_no' => 'ADM-BULK-2',
+        'first_name' => 'Mathale',
+        'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Mathale->value,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($admin)->post('/admin/students/bulk-group', [
+        'student_ids' => [$walala->id],
+        'class_group' => ClassGroups::Walala->value,
+    ])->assertSessionHasNoErrors();
+    expect($walala->refresh()->class_group)->toBe(ClassGroups::Walala->value);
+
+    $assessment = Assessment::query()->create([
+        'title' => 'Walala Only',
+        'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
+        'assessment_date' => '2026-10-23',
+        'total_marks' => 50,
+        'is_published' => true,
+    ]);
+
+    $this->actingAs($admin)->from('/admin/results/bulk')->post('/admin/results/bulk', [
+        'assessment_id' => $assessment->id,
+        'results' => [['student_id' => $mathale->id, 'marks' => 40]],
+    ])->assertSessionHasErrors('results');
+
+    $this->actingAs($admin)->post('/admin/results/bulk', [
+        'assessment_id' => $assessment->id,
+        'results' => [['student_id' => $walala->id, 'marks' => 45, 'remarks' => 'Good']],
+    ])->assertSessionHasNoErrors();
+    $this->assertDatabaseHas('assessment_results', [
+        'assessment_id' => $assessment->id,
+        'student_id' => $walala->id,
+        'marks' => '45.00',
+    ]);
+});
+
+test('admin can review data quality and audit information', function () {
+    $admin = createLmsUser();
+    Student::query()->create([
+        'admission_no' => 'ADM-QUALITY',
+        'first_name' => 'Needs Assignment',
+        'class_name' => Grades::Grade10->value,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($admin)
+        ->get('/admin/data-quality')
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/data-quality/Index')
+            ->where('summary.unassigned_group', 1)
+            ->has('groupBreakdown')
+            ->has('recentActivity')
+        );
 });
 
 test('public results checker is rate limited by searched admission number', function () {
@@ -523,6 +723,7 @@ test('admin dashboard shows grade aware management counts', function () {
         'first_name' => 'Ruwan',
         'last_name' => 'Perera',
         'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Mathale->value,
         'is_active' => true,
     ]);
     Student::query()->create([
@@ -530,6 +731,7 @@ test('admin dashboard shows grade aware management counts', function () {
         'first_name' => 'Nadee',
         'last_name' => 'Silva',
         'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
         'is_active' => true,
     ]);
     Student::query()->create([
@@ -537,6 +739,7 @@ test('admin dashboard shows grade aware management counts', function () {
         'first_name' => 'Asha',
         'last_name' => 'Fernando',
         'class_name' => Grades::Grade11->value,
+        'class_group' => ClassGroups::Walala->value,
         'is_active' => true,
     ]);
 
@@ -604,6 +807,7 @@ test('pending results page lists missing student exam pairs', function () {
         'first_name' => 'Ruwan',
         'last_name' => 'Perera',
         'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
         'is_active' => true,
     ]);
     $secondStudent = Student::query()->create([
@@ -611,6 +815,7 @@ test('pending results page lists missing student exam pairs', function () {
         'first_name' => 'Nadee',
         'last_name' => 'Silva',
         'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Mathale->value,
         'is_active' => true,
     ]);
     Student::query()->create([
@@ -618,6 +823,7 @@ test('pending results page lists missing student exam pairs', function () {
         'first_name' => 'Asha',
         'last_name' => 'Fernando',
         'class_name' => Grades::Grade11->value,
+        'class_group' => ClassGroups::Walala->value,
         'is_active' => true,
     ]);
 
@@ -685,6 +891,7 @@ test('analysis filters scope performance data by grade and exam', function () {
         'first_name' => 'Milan',
         'last_name' => 'Perera',
         'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
         'is_active' => true,
     ]);
     $gradeElevenStudent = Student::query()->create([
@@ -692,6 +899,7 @@ test('analysis filters scope performance data by grade and exam', function () {
         'first_name' => 'Sachi',
         'last_name' => 'Silva',
         'class_name' => Grades::Grade11->value,
+        'class_group' => ClassGroups::Mathale->value,
         'is_active' => true,
     ]);
 
@@ -734,5 +942,77 @@ test('analysis filters scope performance data by grade and exam', function () {
             ->where('analysis.summary.results_count', 1)
             ->where('analysis.summary.students_ranked', 1)
             ->has('analysis.ranking', 1)
+        );
+});
+
+test('analysis separates rankings and summaries by class group', function () {
+    $admin = createLmsUser();
+
+    $walalaStudent = Student::query()->create([
+        'admission_no' => 'ADM-601',
+        'first_name' => 'Walala',
+        'last_name' => 'Student',
+        'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Walala->value,
+        'is_active' => true,
+    ]);
+    $mathaleStudent = Student::query()->create([
+        'admission_no' => 'ADM-602',
+        'first_name' => 'Mathale',
+        'last_name' => 'Student',
+        'class_name' => Grades::Grade10->value,
+        'class_group' => ClassGroups::Mathale->value,
+        'is_active' => true,
+    ]);
+
+    $exam = Assessment::query()->create([
+        'title' => 'Grade 10 Group Test',
+        'class_name' => Grades::Grade10->value,
+        'assessment_date' => '2026-10-30',
+        'total_marks' => 100,
+        'is_published' => true,
+    ]);
+
+    AssessmentResult::query()->create([
+        'assessment_id' => $exam->id,
+        'student_id' => $walalaStudent->id,
+        'marks' => 72,
+    ]);
+    AssessmentResult::query()->create([
+        'assessment_id' => $exam->id,
+        'student_id' => $mathaleStudent->id,
+        'marks' => 91,
+    ]);
+
+    $this->actingAs($admin)
+        ->get('/admin/analysis?grade='.urlencode(Grades::Grade10->value)."&assessment_id={$exam->id}")
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('analysis.selected_class_group', null)
+            ->where('analysis.ranking.0.class_group', ClassGroups::Mathale->value)
+            ->where('analysis.ranking.0.rank', 1)
+            ->where('analysis.ranking.1.class_group', ClassGroups::Walala->value)
+            ->where('analysis.ranking.1.rank', 1)
+            ->where('analysis.group_summaries.0.class_group', ClassGroups::Walala->value)
+            ->where('analysis.group_summaries.0.average_mark', 72)
+            ->where('analysis.group_summaries.1.class_group', ClassGroups::Mathale->value)
+            ->where('analysis.group_summaries.1.average_mark', 91)
+        );
+
+    $this->actingAs($admin)
+        ->get('/admin/analysis?grade='.urlencode(Grades::Grade10->value)
+            .'&class_group='.urlencode(ClassGroups::Walala->value)
+            ."&assessment_id={$exam->id}")
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('analysis.selected_class_group', ClassGroups::Walala->value)
+            ->where('analysis.summary.highest_mark', 72)
+            ->where('analysis.summary.lowest_mark', 72)
+            ->where('analysis.summary.average_mark', 72)
+            ->where('analysis.summary.results_count', 1)
+            ->where('analysis.summary.students_ranked', 1)
+            ->has('analysis.ranking', 1)
+            ->where('analysis.ranking.0.class_group', ClassGroups::Walala->value)
+            ->where('analysis.ranking.0.rank', 1)
         );
 });

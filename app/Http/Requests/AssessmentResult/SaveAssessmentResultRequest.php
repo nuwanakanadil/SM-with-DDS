@@ -48,6 +48,12 @@ class SaveAssessmentResultRequest extends FormRequest
                 $validator->errors()->add('assessment_id', 'The selected exam does not match the student grade.');
             }
 
+            if (! $student->class_group) {
+                $validator->errors()->add('student_id', 'Assign the student to Walala or Mathale before entering results.');
+            } elseif ($assessment->class_group && $student->class_group !== $assessment->class_group) {
+                $validator->errors()->add('assessment_id', 'The selected exam is not available to this student group.');
+            }
+
             if ((float) $this->input('marks') > $assessment->total_marks) {
                 $validator->errors()->add('marks', 'Marks cannot exceed the assessment total.');
             }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AnalysisController;
 use App\Http\Controllers\Admin\AssessmentController;
 use App\Http\Controllers\Admin\AssessmentResultController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DataQualityController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\StudentController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,16 @@ Route::middleware(['auth', 'verified', 'role:admin|staff'])
         Route::get('/analysis', AnalysisController::class)
             ->middleware('can:'.Permissions::ViewAnalysis->value)
             ->name('analysis');
+        Route::get('/data-quality', DataQualityController::class)
+            ->middleware('can:'.Permissions::ViewAnalysis->value)
+            ->name('data-quality');
+
+        Route::post('/students/bulk-group', [StudentController::class, 'bulkGroup'])
+            ->middleware('can:'.Permissions::ManageStudents->value)
+            ->name('students.bulk-group');
+        Route::get('/students-export', [StudentController::class, 'export'])
+            ->middleware('can:'.Permissions::ViewStudents->value)
+            ->name('students.export');
 
         Route::resource('students', StudentController::class)
             ->except(['show'])
@@ -36,6 +47,15 @@ Route::middleware(['auth', 'verified', 'role:admin|staff'])
             ->middleware('can:'.Permissions::ManageAssessments->value)
             ->name('assessments.unpublish');
 
+        Route::get('/results/bulk', [AssessmentResultController::class, 'bulk'])
+            ->middleware('can:'.Permissions::ManageResults->value)
+            ->name('results.bulk');
+        Route::post('/results/bulk', [AssessmentResultController::class, 'bulkStore'])
+            ->middleware('can:'.Permissions::ManageResults->value)
+            ->name('results.bulk.store');
+        Route::get('/results-export', [AssessmentResultController::class, 'export'])
+            ->middleware('can:'.Permissions::ViewResults->value)
+            ->name('results.export');
         Route::resource('results', AssessmentResultController::class)
             ->parameters(['results' => 'result'])
             ->except(['show'])

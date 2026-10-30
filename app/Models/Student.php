@@ -22,10 +22,13 @@ class Student extends Model
         'school',
         'email',
         'phone',
+        'result_access_code_hash',
         'class_name',
         'class_group',
         'is_active',
     ];
+
+    protected $hidden = ['result_access_code_hash'];
 
     protected function casts(): array
     {

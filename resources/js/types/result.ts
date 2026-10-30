@@ -23,4 +23,7 @@ export interface StudentRank {
     student_id: number;
     student_name: string;
     marks: string | number;
+    students_count?: number;
+    class_group?: string;
+    class_name?: string;
 }

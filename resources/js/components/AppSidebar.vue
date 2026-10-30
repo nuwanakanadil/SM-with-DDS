@@ -5,6 +5,7 @@ import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import admin from '@/routes/admin';
 import publicRoutes from '@/routes/public';
+import student from '@/routes/student';
 import {
     Sidebar,
     SidebarContent,
@@ -22,7 +23,9 @@ import {
     ClipboardList,
     LayoutDashboard,
     Search,
+    Medal,
     ScrollText,
+    ShieldAlert,
     Users,
 } from 'lucide-vue-next';
 import { computed } from 'vue';
@@ -40,31 +43,42 @@ const isAdminArea = computed(() => {
 });
 
 const adminItems = computed<NavItem[]>(() => {
-    const items: NavItem[] = [
+    const items: (NavItem & { permission?: string })[] = [
         {
             title: 'Dashboard',
             href: admin.dashboard.url(),
             icon: LayoutDashboard,
+            permission: 'view_dashboard',
         },
         {
             title: 'Analytics',
             href: admin.analysis.url(),
             icon: BarChart3,
+            permission: 'view_analysis',
         },
         {
             title: 'Students',
             href: admin.students.index.url(),
             icon: Users,
+            permission: 'view_students',
+        },
+        {
+            title: 'Data Quality',
+            href: '/admin/data-quality',
+            icon: ShieldAlert,
+            permission: 'view_analysis',
         },
         {
             title: 'Exams',
             href: admin.assessments.index.url(),
             icon: ScrollText,
+            permission: 'view_assessments',
         },
         {
             title: 'Results',
             href: admin.results.index.url(),
             icon: ClipboardList,
+            permission: 'view_results',
         },
     ];
 
@@ -76,18 +90,23 @@ const adminItems = computed<NavItem[]>(() => {
         });
     }
 
-    return items;
+    return items.filter((item) => !item.permission || userPermissions.value.includes(item.permission));
 });
 
-const studentItems: NavItem[] = [
-    {
-        title: 'Check Results',
-        href: publicRoutes.results.url(),
-        icon: Search,
-    },
-];
+const studentItems = computed<NavItem[]>(() => {
+    if (userRoles.value.includes('student')) {
+        return [
+            { title: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+            { title: 'My Results', href: student.results.url(), icon: ClipboardList },
+            { title: 'My Placement', href: student.placement.url(), icon: Medal },
+            { title: 'Public Lookup', href: publicRoutes.results.url(), icon: Search },
+        ];
+    }
 
-const mainNavItems = computed(() => (isAdminArea.value ? adminItems.value : studentItems));
+    return [{ title: 'Check Results', href: publicRoutes.results.url(), icon: Search }];
+});
+
+const mainNavItems = computed(() => (isAdminArea.value ? adminItems.value : studentItems.value));
 const logoUrl = computed(() => (isAdminArea.value ? admin.dashboard.url() : publicRoutes.results.url()));
 </script>
 

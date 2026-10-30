@@ -12,9 +12,11 @@ use App\Services\StudentService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StudentController extends Controller
 {
@@ -106,6 +108,54 @@ class StudentController extends Controller
         $student->delete();
 
         return redirect()->route('admin.students.index')->with('success', 'Student deleted successfully.');
+    }
+
+    public function bulkGroup(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'student_ids' => ['required', 'array', 'min:1', 'max:500'],
+            'student_ids.*' => ['integer', 'distinct', 'exists:students,id'],
+            'class_group' => ['required', 'string', Rule::in(ClassGroups::values())],
+        ]);
+
+        $updated = DB::transaction(fn (): int => Student::query()
+            ->whereKey($validated['student_ids'])
+            ->update(['class_group' => $validated['class_group']]));
+
+        return back()->with('success', "{$updated} student(s) assigned to {$validated['class_group']}.");
+    }
+
+    public function export(Request $request): StreamedResponse
+    {
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'class_name' => ['nullable', 'string', Rule::in(Grades::values())],
+            'class_group' => ['nullable', 'string', Rule::in([...ClassGroups::values(), 'unassigned'])],
+            'status' => ['nullable', 'string', Rule::in(['active', 'inactive'])],
+        ]);
+
+        $students = $this->filteredStudentsQuery($filters)
+            ->orderBy('class_name')
+            ->orderBy('class_group')
+            ->orderBy('admission_no')
+            ->get();
+
+        return response()->streamDownload(function () use ($students): void {
+            $output = fopen('php://output', 'w');
+            fputcsv($output, ['Admission No', 'First Name', 'Last Name', 'School', 'Grade', 'Class Group', 'Status']);
+            foreach ($students as $student) {
+                fputcsv($output, [
+                    $student->admission_no,
+                    $student->first_name,
+                    $student->last_name,
+                    $student->school,
+                    $student->class_name,
+                    $student->class_group,
+                    $student->is_active ? 'Active' : 'Inactive',
+                ]);
+            }
+            fclose($output);
+        }, 'students-'.now()->format('Y-m-d-His').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     private function filteredStudentsQuery(array $filters): Builder

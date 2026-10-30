@@ -40,6 +40,7 @@ type PendingResult = {
     assessment_id: number;
     assessment_title: string;
     assessment_class_name?: string | null;
+    assessment_class_group?: string | null;
     assessment_date?: string | null;
     total_marks: number;
 };
@@ -47,8 +48,10 @@ type PendingResult = {
 const props = defineProps<{
     assessments: Assessment[];
     gradeOptions: string[];
+    groupOptions: string[];
     filters: {
         grade?: string | null;
+        class_group?: string | null;
         assessment_id?: number | null;
     };
     pendingResults: PaginatedResponse<PendingResult>;
@@ -56,6 +59,7 @@ const props = defineProps<{
 
 const filters = reactive({
     grade: props.filters.grade ?? '',
+    class_group: props.filters.class_group ?? '',
     assessment_id: props.filters.assessment_id ? String(props.filters.assessment_id) : '',
 });
 
@@ -81,10 +85,16 @@ const assessmentOptions = computed(() => [
     })),
 ]);
 
+const groupOptions = computed(() => [
+    { key: '', label: 'Both groups' },
+    ...props.groupOptions.map((group) => ({ key: group, label: group })),
+]);
+
 const applyFilters = () => {
     router.get(resultsRoutes.pending({
         query: {
             grade: filters.grade || undefined,
+            class_group: filters.class_group || undefined,
             assessment_id: filters.assessment_id || undefined,
         },
     }), undefined, {
@@ -93,7 +103,7 @@ const applyFilters = () => {
     });
 };
 
-watch(() => [filters.grade, filters.assessment_id], () => {
+watch(() => [filters.grade, filters.class_group, filters.assessment_id], () => {
     applyFilters();
 });
 
@@ -146,7 +156,13 @@ const openResultEntry = (row: PendingResult) => {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div class="grid gap-4 md:grid-cols-2">
+                        <div class="grid gap-4 md:grid-cols-3">
+                            <SearchableSelect
+                                v-model="filters.class_group"
+                                :options="groupOptions"
+                                placeholder="Both groups"
+                                class="justify-between"
+                            />
                             <SearchableSelect
                                 v-model="filters.grade"
                                 :options="gradeOptions"

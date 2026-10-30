@@ -25,10 +25,14 @@ type PublicResult = {
     assessment_date: string | null;
     marks: number;
     total_marks: number | null;
+    percentage: number | null;
     grade: string | null;
     remarks: string | null;
     average: number | null;
-    rank: number | null;
+    group_rank: number | null;
+    group_rank_out_of: number | null;
+    grade_rank: number | null;
+    grade_rank_out_of: number | null;
 };
 
 type PublicResultResponse = {
@@ -41,8 +45,8 @@ type PublicResultResponse = {
     results: PublicResult[];
     summary: {
         total: number;
+        total_possible: number;
         average: number | null;
-        rank: number | null;
     } | null;
 };
 
@@ -67,6 +71,7 @@ const backgroundFormulas = [
 
 const page = usePage();
 const admissionNo = ref('');
+const accessCode = ref('');
 const loading = ref(false);
 const error = ref('');
 const searched = ref(false);
@@ -135,7 +140,9 @@ const viewResults = async () => {
     searched.value = true;
 
     try {
-        const response = await fetch(`${props.searchUrl}?admission_no=${encodeURIComponent(query)}`, {
+        const params = new URLSearchParams({ admission_no: query });
+        if (accessCode.value.trim()) params.set('access_code', accessCode.value.trim());
+        const response = await fetch(`${props.searchUrl}?${params.toString()}`, {
             headers: {
                 Accept: 'application/json',
             },
@@ -147,6 +154,10 @@ const viewResults = async () => {
 
         if (response.status === 429) {
             throw new Error('Too many result searches. Please wait a minute and try again.');
+        }
+
+        if (response.status === 403) {
+            throw new Error('The admission number or result access code is incorrect.');
         }
 
         if (!response.ok) {
@@ -255,13 +266,22 @@ const viewResults = async () => {
                         </div>
 
                         <div class="relative z-10 bg-background/78 px-5 py-5 backdrop-blur-sm sm:px-8 sm:py-6">
-                            <form class="grid gap-3 sm:grid-cols-[1fr_auto]" @submit.prevent="viewResults">
+                            <form class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_12rem_auto]" @submit.prevent="viewResults">
                                 <Input
                                     v-model="admissionNo"
                                     aria-label="Admission Number"
                                     autocomplete="off"
                                     class="h-12 rounded-lg border-border bg-card text-base shadow-none"
                                     placeholder="Admission Number"
+                                />
+                                <Input
+                                    v-model="accessCode"
+                                    aria-label="Result access code"
+                                    autocomplete="one-time-code"
+                                    inputmode="numeric"
+                                    maxlength="12"
+                                    class="h-12 rounded-lg border-border bg-card text-base shadow-none"
+                                    placeholder="Access code (if issued)"
                                 />
                                 <Button type="submit" size="lg" class="h-12 rounded-lg px-5" :disabled="loading">
                                     <LoaderCircle v-if="loading" class="size-4 animate-spin" />
@@ -276,11 +296,13 @@ const viewResults = async () => {
                                         <PhoneCall class="size-4" />
                                     </span>
                                     <p class="font-semibold">
-                                        විභාග අංකය අමතක ද? එසේනම් මෙම අංකය අමතන්න
+                                        විභාග අංකය අමතකද? මෙම දුරකතන අංකයට ඔබගේ නම ශ්‍රේණිය ඇතුලත් whatsapp කෙටි පණිවිඩයක් එවන්න.
                                     </p>
                                 </div>
                                 <a
-                                    href="tel:0712378372"
+                                    href="https://wa.me/94712378372"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     class="inline-flex items-center justify-center rounded-lg border border-primary/20 bg-background px-3 py-2 font-bold text-primary transition hover:bg-primary hover:text-primary-foreground"
                                 >
                                     0712378372
@@ -353,28 +375,36 @@ const viewResults = async () => {
                     <div class="student-dashboard-surface relative overflow-hidden rounded-[0.875rem] border border-border bg-card/92 p-5 shadow-sm backdrop-blur-sm">
                         <div class="relative z-10">
                             <div class="flex items-center justify-between gap-3">
-                                <p class="text-sm font-semibold text-muted-foreground">Total</p>
+                                <p class="text-sm font-semibold text-muted-foreground">Total Marks</p>
                                 <BookOpenCheck class="size-5 text-primary" />
                             </div>
-                            <p class="mt-3 text-3xl font-bold tracking-normal">{{ formatNumber(payload?.summary?.total) }}</p>
+                            <p class="mt-3 text-3xl font-bold tracking-normal">
+                                {{ formatMarks(payload?.summary?.total ?? 0, payload?.summary?.total_possible ?? null) }}
+                            </p>
                         </div>
                     </div>
                     <div class="student-dashboard-surface relative overflow-hidden rounded-[0.875rem] border border-border bg-card/92 p-5 shadow-sm backdrop-blur-sm">
                         <div class="relative z-10">
                             <div class="flex items-center justify-between gap-3">
-                                <p class="text-sm font-semibold text-muted-foreground">Average</p>
+                                <p class="text-sm font-semibold text-muted-foreground">Average Percentage</p>
                                 <Award class="size-5 text-primary" />
                             </div>
-                            <p class="mt-3 text-3xl font-bold tracking-normal">{{ formatNumber(payload?.summary?.average) }}</p>
+                            <p class="mt-3 text-3xl font-bold tracking-normal">
+                                {{ payload?.summary?.average !== null ? `${formatNumber(payload?.summary?.average)}%` : '-' }}
+                            </p>
                         </div>
                     </div>
                     <div class="student-dashboard-surface relative overflow-hidden rounded-[0.875rem] border border-border bg-card/92 p-5 shadow-sm backdrop-blur-sm">
                         <div class="relative z-10">
                             <div class="flex items-center justify-between gap-3">
-                                <p class="text-sm font-semibold text-muted-foreground">Grade Rank</p>
+                                <p class="text-sm font-semibold text-muted-foreground">
+                                    Class Group
+                                </p>
                                 <Trophy class="size-5 text-primary" />
                             </div>
-                            <p class="mt-3 text-3xl font-bold tracking-normal">{{ payload?.summary?.rank ? `#${payload.summary.rank}` : '-' }}</p>
+                            <p class="mt-3 text-3xl font-bold tracking-normal">
+                                {{ payload?.student?.class_group || 'Not assigned' }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -395,7 +425,12 @@ const viewResults = async () => {
                                 Grade {{ result.grade || '-' }}
                             </span>
                             <span class="rounded-full border border-border bg-background px-3 py-1 text-sm font-semibold text-foreground">
-                                {{ payload?.student?.class_group || 'Class' }} Rank {{ result.rank ? `#${result.rank}` : '-' }}
+                                {{ payload?.student?.class_group || 'Group' }} Rank
+                                {{ result.group_rank ? `#${result.group_rank} / ${result.group_rank_out_of ?? '-'}` : '-' }}
+                            </span>
+                            <span class="rounded-full border border-border bg-background px-3 py-1 text-sm font-semibold text-foreground">
+                                {{ payload?.student?.class_name || 'Grade' }} Rank
+                                {{ result.grade_rank ? `#${result.grade_rank} / ${result.grade_rank_out_of ?? '-'}` : '-' }}
                             </span>
                         </div>
                     </div>
@@ -411,8 +446,10 @@ const viewResults = async () => {
                                 <p class="mt-1 font-semibold text-foreground">{{ formatMarks(result.marks, result.total_marks) }}</p>
                             </div>
                             <div class="rounded-lg border border-border bg-background px-4 py-3">
-                                <p class="text-xs font-semibold uppercase text-muted-foreground">Average</p>
-                                <p class="mt-1 font-semibold text-foreground">{{ formatNumber(result.average) }}</p>
+                                <p class="text-xs font-semibold uppercase text-muted-foreground">Group Average</p>
+                                <p class="mt-1 font-semibold text-foreground">
+                                    {{ result.average !== null ? formatMarks(result.average, result.total_marks) : '-' }}
+                                </p>
                             </div>
                         </div>
                         <div v-if="result.remarks" class="rounded-lg border border-border bg-background px-4 py-3">
@@ -429,7 +466,8 @@ const viewResults = async () => {
                                     <TableHead>Marks</TableHead>
                                     <TableHead>Grade</TableHead>
                                     <TableHead>Total</TableHead>
-                                    <TableHead>Average</TableHead>
+                                    <TableHead>Percentage</TableHead>
+                                    <TableHead>Group Average</TableHead>
                                     <TableHead>Remarks</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -439,7 +477,8 @@ const viewResults = async () => {
                                     <TableCell>{{ formatNumber(result.marks) }}</TableCell>
                                     <TableCell>{{ result.grade || '-' }}</TableCell>
                                     <TableCell>{{ formatNumber(result.total_marks) }}</TableCell>
-                                    <TableCell>{{ formatNumber(result.average) }}</TableCell>
+                                    <TableCell>{{ result.percentage !== null ? `${formatNumber(result.percentage)}%` : '-' }}</TableCell>
+                                    <TableCell>{{ result.average !== null ? formatMarks(result.average, result.total_marks) : '-' }}</TableCell>
                                     <TableCell>{{ result.remarks || '-' }}</TableCell>
                                 </TableRow>
                             </TableBody>

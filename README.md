@@ -1,84 +1,68 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Marks & Ranking System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Laravel 12 + Vue/Inertia application for student records, exam marks, Walala/Mathale analysis, per-exam rankings, and public result lookup.
 
-## About Laravel
+## Main workflows
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Exams can target Walala, Mathale, or both groups and include academic year, term, and exam type.
+- Ranks are calculated per exam: one rank inside the student's group and one across both groups in the same grade.
+- Admin/staff can enter marks individually or with the bulk-entry grid and export students/results as CSV.
+- The Data Quality page identifies unassigned students, affected legacy results, draft-exam results, and recent audit activity.
+- Student accounts can use the private dashboard, result history, and placement pages.
+- Public lookup supports an optional per-student numeric access code stored as a secure hash.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Local setup
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Local database with Docker
-
-This project is configured to use a Dockerized MySQL database for local development.
-Make sure Docker Desktop (or another Docker daemon) is running before you start the database container.
-
-1. Start the database container:
+Requirements: PHP 8.2+, Composer, Node.js 20+, and MySQL 8+.
 
 ```bash
-docker compose up -d --wait database
-```
-
-2. Run the migrations:
-
-```bash
+composer install
+npm install
+copy .env.example .env
+php artisan key:generate
 php artisan migrate
-```
-
-3. Start the app:
-
-```bash
+npm run build
 composer run dev
 ```
 
-The default database credentials live in `.env` and `.env.example`, and the container is exposed on host port `3307` by default.
-phpMyAdmin is available at `http://localhost:8081` by default after you run `docker compose up -d`.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+For the included Docker database:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+docker compose up -d --wait database
+php artisan migrate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+MySQL is exposed on port `3307` and phpMyAdmin on `http://localhost:8081` by default. Never commit `.env` or real database dumps.
 
-## Contributing
+## Importing a production copy safely
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Use a separate local database name, import the dump there, update only the local `.env`, then run:
 
-## Code of Conduct
+```bash
+php artisan config:clear
+php artisan migrate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Keep the original local database until the imported copy has been verified. Avoid running development commands against production credentials.
 
-## Security Vulnerabilities
+## Verification
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan test
+npm run build
+```
 
-## License
+## Deployment checklist
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. Back up the database and uploaded files.
+2. Put the application in maintenance mode.
+3. Deploy code and run `composer install --no-dev --optimize-autoloader`.
+4. Run `php artisan migrate --force` and `npm ci && npm run build` (or deploy prebuilt assets).
+5. Run `php artisan optimize`, restart queue workers, then leave maintenance mode.
+6. Verify public lookup, admin login, bulk marks, rankings, and the Data Quality page.
+
+Schedule automated encrypted database backups and test a restore regularly. Restrict backup access separately from application access.
+
+## Data migration notes
+
+The academic-scope migration infers an existing exam's group when all assigned result records belong to one valid group. Exams containing both groups—or only unassigned legacy students—remain scoped to both groups. Review these on the Exams and Data Quality pages after deployment.

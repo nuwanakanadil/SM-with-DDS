@@ -7,6 +7,7 @@ use App\Models\Student;
 use App\Services\RankingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -26,6 +27,7 @@ class PublicResultController extends Controller
     {
         $validator = Validator::make($request->query(), [
             'admission_no' => ['required', 'string', 'max:50', 'regex:/^[A-Za-z0-9._\-\/]+$/'],
+            'access_code' => ['nullable', 'string', 'max:12', 'regex:/^\d{4,12}$/'],
         ]);
 
         if ($validator->fails()) {
@@ -52,6 +54,15 @@ class PublicResultController extends Controller
             ]);
         }
 
+        if ($student->result_access_code_hash && ! Hash::check((string) ($validated['access_code'] ?? ''), $student->result_access_code_hash)) {
+            return response()->json([
+                'message' => 'The admission number or result access code is incorrect.',
+                'student' => null,
+                'results' => [],
+                'summary' => null,
+            ], 403);
+        }
+
         $results = AssessmentResult::query()
             ->with('assessment')
             ->where('student_id', $student->id)
@@ -65,8 +76,11 @@ class PublicResultController extends Controller
             ->get()
             ->map(function (AssessmentResult $result) use ($student): array {
                 $assessment = $result->assessment;
-                $summary = $assessment ? $this->rankingService->summaryForAssessment($assessment) : null;
-                $placement = $assessment ? $this->rankingService->placementForStudent($assessment, $student) : null;
+                $summary = $assessment && $student->class_group
+                    ? $this->rankingService->summaryForAssessment($assessment, $student->class_group, $student->class_name)
+                    : null;
+                $groupPlacement = $assessment ? $this->rankingService->placementForStudent($assessment, $student) : null;
+                $gradePlacement = $assessment ? $this->rankingService->gradePlacementForStudent($assessment, $student) : null;
                 $marks = (float) $result->marks;
                 $totalMarks = $assessment?->total_marks ? (float) $assessment->total_marks : null;
                 $percentage = $totalMarks && $totalMarks > 0 ? round(($marks / $totalMarks) * 100, 2) : null;
@@ -79,12 +93,20 @@ class PublicResultController extends Controller
                     'assessment_date' => $assessment?->assessment_date?->toDateString(),
                     'marks' => $marks,
                     'total_marks' => $totalMarks,
+                    'percentage' => $percentage,
                     'grade' => $percentage !== null ? $this->gradeForPercentage($percentage) : null,
                     'remarks' => $result->remarks,
                     'average' => $summary['average'] ?? null,
-                    'rank' => $placement['rank'] ?? null,
+                    'group_rank' => $groupPlacement['rank'] ?? null,
+                    'group_rank_out_of' => $groupPlacement['students_count'] ?? null,
+                    'grade_rank' => $gradePlacement['rank'] ?? null,
+                    'grade_rank_out_of' => $gradePlacement['students_count'] ?? null,
                 ];
             });
+
+        $percentages = $results
+            ->pluck('percentage')
+            ->filter(static fn ($percentage) => $percentage !== null);
 
         return response()->json([
             'student' => [
@@ -96,8 +118,8 @@ class PublicResultController extends Controller
             'results' => $results,
             'summary' => [
                 'total' => round((float) $results->sum('marks'), 2),
-                'average' => $results->isNotEmpty() ? round((float) $results->avg('marks'), 2) : null,
-                'rank' => $this->rankingService->getStudentGradeRank($student),
+                'total_possible' => round((float) $results->sum('total_marks'), 2),
+                'average' => $percentages->isNotEmpty() ? round((float) $percentages->avg(), 2) : null,
             ],
         ]);
     }

@@ -29,7 +29,7 @@ import type { PaginatedResponse } from '@/types';
 import type { Assessment } from '@/types/assessment';
 import type { AssessmentResult } from '@/types/result';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { CircleCheckBig, ClipboardList, Pencil, Trash2 } from 'lucide-vue-next';
+import { CircleCheckBig, ClipboardList, Download, Pencil, Sheet, Trash2 } from 'lucide-vue-next';
 import { computed, reactive, watch } from 'vue';
 
 const props = defineProps<{
@@ -90,6 +90,12 @@ const remove = (result: AssessmentResult) => {
                         </Badge>
                     </template>
                     <template #actions>
+                        <Button v-if="props.selectedAssessment" as-child variant="outline" size="lg">
+                            <a :href="`/admin/results-export?assessment_id=${props.selectedAssessment.id}`"><Download class="size-4" /> Export CSV</a>
+                        </Button>
+                        <Button as-child variant="outline" size="lg">
+                            <Link :href="`/admin/results/bulk${props.selectedAssessment ? `?assessment_id=${props.selectedAssessment.id}` : ''}`"><Sheet class="size-4" /> Bulk Entry</Link>
+                        </Button>
                         <IconButton :icon="CircleCheckBig" :link="resultsRoutes.create()" size="lg">
                             Enter Marks
                         </IconButton>

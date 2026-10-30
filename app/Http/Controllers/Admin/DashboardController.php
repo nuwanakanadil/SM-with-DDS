@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\UserTypes;
+use App\Enums\ClassGroups;
 use App\Enums\Grades;
+use App\Enums\UserTypes;
 use App\Http\Controllers\Controller;
 use App\Services\DashboardService;
 use Illuminate\Http\Request;
@@ -19,12 +20,14 @@ class DashboardController extends Controller
     {
         $validated = $request->validate([
             'grade' => ['nullable', 'string', 'max:120', Rule::in(Grades::values())],
+            'class_group' => ['nullable', 'string', Rule::in(ClassGroups::values())],
         ]);
         $isAdmin = $request->user()?->hasRole(UserTypes::Admin->value) ?? false;
 
         return Inertia::render('admin/dashboard/Index', [
             'dashboard' => $this->dashboardService->snapshot(
                 $validated['grade'] ?? null,
+                $validated['class_group'] ?? null,
                 $isAdmin,
             ),
         ]);

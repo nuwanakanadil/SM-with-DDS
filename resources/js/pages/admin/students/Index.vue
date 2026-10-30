@@ -36,8 +36,8 @@ import AdminLayout from '@/layouts/admin/Layout.vue';
 import studentsRoutes from '@/routes/admin/students';
 import type { PaginatedResponse } from '@/types';
 import type { Student } from '@/types/student';
-import { Head, Link, router } from '@inertiajs/vue3';
-import { Pencil, ShieldCheck, Trash2, UserPlus, Users } from 'lucide-vue-next';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { Download, Pencil, ShieldCheck, Trash2, UserPlus, Users, UsersRound } from 'lucide-vue-next';
 import { computed, reactive, ref } from 'vue';
 
 const props = defineProps<{
@@ -61,12 +61,30 @@ const filters = reactive({
     sort: props.filters?.sort ?? '',
 });
 const isSearching = ref(false);
+const selectedStudentIds = ref<number[]>([]);
+const selectedGroup = ref('');
+const page = usePage();
+const canManageStudents = computed(() => page.props.auth.permissions?.includes('manage_students') ?? false);
 
 const activeStudents = computed(
     () => props.students.data.filter((student) => student.is_active).length,
 );
+const allPageSelected = computed({
+    get: () => props.students.data.length > 0 && props.students.data.every((student) => selectedStudentIds.value.includes(student.id)),
+    set: (selected: boolean) => {
+        selectedStudentIds.value = selected ? props.students.data.map((student) => student.id) : [];
+    },
+});
+
+const exportUrl = computed(() => {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => value && params.set(key, value));
+    const query = params.toString();
+    return `/admin/students-export${query ? `?${query}` : ''}`;
+});
 
 const applyFilters = () => {
+    selectedStudentIds.value = [];
     router.get(studentsRoutes.index({
         query: {
             search: filters.search || undefined,
@@ -106,6 +124,20 @@ const updateFilter = (key: 'class_name' | 'class_group' | 'status' | 'sort', val
 const remove = (student: Student) => {
     router.delete(studentsRoutes.destroy(student));
 };
+
+const assignSelectedGroup = () => {
+    if (!selectedGroup.value || !selectedStudentIds.value.length) return;
+    router.post('/admin/students/bulk-group', {
+        student_ids: selectedStudentIds.value,
+        class_group: selectedGroup.value,
+    }, {
+        preserveScroll: true,
+        onSuccess: () => {
+            selectedStudentIds.value = [];
+            selectedGroup.value = '';
+        },
+    });
+};
 </script>
 
 <template>
@@ -125,6 +157,9 @@ const remove = (student: Student) => {
                         </Badge>
                     </template>
                     <template #actions>
+                        <Button as-child variant="outline" size="lg">
+                            <a :href="exportUrl"><Download class="size-4" /> Export CSV</a>
+                        </Button>
                         <IconButton :icon="UserPlus" :link="studentsRoutes.create()" size="lg">
                             Add Student
                         </IconButton>
@@ -240,6 +275,29 @@ const remove = (student: Student) => {
                     </CardContent>
                 </Card>
 
+                <Card v-if="canManageStudents" class="section-card">
+                    <CardContent class="flex flex-col gap-4 py-5 md:flex-row md:items-end">
+                        <div class="flex-1">
+                            <p class="font-semibold">Bulk class-group assignment</p>
+                            <p class="text-sm text-muted-foreground">
+                                Select students on this page, then assign all of them to Walala or Mathale.
+                            </p>
+                        </div>
+                        <div class="w-full space-y-2 md:w-56">
+                            <Label for="bulk-group">Class Group</Label>
+                            <Select v-model="selectedGroup">
+                                <SelectTrigger id="bulk-group" class="w-full"><SelectValue placeholder="Choose group" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem v-for="group in props.classGroupOptions" :key="group" :value="group">{{ group }}</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <Button :disabled="!selectedGroup || !selectedStudentIds.length" @click="assignSelectedGroup">
+                            <UsersRound class="size-4" /> Assign {{ selectedStudentIds.length || '' }} selected
+                        </Button>
+                    </CardContent>
+                </Card>
+
                 <Card class="section-card overflow-hidden py-0">
                     <CardHeader class="border-b border-border/80 py-5">
                         <div class="flex items-center justify-between gap-3">
@@ -256,6 +314,9 @@ const remove = (student: Student) => {
                         <Table>
                             <TableHeader>
                                 <TableRow class="bg-secondary/70">
+                                    <TableHead v-if="canManageStudents" class="w-12">
+                                        <input v-model="allPageSelected" type="checkbox" aria-label="Select all students on page" class="size-4 rounded border-input">
+                                    </TableHead>
                                     <TableHead>Admission No</TableHead>
                                     <TableHead>Name</TableHead>
                                     <TableHead>School</TableHead>
@@ -271,6 +332,9 @@ const remove = (student: Student) => {
                                         v-for="student in students.data"
                                         :key="student.id"
                                     >
+                                        <TableCell v-if="canManageStudents">
+                                            <input v-model="selectedStudentIds" :value="student.id" type="checkbox" :aria-label="`Select ${student.first_name}`" class="size-4 rounded border-input">
+                                        </TableCell>
                                         <TableCell class="font-semibold text-foreground">
                                             {{ student.admission_no }}
                                         </TableCell>
@@ -318,7 +382,7 @@ const remove = (student: Student) => {
                                     </TableRow>
                                 </template>
 
-                                <TableEmpty v-else :colspan="7" class="py-14">
+                                <TableEmpty v-else :colspan="canManageStudents ? 8 : 7" class="py-14">
                                     No students have been added to {{ APP_BRAND_NAME }} yet. Add your first student to begin managing academic records.
                                 </TableEmpty>
                             </TableBody>

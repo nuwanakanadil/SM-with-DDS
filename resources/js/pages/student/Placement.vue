@@ -16,26 +16,30 @@ import type { Assessment } from '@/types/assessment';
 import type { StudentRank } from '@/types/result';
 import { Head, router } from '@inertiajs/vue3';
 import { ChevronDown, ListFilter, Medal, Trophy } from 'lucide-vue-next';
-import { reactive } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps<{
     assessments: Assessment[];
     selectedAssessment?: Assessment | null;
     placement?: StudentRank | null;
+    gradePlacement?: StudentRank | null;
 }>();
 
-const filters = reactive({
-    assessment_id: props.selectedAssessment?.id ?? '',
-});
+const filterInProgress = ref(false);
 
-const applyFilter = () => {
-    router.get(student.placement({
-        query: {
-            assessment_id: filters.assessment_id || undefined,
-        },
-    }), undefined, {
-        preserveState: true,
+const applyFilter = (event: Event) => {
+    const assessmentId = (event.target as HTMLSelectElement).value;
+
+    router.get(student.placement.url(), assessmentId ? { assessment_id: assessmentId } : {}, {
+        preserveState: false,
+        preserveScroll: true,
         replace: true,
+        onStart: () => {
+            filterInProgress.value = true;
+        },
+        onFinish: () => {
+            filterInProgress.value = false;
+        },
     });
 };
 </script>
@@ -70,7 +74,8 @@ const applyFilter = () => {
                             <ListFilter class="pointer-events-none absolute left-4 top-1/2 z-10 size-4 -translate-y-1/2 text-muted-foreground" />
                             <ChevronDown class="pointer-events-none absolute right-4 top-1/2 z-10 size-4 -translate-y-1/2 text-muted-foreground" />
                             <select
-                                v-model="filters.assessment_id"
+                            :value="selectedAssessment?.id ?? ''"
+                            :disabled="filterInProgress"
                                 class="app-select pl-11 pr-10"
                                 @change="applyFilter"
                             >
@@ -105,7 +110,13 @@ const applyFilter = () => {
                         </div>
                         <div v-if="placement" class="info-tile">
                             <Medal class="mr-1 inline size-4 text-amber-500" />
+                            {{ placement.class_group }} rank #{{ placement.rank }} of {{ placement.students_count }}.
                             Marks scored: {{ placement.marks }}
+                        </div>
+                        <div v-if="gradePlacement" class="info-tile">
+                            <Trophy class="mr-1 inline size-4 text-primary" />
+                            {{ gradePlacement.class_name }} rank across Walala and Mathale:
+                            #{{ gradePlacement.rank }} of {{ gradePlacement.students_count }}.
                         </div>
                         <p v-else>
                             Placement will appear when the selected exam has a published result for you.

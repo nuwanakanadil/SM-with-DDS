@@ -3,6 +3,7 @@ import { APP_BRAND_NAME, APP_SYSTEM_SUBTITLE } from '@/constants/branding';
 import PageHero from '@/components/PageHero.vue';
 import StatCard from '@/components/StatCard.vue';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -34,18 +35,23 @@ import { Head, router } from '@inertiajs/vue3';
 import {
     Activity,
     BookMarked,
+    CircleAlert,
     ClipboardList,
     Medal,
+    RotateCcw,
     Sparkles,
     Trophy,
     Users,
 } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{
     analysis: {
         selected_grade: string | null;
+        selected_class_group: string | null;
         selected_assessment_id: number | null;
         grade_options: string[];
+        class_group_options: string[];
         assessment_options: Array<{
             id: number;
             title: string;
@@ -66,12 +72,23 @@ const props = defineProps<{
             average_mark: number | null;
             results_count: number;
             students_ranked: number;
+            unassigned_students: number;
         };
         ranking: Array<{
             rank: number;
             student_id: number;
             student_name: string;
+            class_name: string | null;
+            class_group: string | null;
             marks: string | number;
+        }>;
+        group_summaries: Array<{
+            class_group: string;
+            highest_mark: number | null;
+            lowest_mark: number | null;
+            average_mark: number | null;
+            students_ranked: number;
+            results_count: number;
         }>;
         grade_distribution: Array<{
             grade: string;
@@ -80,27 +97,53 @@ const props = defineProps<{
     };
 }>();
 
-const applyFilters = (grade?: string, assessmentId?: string) => {
-    router.get(admin.analysis({
-        query: {
-            grade: grade || undefined,
-            assessment_id: assessmentId || undefined,
-        },
-    }), undefined, {
-        preserveState: true,
+const filterVisitInProgress = ref(false);
+const hasActiveFilters = computed(() => Boolean(
+    props.analysis.selected_grade
+    || props.analysis.selected_class_group
+    || props.analysis.selected_assessment_id,
+));
+
+const applyFilters = (grade = '', classGroup = '', assessmentId = '') => {
+    if (filterVisitInProgress.value) {
+        return;
+    }
+
+    const filters: Record<string, string> = {};
+
+    if (grade) filters.grade = grade;
+    if (classGroup) filters.class_group = classGroup;
+    if (assessmentId) filters.assessment_id = assessmentId;
+
+    router.get(admin.analysis.url(), filters, {
+        preserveState: false,
+        preserveScroll: true,
         replace: true,
+        onStart: () => {
+            filterVisitInProgress.value = true;
+        },
+        onFinish: () => {
+            filterVisitInProgress.value = false;
+        },
     });
 };
 
 const updateGrade = (value: unknown) => {
     const grade = value == null || value === '__all__' ? '' : String(value);
-    applyFilters(grade, '');
+    applyFilters(grade, props.analysis.selected_class_group ?? '', '');
+};
+
+const updateClassGroup = (value: unknown) => {
+    const classGroup = value == null || value === '__all__' ? '' : String(value);
+    applyFilters(props.analysis.selected_grade ?? '', classGroup, props.analysis.selected_assessment_id?.toString() ?? '');
 };
 
 const updateAssessment = (value: unknown) => {
     const assessmentId = value == null || value === '__all__' ? '' : String(value);
-    applyFilters(props.analysis.selected_grade ?? '', assessmentId);
+    applyFilters(props.analysis.selected_grade ?? '', props.analysis.selected_class_group ?? '', assessmentId);
 };
+
+const resetFilters = () => applyFilters();
 </script>
 
 <template>
@@ -111,7 +154,7 @@ const updateAssessment = (value: unknown) => {
                 <PageHero
                     :eyebrow="APP_SYSTEM_SUBTITLE"
                     title="Performance Overview"
-                    :description="`Review normalized performance, fair ranking order, and score distribution across ${APP_BRAND_NAME}.`"
+                    :description="`Compare Walala and Mathale performance, fair group-based rankings, and score distribution across ${APP_BRAND_NAME}.`"
                 >
                     <template #meta>
                         <Badge variant="outline" class="rounded-full px-4 py-1.5">
@@ -125,14 +168,15 @@ const updateAssessment = (value: unknown) => {
                     <CardHeader>
                         <CardTitle>Analysis Filters</CardTitle>
                         <CardDescription>
-                            Use grade and exam filters together so every performance comparison stays fair.
+                            Filter by grade, class group, and exam. Rankings are always calculated separately for each grade and group.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent class="grid gap-4 lg:grid-cols-2">
+                    <CardContent class="grid gap-4 lg:grid-cols-3">
                         <div class="space-y-2">
                             <Label for="analysis-grade-filter">Grade</Label>
                             <Select
                                 :model-value="props.analysis.selected_grade ?? '__all__'"
+                                :disabled="filterVisitInProgress"
                                 @update:model-value="updateGrade"
                             >
                                 <SelectTrigger id="analysis-grade-filter" class="w-full">
@@ -147,9 +191,32 @@ const updateAssessment = (value: unknown) => {
                             </Select>
                         </div>
                         <div class="space-y-2">
+                            <Label for="analysis-group-filter">Class Group</Label>
+                            <Select
+                                :model-value="props.analysis.selected_class_group ?? '__all__'"
+                                :disabled="filterVisitInProgress"
+                                @update:model-value="updateClassGroup"
+                            >
+                                <SelectTrigger id="analysis-group-filter" class="w-full">
+                                    <SelectValue placeholder="All groups" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="__all__">All groups</SelectItem>
+                                    <SelectItem
+                                        v-for="classGroup in props.analysis.class_group_options"
+                                        :key="classGroup"
+                                        :value="classGroup"
+                                    >
+                                        {{ classGroup }}
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div class="space-y-2">
                             <Label for="analysis-exam-filter">Exam</Label>
                             <Select
                                 :model-value="props.analysis.selected_assessment_id ? String(props.analysis.selected_assessment_id) : '__all__'"
+                                :disabled="filterVisitInProgress"
                                 @update:model-value="updateAssessment"
                             >
                                 <SelectTrigger id="analysis-exam-filter" class="w-full">
@@ -166,6 +233,21 @@ const updateAssessment = (value: unknown) => {
                                     </SelectItem>
                                 </SelectContent>
                             </Select>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-border/70 pt-4 lg:col-span-3">
+                            <p class="text-sm text-muted-foreground">
+                                Changing the grade clears the selected exam so only matching exams are shown.
+                            </p>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                :disabled="!hasActiveFilters || filterVisitInProgress"
+                                @click="resetFilters"
+                            >
+                                <RotateCcw class="size-4" />
+                                Reset filters
+                            </Button>
                         </div>
                     </CardContent>
                 </Card>
@@ -206,7 +288,7 @@ const updateAssessment = (value: unknown) => {
                     <StatCard
                         label="Students Ranked"
                         :value="props.analysis.summary.students_ranked"
-                        hint="Students included in the current ranking calculation."
+                        hint="Students included across the selected group scope."
                         :icon="Users"
                     />
                     <StatCard
@@ -215,7 +297,56 @@ const updateAssessment = (value: unknown) => {
                         hint="Result records contributing to this analysis view."
                         :icon="BookMarked"
                     />
+                    <StatCard
+                        label="Group Not Assigned"
+                        :value="props.analysis.summary.unassigned_students"
+                        hint="Active students excluded until Walala or Mathale is assigned."
+                        :icon="CircleAlert"
+                        tone="warning"
+                        :href="admin.students.index.url()"
+                    />
                 </div>
+
+                <Card class="section-card overflow-hidden py-0">
+                    <CardHeader class="border-b border-border/80 py-5">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <CardTitle>Class Group Comparison</CardTitle>
+                                <CardDescription>
+                                    Walala and Mathale performance within the selected grade and exam scope.
+                                </CardDescription>
+                            </div>
+                            <Badge variant="outline" class="rounded-full px-4 py-1.5">
+                                <Users class="size-3.5" />
+                                Walala vs Mathale
+                            </Badge>
+                        </div>
+                    </CardHeader>
+                    <CardContent class="p-0">
+                        <Table>
+                            <TableHeader>
+                                <TableRow class="bg-secondary/70">
+                                    <TableHead>Group</TableHead>
+                                    <TableHead>Students</TableHead>
+                                    <TableHead>Results</TableHead>
+                                    <TableHead>Highest</TableHead>
+                                    <TableHead>Lowest</TableHead>
+                                    <TableHead>Average</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                <TableRow v-for="group in props.analysis.group_summaries" :key="group.class_group">
+                                    <TableCell class="font-semibold text-foreground">{{ group.class_group }}</TableCell>
+                                    <TableCell>{{ group.students_ranked }}</TableCell>
+                                    <TableCell>{{ group.results_count }}</TableCell>
+                                    <TableCell>{{ group.highest_mark !== null ? `${group.highest_mark}%` : '-' }}</TableCell>
+                                    <TableCell>{{ group.lowest_mark !== null ? `${group.lowest_mark}%` : '-' }}</TableCell>
+                                    <TableCell>{{ group.average_mark !== null ? `${group.average_mark}%` : '-' }}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
 
                 <div class="grid gap-6 xl:grid-cols-2">
                     <Card class="section-card overflow-hidden py-0">
@@ -224,7 +355,7 @@ const updateAssessment = (value: unknown) => {
                                 <div>
                                     <CardTitle>Ranking Overview</CardTitle>
                                     <CardDescription>
-                                        Ranked by selected exam marks or by average percentage across the filtered scope.
+                                        Rank numbers restart for every grade and class group.
                                     </CardDescription>
                                 </div>
                                 <Badge variant="outline" class="rounded-full px-4 py-1.5">
@@ -239,6 +370,8 @@ const updateAssessment = (value: unknown) => {
                                     <TableRow class="bg-secondary/70">
                                         <TableHead>Rank</TableHead>
                                         <TableHead>Student</TableHead>
+                                        <TableHead>Grade</TableHead>
+                                        <TableHead>Group</TableHead>
                                         <TableHead>{{ props.analysis.selected_assessment_id ? 'Marks' : 'Average %' }}</TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -251,12 +384,14 @@ const updateAssessment = (value: unknown) => {
                                             <TableCell class="font-medium text-foreground">
                                                 {{ rank.student_name }}
                                             </TableCell>
+                                            <TableCell>{{ rank.class_name || '-' }}</TableCell>
+                                            <TableCell>{{ rank.class_group || 'Unassigned' }}</TableCell>
                                             <TableCell>
                                                 {{ props.analysis.selected_assessment_id ? rank.marks : `${rank.marks}%` }}
                                             </TableCell>
                                         </TableRow>
                                     </template>
-                                    <TableEmpty v-else :colspan="3" class="py-14">
+                                    <TableEmpty v-else :colspan="5" class="py-14">
                                         No ranking data is available for the current filters.
                                     </TableEmpty>
                                 </TableBody>

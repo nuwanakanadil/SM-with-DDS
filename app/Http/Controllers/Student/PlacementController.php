@@ -15,13 +15,20 @@ class PlacementController extends Controller
 
     public function __invoke(Request $request): Response
     {
+        $validated = $request->validate([
+            'assessment_id' => ['nullable', 'integer'],
+        ]);
         $student = auth()->user()->student;
         $relevantAssessments = Assessment::query()
             ->where('is_published', true)
-            ->relevantToStudent($student);
+            ->relevantToStudent($student)
+            ->when($student, fn ($query) => $query->whereHas(
+                'results',
+                fn ($resultQuery) => $resultQuery->where('student_id', $student->id),
+            ));
 
         $assessment = (clone $relevantAssessments)
-            ->when($request->assessment_id, fn ($query, $id) => $query->where('id', $id))
+            ->when($validated['assessment_id'] ?? null, fn ($query, $id) => $query->where('id', $id))
             ->latest('assessment_date')
             ->latest('id')
             ->first();
@@ -30,6 +37,7 @@ class PlacementController extends Controller
             'assessments' => (clone $relevantAssessments)->latest('assessment_date')->latest('id')->get(['id', 'title', 'class_name', 'assessment_date', 'total_marks', 'is_published']),
             'selectedAssessment' => $assessment,
             'placement' => $student && $assessment ? $this->rankingService->placementForStudent($assessment, $student) : null,
+            'gradePlacement' => $student && $assessment ? $this->rankingService->gradePlacementForStudent($assessment, $student) : null,
         ]);
     }
 }

@@ -47,6 +47,7 @@ const form = useForm({
     last_name: props.student?.last_name ?? '',
     school: props.student?.school ?? '',
     phone: props.student?.phone ?? '',
+    result_access_code: '',
     class_name: props.student?.class_name ?? '',
     class_group: props.student?.class_group ?? '',
     is_active: props.student?.is_active ?? true,
@@ -181,6 +182,12 @@ const updateClassGroup = (value: unknown) => {
                                         <Label for="phone">Phone</Label>
                                         <Input id="phone" v-model="form.phone" placeholder="Enter phone number" />
                                         <InputError :message="form.errors.phone" />
+                                    </div>
+                                    <div class="space-y-2">
+                                        <Label for="result_access_code">Result Access Code</Label>
+                                        <Input id="result_access_code" v-model="form.result_access_code" type="password" inputmode="numeric" maxlength="12" placeholder="Optional 4–12 digit PIN" />
+                                        <p class="text-xs text-muted-foreground">{{ isEdit ? 'Leave blank to keep the existing code.' : 'Students with a code must enter it during public result lookup.' }}</p>
+                                        <InputError :message="form.errors.result_access_code" />
                                     </div>
                                 </div>
                             </section>

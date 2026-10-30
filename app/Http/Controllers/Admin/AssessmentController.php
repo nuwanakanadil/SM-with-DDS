@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ClassGroups;
 use App\Enums\Grades;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Assessment\SaveAssessmentRequest;
@@ -9,6 +10,7 @@ use App\Models\Assessment;
 use App\Services\AssessmentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,14 +22,22 @@ class AssessmentController extends Controller
     {
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
-            'class_name' => ['nullable', 'string', 'max:120', \Illuminate\Validation\Rule::in(Grades::values())],
-            'status' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['published', 'draft'])],
-            'sort' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['title_asc', 'title_desc', 'date_asc', 'date_desc'])],
+            'class_name' => ['nullable', 'string', 'max:120', Rule::in(Grades::values())],
+            'class_group' => ['nullable', 'string', Rule::in(ClassGroups::values())],
+            'academic_year' => ['nullable', 'integer', 'min:2020', 'max:2100'],
+            'term' => ['nullable', 'string', Rule::in($this->termOptions())],
+            'exam_type' => ['nullable', 'string', Rule::in($this->examTypeOptions())],
+            'status' => ['nullable', 'string', Rule::in(['published', 'draft'])],
+            'sort' => ['nullable', 'string', Rule::in(['title_asc', 'title_desc', 'date_asc', 'date_desc'])],
         ]);
 
         $filters = array_merge([
             'search' => '',
             'class_name' => '',
+            'class_group' => '',
+            'academic_year' => '',
+            'term' => '',
+            'exam_type' => '',
             'status' => '',
             'sort' => '',
         ], $filters);
@@ -36,6 +46,7 @@ class AssessmentController extends Controller
             'assessments' => $this->assessmentService->paginated($filters),
             'filters' => $filters,
             'gradeOptions' => Grades::values(),
+            ...$this->academicOptions(),
         ]);
     }
 
@@ -43,6 +54,7 @@ class AssessmentController extends Controller
     {
         return Inertia::render('admin/assessments/Manage', [
             'gradeOptions' => Grades::values(),
+            ...$this->academicOptions(),
         ]);
     }
 
@@ -58,6 +70,7 @@ class AssessmentController extends Controller
         return Inertia::render('admin/assessments/Manage', [
             'assessment' => $assessment,
             'gradeOptions' => Grades::values(),
+            ...$this->academicOptions(),
         ]);
     }
 
@@ -87,5 +100,25 @@ class AssessmentController extends Controller
         $this->assessmentService->unpublish($assessment);
 
         return redirect()->route('admin.assessments.index')->with('success', 'Assessment unpublished successfully.');
+    }
+
+    private function academicOptions(): array
+    {
+        return [
+            'groupOptions' => ClassGroups::values(),
+            'yearOptions' => range((int) now()->year + 1, 2020),
+            'termOptions' => $this->termOptions(),
+            'examTypeOptions' => $this->examTypeOptions(),
+        ];
+    }
+
+    private function termOptions(): array
+    {
+        return ['Term 1', 'Term 2', 'Term 3', 'Other'];
+    }
+
+    private function examTypeOptions(): array
+    {
+        return ['Unit Test', 'Term Test', 'Practice Exam', 'Other'];
     }
 }
