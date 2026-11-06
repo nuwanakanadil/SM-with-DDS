@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicResultController;
+use App\Http\Controllers\PublicTimetableController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,6 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/results', [PublicResultController::class, 'index'])->name('public.results');
+Route::get('/timetable', PublicTimetableController::class)->name('public.timetable');
 Route::get('/results/search', [PublicResultController::class, 'search'])
     ->middleware('throttle:public-results')
     ->name('public.results.search');

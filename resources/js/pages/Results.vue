@@ -12,10 +12,11 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { APP_BRAND_NAME } from '@/constants/branding';
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import { AlertCircle, Award, BookOpenCheck, LayoutDashboard, LoaderCircle, LogIn, LogOut, PhoneCall, Search, Trophy, UserCircle } from 'lucide-vue-next';
+import { AlertCircle, ArrowRight, Award, BookOpenCheck, CalendarDays, LayoutDashboard, LoaderCircle, LogIn, LogOut, PhoneCall, Search, Trophy, UserCircle } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import { login, logout } from '@/routes';
 import admin from '@/routes/admin';
+import publicRoutes from '@/routes/public';
 
 type PublicResult = {
     row_key: string;
@@ -71,7 +72,6 @@ const backgroundFormulas = [
 
 const page = usePage();
 const admissionNo = ref('');
-const accessCode = ref('');
 const loading = ref(false);
 const error = ref('');
 const searched = ref(false);
@@ -141,7 +141,6 @@ const viewResults = async () => {
 
     try {
         const params = new URLSearchParams({ admission_no: query });
-        if (accessCode.value.trim()) params.set('access_code', accessCode.value.trim());
         const response = await fetch(`${props.searchUrl}?${params.toString()}`, {
             headers: {
                 Accept: 'application/json',
@@ -154,10 +153,6 @@ const viewResults = async () => {
 
         if (response.status === 429) {
             throw new Error('Too many result searches. Please wait a minute and try again.');
-        }
-
-        if (response.status === 403) {
-            throw new Error('The admission number or result access code is incorrect.');
         }
 
         if (!response.ok) {
@@ -266,7 +261,7 @@ const viewResults = async () => {
                         </div>
 
                         <div class="relative z-10 bg-background/78 px-5 py-5 backdrop-blur-sm sm:px-8 sm:py-6">
-                            <form class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_12rem_auto]" @submit.prevent="viewResults">
+                            <form class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]" @submit.prevent="viewResults">
                                 <Input
                                     v-model="admissionNo"
                                     aria-label="Admission Number"
@@ -274,21 +269,27 @@ const viewResults = async () => {
                                     class="h-12 rounded-lg border-border bg-card text-base shadow-none"
                                     placeholder="Admission Number"
                                 />
-                                <Input
-                                    v-model="accessCode"
-                                    aria-label="Result access code"
-                                    autocomplete="one-time-code"
-                                    inputmode="numeric"
-                                    maxlength="12"
-                                    class="h-12 rounded-lg border-border bg-card text-base shadow-none"
-                                    placeholder="Access code (if issued)"
-                                />
                                 <Button type="submit" size="lg" class="h-12 rounded-lg px-5" :disabled="loading">
                                     <LoaderCircle v-if="loading" class="size-4 animate-spin" />
                                     <Search v-else class="size-4" />
                                     {{ loading ? 'Loading...' : 'View Results' }}
                                 </Button>
                             </form>
+
+                            <Link
+                                :href="publicRoutes.timetable.url()"
+                                class="group mt-4 flex items-center gap-3 rounded-xl border border-primary/15 bg-[linear-gradient(135deg,rgba(37,99,235,0.07),rgba(255,255,255,0.68))] p-3.5 transition duration-200 hover:border-primary/30 hover:bg-primary/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:bg-[linear-gradient(135deg,rgba(59,130,246,0.12),rgba(15,23,42,0.62))] sm:p-4"
+                            >
+                                <span class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+                                    <CalendarDays class="size-5" />
+                                </span>
+                                <span class="min-w-0 flex-1">
+                                    <span class="block text-sm font-bold text-foreground sm:text-[15px]">2026 O/L Practice Exam Timetable</span>
+                                    <span class="mt-0.5 block text-xs leading-5 text-muted-foreground">View all nine exam days, paper times and subject baskets.</span>
+                                </span>
+                                <span class="hidden rounded-full border border-primary/15 bg-background/75 px-3 py-1 text-[11px] font-semibold text-primary sm:block">16–27 Nov</span>
+                                <ArrowRight class="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+                            </Link>
 
                             <div class="mt-4 flex flex-col gap-3 rounded-lg border border-primary/15 bg-secondary/55 px-4 py-3 text-sm leading-6 text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
                                 <div class="flex items-start gap-3">

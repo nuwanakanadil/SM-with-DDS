@@ -1,1 +1,0 @@
-import{Ct as e,E as t,S as n,V as r,d as i,tt as a,y as o}from"./app-ChSDWBjk.js";var s={class:`text-sm font-medium text-red-600`},c=t({__name:`InputError`,props:{message:{}},setup(t){return(c,l)=>a((r(),n(`div`,null,[o(`p`,s,e(t.message),1)],512)),[[i,t.message]])}});export{c as t};

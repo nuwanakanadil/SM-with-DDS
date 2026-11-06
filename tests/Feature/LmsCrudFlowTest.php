@@ -54,6 +54,12 @@ function createLmsUser(string $roleName = UserTypes::Admin->value): User
     return $user;
 }
 
+test('exam timetable is publicly accessible without login', function () {
+    $this->get('/timetable')
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->component('student/Timetable'));
+});
+
 test('admin can create update and delete students assessments and results', function () {
     $admin = createLmsUser();
 
@@ -417,7 +423,7 @@ test('student exam placement returns class group and combined grade ranks', func
         ->class_name->toBe(Grades::Grade10->value);
 });
 
-test('public results access code protects configured student records', function () {
+test('public results require only the admission number', function () {
     $student = Student::query()->create([
         'admission_no' => 'ADM-PIN',
         'first_name' => 'Protected',
@@ -439,9 +445,7 @@ test('public results access code protects configured student records', function 
         'marks' => 81,
     ]);
 
-    $this->getJson('/results/search?admission_no=ADM-PIN')->assertForbidden();
-    $this->getJson('/results/search?admission_no=ADM-PIN&access_code=0000')->assertForbidden();
-    $this->getJson('/results/search?admission_no=ADM-PIN&access_code=2468')
+    $this->getJson('/results/search?admission_no=ADM-PIN')
         ->assertOk()
         ->assertJsonPath('student.admission_no', 'ADM-PIN');
 });

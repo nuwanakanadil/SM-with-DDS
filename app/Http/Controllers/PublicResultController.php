@@ -7,7 +7,6 @@ use App\Models\Student;
 use App\Services\RankingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -27,7 +26,6 @@ class PublicResultController extends Controller
     {
         $validator = Validator::make($request->query(), [
             'admission_no' => ['required', 'string', 'max:50', 'regex:/^[A-Za-z0-9._\-\/]+$/'],
-            'access_code' => ['nullable', 'string', 'max:12', 'regex:/^\d{4,12}$/'],
         ]);
 
         if ($validator->fails()) {
@@ -52,15 +50,6 @@ class PublicResultController extends Controller
                 'results' => [],
                 'summary' => null,
             ]);
-        }
-
-        if ($student->result_access_code_hash && ! Hash::check((string) ($validated['access_code'] ?? ''), $student->result_access_code_hash)) {
-            return response()->json([
-                'message' => 'The admission number or result access code is incorrect.',
-                'student' => null,
-                'results' => [],
-                'summary' => null,
-            ], 403);
         }
 
         $results = AssessmentResult::query()
